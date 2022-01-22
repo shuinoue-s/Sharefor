@@ -3,14 +3,14 @@
     <app-header/>
       <v-main>
         <router-view/>
-        <post-button/>
+        <post-form/>
       </v-main>
   </v-app>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader'
-import PostButton from './components/PostButton'
+import PostForm from './components/PostForm'
 
 export default {
   
@@ -23,7 +23,7 @@ export default {
   },
   components: {
     AppHeader,
-    PostButton
+    PostForm
 
   }
 }
