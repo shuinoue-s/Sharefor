@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib/framework'
+import '@mdi/font/css/materialdesignicons.css'
 import { createSimpleTransition } from 'vuetify/lib/components/transitions/createTransition'
 
 const slideTransition = createSimpleTransition('v-slide-transition')
@@ -13,8 +14,12 @@ export default new Vuetify({
             light: {
                 customAlmostWhite: "#F9FCFB",
                 customLightGreen: "#B0EACD",
-                customGreen: "#21BF73"
+                customGreen: "#21BF73",
+                customPink: 'F881DD'
             }
         }
-    }
+    },
+    icons: {
+        iconfont: 'mdiSvg'
+      }
 });

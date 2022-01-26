@@ -28,8 +28,8 @@
 </template>
 
 <script>
-  import PostList from '../components/PostList'
-  import  RecruitmentList from '../components/RecruitmentList'
+  import PostList from './PostList'
+  import  RecruitmentList from './RecruitmentList'
 
   export default {
     name: 'Home',

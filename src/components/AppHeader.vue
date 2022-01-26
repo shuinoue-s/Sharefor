@@ -7,11 +7,9 @@
         hide-on-scroll
         dense
         >
-            <!-- <v-app-bar-title> -->
             <div class="d-flex text-h5 text-md-h4">
-                sharefor
+                <router-link to="/" tag="span" style="cursor: pointer">sharefor</router-link>
             </div>
-            <!-- </v-app-bar-title> -->
 
             <v-spacer></v-spacer>
             <v-tabs align-with-title>
@@ -19,7 +17,6 @@
 
                 <v-spacer></v-spacer>
                 <v-tab to="/" class="caption text-sm-subtitle-1">
-                        <!-- <svg-icon type="mdi" :path="path" style="transform: translateY(7%)"></svg-icon> -->
                         <p class="menu-font">ホーム</p>
                 </v-tab>
 
@@ -44,16 +41,10 @@
 </template>
 
 <script>
-// import SvgIcon from '@jamescoyle/vue-icon'
 import { mdiHome } from '@mdi/js'
 
 export default {
     name: "AppHeader",
-
-    components: {
-        // SvgIcon
-    },
-
     data() {
         return {
             path: mdiHome
