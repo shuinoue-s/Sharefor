@@ -10,7 +10,7 @@
 
 <script>
 import AppHeader from './components/AppHeader'
-import PostForm from './components/PostForm'
+import PostForm from './views/PostForm'
 
 export default {
   
