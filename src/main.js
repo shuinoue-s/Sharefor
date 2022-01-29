@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VueHead from 'vue-head'
+import veeValidate from './validation/veeValidate'
 
 Vue.use(VueHead)
 
@@ -13,5 +14,6 @@ new Vue({
   router,
   store,
   vuetify,
+  veeValidate,
   render: h => h(App)
 }).$mount('#app')

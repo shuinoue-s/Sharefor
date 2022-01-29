@@ -6,7 +6,7 @@ import { createSimpleTransition } from 'vuetify/lib/components/transitions/creat
 const slideTransition = createSimpleTransition('v-slide-transition')
 Vue.component('v-slide-transition', slideTransition)
 
-Vue.use(Vuetify);
+Vue.use(Vuetify)
 
 export default new Vuetify({
     theme: {
@@ -15,7 +15,7 @@ export default new Vuetify({
                 customAlmostWhite: "#F9FCFB",
                 customLightGreen: "#B0EACD",
                 customGreen: "#21BF73",
-                customPink: 'F881DD'
+                customPink: '#F881DD'
             }
         }
     },
