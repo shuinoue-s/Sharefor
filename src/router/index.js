@@ -14,11 +14,6 @@ const routes = [
     path: '/about',
     name: 'About',
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
-  },
-  {
-    path: '/post_form',
-    name: 'PostForm',
-    component: () => import(/* webpackChunkName: "postform" */ '../views/PostForm.vue')
   }
 ]
 
