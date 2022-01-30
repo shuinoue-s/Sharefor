@@ -34,7 +34,7 @@
             <v-divider class="mr-4" inset></v-divider>
 
             <v-card-text class="card-text py-2">
-              {{ post.name }}
+              {{ post.user_name }}
             </v-card-text>
             
             <v-divider class="mx-4"></v-divider>
@@ -83,8 +83,9 @@
 </template>
 
 <script>
+import { format } from 'date-fns'
 import app from '../firebase/firebase'
-import { getFirestore, collection, getDocs } from 'firebase/firestore'
+import { getFirestore, collection, getDocs, query, orderBy } from 'firebase/firestore'
 
 export default {
   name: 'PostList',
@@ -100,13 +101,16 @@ export default {
   },
   methods: {
     async getPost() {
-      const postsCol = collection(this.db, 'posts')
-      const postSnapshot = await getDocs(postsCol)
-      const postList = postSnapshot.docs.map(doc => doc.data())
+      const postsRef = collection(this.db, 'posts')
+      const q = query(postsRef, orderBy('created_at', 'desc'))
+      const querySnapshot = await getDocs(q)
+      const postList = querySnapshot.docs.map(doc => doc.data())
       for(let i = 0; i < postList.length; i++) {
-        postList[i].created_at = new Date(postList[i].created_at * 1000).toString().slice(16, 24)
+        postList[i].created_at = postList[i].created_at.toDate()
+        postList[i].created_at = format(postList[i].created_at, 'yyyy年MM月dd日 HH:mm:ss')
       }
       this.posts = postList
+
     },
   },
   computed: {
