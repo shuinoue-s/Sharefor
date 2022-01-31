@@ -14,7 +14,7 @@
               height="200px"
             ></v-img>
 
-            <div class="d-flex mx-4 mt-2">
+            <div class="d-flex justify-space-between mx-4 mt-2">
               <v-avatar class="my-auto">
                 <img
                   :src="post.icon_path"
@@ -22,25 +22,21 @@
                 >
               </v-avatar>
 
-              <v-card-text class="card-text">
-                @{{ post.uid }}
+              <v-card-text class="card-text" ref="getParentWidth">
+                @{{ post.uid.slice(0, 14) + (post.uid.length > 14 ? '...' : '') }}
+                <br>
+                {{ post.user_name.slice(0, 8) + (post.user_name.length > 8 ? '...' : '') }}
               </v-card-text>
 
               <v-card-text class="card-text">
                 {{ post.created_at }}
               </v-card-text>
             </div>
-
-            <v-divider class="mr-4" inset></v-divider>
-
-            <v-card-text class="card-text py-2">
-              {{ post.user_name }}
-            </v-card-text>
             
             <v-divider class="mx-4"></v-divider>
 
-            <v-card-title>
-              {{ post.title }}
+            <v-card-title class="pt-3 mb-2">
+              {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
             </v-card-title>
 
             <v-card-subtitle>
