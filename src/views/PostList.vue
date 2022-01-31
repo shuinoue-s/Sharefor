@@ -83,37 +83,22 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
-import app from '../firebase/firebase'
-import { getFirestore, collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'PostList',
   data() {
     return {
-      db: null,
-      posts: []
     }
   },
   created() {
-    this.db = getFirestore(app)
-    this.getPost()
+    this.getPosts()
   },
   methods: {
-    async getPost() {
-      const postsRef = collection(this.db, 'posts')
-      const q = query(postsRef, orderBy('created_at', 'desc'))
-      const querySnapshot = await getDocs(q)
-      const postList = querySnapshot.docs.map(doc => doc.data())
-      for(let i = 0; i < postList.length; i++) {
-        postList[i].created_at = postList[i].created_at.toDate()
-        postList[i].created_at = format(postList[i].created_at, 'yyyy年MM月dd日 HH:mm:ss')
-      }
-      this.posts = postList
-
-    },
+    ...mapActions('posts', ['getPosts']),
   },
   computed: {
+    ...mapGetters('posts', ['posts']),
   }
 }
 </script>
