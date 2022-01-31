@@ -144,10 +144,11 @@
 <script>
 import { mdiSend } from '@mdi/js'
 import app from '../firebase/firebase'
-import { collection, getFirestore, addDoc, getDocs, serverTimestamp } from "firebase/firestore"
-import '../validation/veeValidate';
-import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate';
-import { required, max, image, size } from 'vee-validate/dist/rules';
+import { collection, getFirestore, addDoc, serverTimestamp } from "firebase/firestore"
+import '../validation/veeValidate'
+import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
+import { required, max, image, size } from 'vee-validate/dist/rules'
+import { mapGetters, mapActions } from 'vuex'
 
 setInteractionMode('eager');
 
@@ -193,7 +194,7 @@ export default {
       body: '',
       filePath: '',
       fileName: '',
-      tags: [],
+      // tags: [], mapGettersで取得している
       selected: [],
       uid: '',
       name: '',
@@ -234,23 +235,16 @@ export default {
         created_at: serverTimestamp()
       })
       this.clear()
-      this.getPost()
+      this.getPosts()
     },
-    async getPost() {
-      const postsCol = collection(this.db, 'posts')
-      const postSnapshot = await getDocs(postsCol)
-      const postList = postSnapshot.docs.map(doc => doc.data())
-      for(let i = 0; i < postList.length; i++) {
-        postList[i].created_at = new Date(postList[i].created_at * 1000).toString().slice(16, 24)
-      }
-      this.posts = postList
-    },
+    ...mapActions('posts', ['getPosts']),
   },
   computed: {
     previewImage() {
       if (!this.filePath) return;
       return URL.createObjectURL(this.filePath);
-    }
+    },
+    ...mapGetters('posts', ['tags']),
   },
 }
 </script>
