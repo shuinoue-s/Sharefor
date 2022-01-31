@@ -230,7 +230,7 @@ export default {
         icon_name: '',
         uid: '',
         user_name: '',
-        isShow: false,
+        is_show: false,
         created_at: serverTimestamp()
       })
       this.clear()
