@@ -45,8 +45,8 @@
 
         <v-card v-show="postButtonClicked">
           <post-form
-            @receive-close="checkClicked"
-            @receive-send="checkClicked"
+            @recieve-close="checkClicked"
+            @recieve-send="checkClicked"
           />
         </v-card>
 
