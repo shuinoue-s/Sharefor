@@ -48,19 +48,32 @@
           ></v-text-field>
         </validation-provider>
 
-        <!-- 地図 -->
+        <div id="map" ref="map" />
         <validation-provider
           v-slot="{ errors }"
-          name="tizu"
+          name="searchMap"
           rules=""
         >
           <v-text-field
-          class="mb-4 mx-4"
-            v-model="geopoint"
+            class="mb-4 mx-4"
+            v-model="address"
+            @change="mapSearch"
+            prepend-icon="mdi-map-marker"
             color="customGreen"
+            clearable
             :error-messages="errors"
-            label="地図です"
-          ></v-text-field>
+            label="住所から検索"
+          >
+            <template v-slot:append>
+              <v-btn
+                color="customGreen"
+                style="color: #fff"
+                @click="mapSearch"
+              >
+                検索
+              </v-btn>
+            </template>
+          </v-text-field>
         </validation-provider>
 
         <validation-provider
@@ -132,7 +145,7 @@
         <v-spacer></v-spacer>
         <v-btn 
         @click="clear"
-        class="mt-4 ml-4"
+        class="ma-4"
         >
           clear
         </v-btn>
@@ -190,7 +203,11 @@ export default {
     return {
       mdiSend,
       title: '',
-      geopoint: [21, 10],
+      address: '',
+      map: {},
+      marker: null,
+      geocoder: {},
+      geopoint: { lat: 35.9919136, lng: 140.6410921 },
       body: '',
       filePath: '',
       fileName: '',
@@ -203,21 +220,72 @@ export default {
   created() {
     this.db = getFirestore(app)
   },
+  mounted() {
+    if(!window.mapLoadStarted) {
+      window.mapLoadStarted = true
+      let script = document.createElement('script')
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB0p-QsgCwcTqa5DKE2KG2WDaX9EzBoyyY&callback=initMap'
+      script.async = true
+      document.head.appendChild(script)
+    }
+    window.initMap = () => window.mapLoaded = true
+    let timer = setInterval(() => {
+      if(window.mapLoaded) {
+        clearInterval(timer)
+        const map = new window.google.maps.Map(this.$refs.map, {
+          center: this.geopoint,
+          zoom: 7
+        }) 
+        const marker = new window.google.maps.Marker({
+          position: this.geopoint,
+          map
+        })
+        map.addListener('click', mapsMouseEvent => this.clickOnMap(mapsMouseEvent))
+        this.map = map
+        this.marker = marker
+        this.geocoder = new window.google.maps.Geocoder()
+      }
+    }, 500)
+  },
   methods: {
+    clickOnMap(mapEvent) {
+      this.geopoint = mapEvent.latLng.toString()
+      this.marker.setMap(null)
+      this.marker = new window.google.maps.Marker({
+        position: mapEvent.latLng,
+        map: this.map
+      })
+    },
+    mapSearch() {
+      this.geocoder.geocode({
+        'address': this.address
+      }, (results, status) => {
+        if (status === window.google.maps.GeocoderStatus.OK) {
+          this.map.setCenter(results[0].geometry.location)
+          this.geopoint.lat = results[0].geometry.location.lat()
+          this.geopoint.lng = results[0].geometry.location.lng()
+          this.marker.setMap(null)
+          this.marker = new window.google.maps.Marker({
+            position: results[0].geometry.location,
+            map: this.map
+          })
+        }
+      })
+    },
     emitClose() {
-      this.$emit('receive-close')
+      this.$emit('recieve-close')
     },
     emitSend() {
-      this.$emit('receive-send')
+      this.$emit('recieve-send')
     },
-    async clear() {
+    clear() {
       this.title = ''
-      this.geopoint = [21, 10]
+      this.geopoint = ''
       this.body = ''
       this.filePath = ''
       this.fileName = ''
       this.selected = []
-      await this.postButtonClicked === true
+      this.$refs.observer.reset()
     },
     async post() {
       await addDoc(collection(this.db, "posts"), {
@@ -253,4 +321,11 @@ export default {
   .custom-light-green {
     color: #B0EACD;
   }
+
+#map {
+  height: 400px;
+  width: 80%;
+  margin: auto;
+  background: gray;
+}
 </style>
