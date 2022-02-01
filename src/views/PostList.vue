@@ -64,10 +64,7 @@
             <v-expand-transition>
               <div v-show="post.is_show">
                 <v-divider></v-divider>
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              height="200px"
-            ></v-img>
+                <GoogleMapAPI :geopoint="post.geopoint" />
               </div>
             </v-expand-transition>
           </v-card>
@@ -80,9 +77,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import GoogleMapAPI from '../components/GoogleMapAPI'
 
 export default {
   name: 'PostList',
+  components: {
+    GoogleMapAPI
+  },
   data() {
     return {
     }

@@ -221,6 +221,10 @@ export default {
     this.db = getFirestore(app)
   },
   mounted() {
+    this.getGoogleMap()
+  },
+  methods: {
+    getGoogleMap() {
     if(!window.mapLoadStarted) {
       window.mapLoadStarted = true
       let script = document.createElement('script')
@@ -246,13 +250,13 @@ export default {
         this.geocoder = new window.google.maps.Geocoder()
       }
     }, 500)
-  },
-  methods: {
+    },
     clickOnMap(mapEvent) {
-      this.geopoint = mapEvent.latLng.toString()
+      this.geopoint.lat = mapEvent.latLng.lat()
+      this.geopoint.lng = mapEvent.latLng.lng()
       this.marker.setMap(null)
       this.marker = new window.google.maps.Marker({
-        position: mapEvent.latLng,
+        position: this.geopoint,
         map: this.map
       })
     },
@@ -280,12 +284,13 @@ export default {
     },
     clear() {
       this.title = ''
-      this.geopoint = ''
+      this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
       this.body = ''
       this.filePath = ''
       this.fileName = ''
       this.selected = []
       this.$refs.observer.reset()
+      this.getGoogleMap()
     },
     async post() {
       await addDoc(collection(this.db, "posts"), {
@@ -297,7 +302,7 @@ export default {
         tags: this.selected,
         icon_path: '',
         icon_name: '',
-        uid: '',
+        uid: 'j',
         user_name: '',
         is_show: false,
         created_at: serverTimestamp()
