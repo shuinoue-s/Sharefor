@@ -4,7 +4,7 @@
       ref="observer"
       v-slot="{ invalid }"
     >
-      <form @submit.prevent="post()">
+      <form @submit.prevent="saveStorage()">
         <v-toolbar
           dark
           color="customGreen"
@@ -96,14 +96,15 @@
         </validation-provider>
 
         <validation-provider
-          v-slot="{ errors, validate }"
+          v-slot="{ errors }"
           name="image"
+          ref="provider"
           rules="required|image|size:5000"
         >
           <v-file-input
             class="mb-4 mx-4"
-            v-model="filePath"
-            @change="validate"
+            v-model="image"
+            @change="handleFileChange"
             :error-messages="errors"
             label="写真も一緒に投稿しましょう"
             prepend-icon="mdi-camera"
@@ -156,8 +157,9 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
+import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
-import { collection, getFirestore, addDoc, serverTimestamp } from "firebase/firestore"
 import '../validation/veeValidate'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max, image, size } from 'vee-validate/dist/rules'
@@ -202,6 +204,8 @@ export default {
   data() {
     return {
       mdiSend,
+      db: '',
+      storage: '',
       title: '',
       address: '',
       map: {},
@@ -209,8 +213,9 @@ export default {
       geocoder: {},
       geopoint: { lat: 35.9919136, lng: 140.6410921 },
       body: '',
-      filePath: '',
+      image: '',
       fileName: '',
+      filePath: '',
       // tags: [], mapGettersで取得している
       selected: [],
       uid: '',
@@ -219,11 +224,13 @@ export default {
   },
   created() {
     this.db = getFirestore(app)
+    this.storage = getStorage(app)
   },
   mounted() {
     this.getGoogleMap()
   },
   methods: {
+    ...mapActions('posts', ['getPosts']),
     getGoogleMap() {
     if(!window.mapLoadStarted) {
       window.mapLoadStarted = true
@@ -286,23 +293,37 @@ export default {
       this.title = ''
       this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
       this.body = ''
-      this.filePath = ''
-      this.fileName = ''
+      this.image = ''
+      this.address = ''
       this.selected = []
       this.$refs.observer.reset()
       this.getGoogleMap()
     },
-    async post() {
+    handleFileChange(e) {
+      this.$refs.provider.validate(e)
+      this.fileName = e.name
+    },
+    saveStorage() {
+      const storageRef = ref(this.storage, `images/${this.fileName}`)
+      uploadBytes(storageRef, this.image).then(() => {
+        getDownloadURL(storageRef).then(url => {
+          this.sendPost(url)
+        })
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
+    async sendPost(filePath) {
       await addDoc(collection(this.db, "posts"), {
         title: this.title,
         body: this.body,
         geopoint: this.geopoint,
-        file_path: URL.createObjectURL(this.filePath),
         file_name: this.fileName,
+        file_path: filePath,
         tags: this.selected,
-        icon_path: '',
         icon_name: '',
-        uid: 'j',
+        icon_path: '',
+        uid: '',
         user_name: '',
         is_show: false,
         created_at: serverTimestamp()
@@ -310,14 +331,13 @@ export default {
       this.clear()
       this.getPosts()
     },
-    ...mapActions('posts', ['getPosts']),
   },
   computed: {
+    ...mapGetters('posts', ['tags']),
     previewImage() {
       if (!this.filePath) return;
-      return URL.createObjectURL(this.filePath);
+      return URL.createObjectURL(this.fileName);
     },
-    ...mapGetters('posts', ['tags']),
   },
 }
 </script>

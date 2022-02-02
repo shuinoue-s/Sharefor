@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app"
 
 const config = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -10,6 +10,6 @@ const config = {
   measurementId: process.env.VUE_APP_MEASUREMENT_ID
 }
 
-const app = initializeApp(config);
+const app = initializeApp(config)
 
-export default app;
+export default app
