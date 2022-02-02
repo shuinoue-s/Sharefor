@@ -1,9 +1,8 @@
 <template>
   <div>
-    <v-spacer></v-spacer>
     <v-container>
-      <v-low class="d-sm-flex flex-sm-wrap">
-        <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.uid">
+      <v-row class="d-sm-flex flex-sm-wrap">
+        <v-col cols="12" sm="6" lg="4" v-for="(post, index) in posts" :key="index">
           <v-card
             class="mx-auto rounded-0"
             max-width="344"
@@ -69,7 +68,7 @@
             </v-expand-transition>
           </v-card>
         </v-col>
-      </v-low>
+      </v-row>
     </v-container>
     <v-spacer></v-spacer>
   </div>

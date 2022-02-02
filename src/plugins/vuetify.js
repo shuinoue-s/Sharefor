@@ -3,10 +3,11 @@ import Vuetify from 'vuetify/lib/framework'
 import '@mdi/font/css/materialdesignicons.css'
 import { createSimpleTransition } from 'vuetify/lib/components/transitions/createTransition'
 
+Vue.use(Vuetify)
+
 const slideTransition = createSimpleTransition('v-slide-transition')
 Vue.component('v-slide-transition', slideTransition)
 
-Vue.use(Vuetify)
 
 export default new Vuetify({
     theme: {
