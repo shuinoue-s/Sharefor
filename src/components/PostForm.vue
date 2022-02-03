@@ -235,7 +235,8 @@ export default {
     if(!window.mapLoadStarted) {
       window.mapLoadStarted = true
       let script = document.createElement('script')
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB0p-QsgCwcTqa5DKE2KG2WDaX9EzBoyyY&callback=initMap'
+      const googleMapAPI = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB0p-QsgCwcTqa5DKE2KG2WDaX9EzBoyyY&callback=initMap'
+      script.src = googleMapAPI
       script.async = true
       document.head.appendChild(script)
     }
