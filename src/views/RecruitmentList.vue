@@ -2,7 +2,7 @@
   <div>
     <v-spacer></v-spacer>
     <v-container>
-      <v-low class="d-sm-flex flex-sm-wrap">
+      <v-row class="d-sm-flex flex-sm-wrap">
         <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.id">
           <v-card
             class="mx-auto rounded-0"
@@ -54,7 +54,7 @@
         </v-col>
 
        
-      </v-low>
+      </v-row>
     </v-container>
     <v-spacer></v-spacer>
   </div>
