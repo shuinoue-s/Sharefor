@@ -1,16 +1,26 @@
 <template>
   <div>
+    <v-alert
+      :value="successMessage !== undefined"
+      type="success"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{message}}
+    </v-alert>
+    
     <v-tabs align-with-title>
       <v-tabs-slider color="customLightGreen"></v-tabs-slider>
 
       <v-spacer></v-spacer>
       <v-spacer></v-spacer>
-      <v-tab href="#post-list" active-class="active">
+      <v-tab href="#post-list" active-class="active" class="font">
         投稿
       </v-tab>
       
       <v-spacer></v-spacer>
-      <v-tab href="#recruitment-list" active-class="active">
+      <v-tab href="#recruitment-list" active-class="active" class="font">
         募集
       </v-tab>
       <v-spacer></v-spacer>
@@ -33,7 +43,7 @@
 
   export default {
     name: 'Home',
-
+    props: ['message'],
     components: {
       PostList,
       RecruitmentList
@@ -44,11 +54,31 @@
         separator: '-',
         complement: 'Sharefor'
       }
+    },
+    data() {
+      return {
+        successMessage: undefined
+      }
+    },
+    mounted() {
+      this.successMessage = this.message
+      this.closeMessageThreeSecondsLater()
+    },
+    methods: {
+      closeMessageThreeSecondsLater() {
+        if(this.successMessage !== undefined){
+          setTimeout(() => {
+            this.successMessage = undefined
+          }, 3000)
+        }
+      }
     }
   }
 </script>
 
 <style scoped>
+@import '../css/style.css';
+
   .active  {
     color: #21BF73;
   }
