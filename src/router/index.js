@@ -27,6 +27,11 @@ const routes = [
     name: 'Loading',
     component: () => import(/* webpackChunkName: "login/loading" */ '../views/Loading.vue'),
   },
+  {
+    path: '/*',
+    name: 'NotFound',
+    component: () => import(/* webpackChunkName: "not_found" */ '../views/NotFound.vue'),
+  },
 ]
 
 const router = new VueRouter({
