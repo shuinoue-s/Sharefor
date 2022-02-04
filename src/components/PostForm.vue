@@ -160,7 +160,6 @@ import { mdiSend } from '@mdi/js'
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
-import '../validation/veeValidate'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max, image, size } from 'vee-validate/dist/rules'
 import { mapGetters, mapActions } from 'vuex'
@@ -216,7 +215,7 @@ export default {
       image: '',
       fileName: '',
       filePath: '',
-      // tags: [], mapGettersで取得している
+      // tags: [], mapGettersで取得
       selected: [],
       uid: '',
       name: '',
@@ -336,8 +335,8 @@ export default {
   computed: {
     ...mapGetters('posts', ['tags']),
     previewImage() {
-      if (!this.filePath) return;
-      return URL.createObjectURL(this.fileName);
+      if(!this.image) return;
+      return URL.createObjectURL(this.image);
     },
   },
 }
