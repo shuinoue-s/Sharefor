@@ -11,14 +11,18 @@
 
 <script>
 import { getAuth, getRedirectResult } from "firebase/auth"
+import { mapActions } from "vuex"
 
 export default {
   name: 'Loading',
+  props: ['user'],
   created() {
-    this.getRedirectResult()
+    this.setResult(this.user)
+    this.$router.push({name: 'Home', params: {message: 'ログインしました'}})
   },
   methods: {
-    getRedirectResult() {
+    ...mapActions('auth', ['setResult']),
+    getSignInResult() {
       const auth = getAuth()
       getRedirectResult(auth).then(() => {
         this.$router.push({name: 'Home', params: {message: 'ログインしました'}})
@@ -26,11 +30,11 @@ export default {
         this.$router.push({name: 'Login', params: {message: 'ログインに失敗しました'}})
       })
     }
-  }
+  },
 }
 </script>
 
-<style>
+<style scoped>
   .position-center {
     position: absolute;
     top: 50%;

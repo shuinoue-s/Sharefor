@@ -9,6 +9,26 @@
     >
       {{message}}
     </v-alert>
+
+    <v-alert
+      :value="signOutMessage !== undefined"
+      type="success"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{signOutMessage}}
+    </v-alert>
+
+    <v-alert
+      :value="signOutErrorMessage !== undefined"
+      type="error"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{signOutErrorMessage}}
+    </v-alert>
     
     <v-tabs align-with-title>
       <v-tabs-slider color="customLightGreen"></v-tabs-slider>
@@ -34,12 +54,16 @@
         <recruitment-list />
       </v-tab-item>
     </v-tabs>
+
+    <v-btn v-if="isAuthenticated" @click="signOut" color="customPink" style="color: #fff;">ログアウト</v-btn>
   </div>
 </template>
 
 <script>
   import PostList from './PostList'
   import  RecruitmentList from './RecruitmentList'
+  import { mapGetters, mapActions } from 'vuex'
+  import { getAuth, signOut } from "firebase/auth"
 
   export default {
     name: 'Home',
@@ -57,22 +81,51 @@
     },
     data() {
       return {
-        successMessage: undefined
+        successMessage: undefined,
+        signOutMessage: undefined,
+        signOutErrorMessage: undefined
       }
+    },
+    created() {
+      this.onAuth()
     },
     mounted() {
       this.successMessage = this.message
       this.closeMessageThreeSecondsLater()
     },
     methods: {
+      ...mapActions('auth',['onAuth', 'isSignOut']),
       closeMessageThreeSecondsLater() {
         if(this.successMessage !== undefined){
           setTimeout(() => {
             this.successMessage = undefined
           }, 3000)
         }
-      }
-    }
+      },
+      signOut() {
+        const auth = getAuth()
+        signOut(auth).then(() => {
+          this.isSignOut()
+          this.signOutMessage = 'ログアウトしました'
+          if(this.signOutMessage !== undefined){
+            setTimeout(() => {
+              this.signOutMessage = undefined
+            }, 3000)
+          }
+        }).catch(() => {
+          this.signOutErrorMessage = 'ログアウトに失敗しました'
+          this.closeMessageThreeSecondsLater(this.signOutErrorMessage)
+          if(this.signOutErrorMessage !== undefined){
+            setTimeout(() => {
+              this.signOutErrorMessage = undefined
+            }, 3000)
+          }
+        })
+      },
+    },
+    computed: {
+      ...mapGetters('auth', ['isAuthenticated'])
+    },
   }
 </script>
 
