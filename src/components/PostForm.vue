@@ -157,7 +157,7 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
-import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore"
+import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
@@ -217,12 +217,10 @@ export default {
       filePath: '',
       // tags: [], mapGettersで取得
       selected: [],
-      uid: '',
-      name: '',
     }
   },
   created() {
-    this.db = getFirestore(app)
+    this.db = getFirestore()
     this.storage = getStorage(app)
   },
   mounted() {
@@ -314,26 +312,59 @@ export default {
       })
     },
     async sendPost(filePath) {
-      await addDoc(collection(this.db, "posts"), {
+      const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'posts')
+      const postsDocumentRef = doc(usersCollectionRef)
+      const postData = {
+        post_id: postsDocumentRef.id,
         title: this.title,
         body: this.body,
         geopoint: this.geopoint,
         file_name: this.fileName,
         file_path: filePath,
         tags: this.selected,
-        icon_name: '',
-        icon_path: '',
-        uid: '',
-        user_name: '',
+        icon_name: this.pathInfo(this.user.photoURL).basename,
+        icon_path: this.user.photoURL,
+        uid: this.user.uid,
+        user_name: this.user.displayName,
         is_show: false,
         created_at: serverTimestamp()
+      }
+      await setDoc(postsDocumentRef, postData).catch(() => {
+        this.$emit('post-error', '投稿に失敗しました')
       })
       this.clear()
       this.getPosts()
     },
+    pathInfo(p){
+      let basename = "",
+          dirname = [],
+          filename = [],
+          ext = ""
+      let p2 = p.split("?")
+      let urls = p2[0].split("/")
+      for(let i = 0; i < urls.length - 1; i++){
+        dirname.push(urls[i])
+      }
+      basename = urls[urls.length - 1]
+      let basenames = basename.split(".")
+      for(let i = 0; i < basenames.length - 1; i++){
+        filename.push(basenames[i])
+      }
+      ext = basenames[basenames.length-1]
+      return {
+        "hostname": urls[2],
+        "basename": basename,
+        "dirname": dirname.join("/"),
+        "filename": filename.join("."),
+        "extension": ext,
+        "query": (p2[1]) ? p2[1] : "",
+        "path": p2[0]
+      }
+    },
   },
   computed: {
     ...mapGetters('posts', ['tags']),
+    ...mapGetters('auth', ['user']),
     previewImage() {
       if(!this.image) return;
       return URL.createObjectURL(this.image);

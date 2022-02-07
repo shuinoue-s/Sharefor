@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-alert
+      :value="postErrorMessage !== undefined"
+      type="error"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{postErrorMessage}}
+    </v-alert>
+    
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
@@ -47,6 +57,7 @@
           <post-form
             @recieve-close="checkClicked"
             @recieve-send="checkClicked"
+            @post-error="setMessage"
           />
         </v-card>
 
@@ -73,6 +84,7 @@ export default {
       dialog: false,
       postButtonClicked: false,
       recruitmentButtonClicked: false,
+      postErrorMessage: undefined,
       recruitmentForm: {
         stadiums: jLeagueTeamList,
         text2: '',
@@ -89,6 +101,10 @@ export default {
         this.recruitmentButtonClicked = false
       }, 300)
     },
+    setMessage(message) {
+      console.log(message)
+      this.postErrorMessage = message
+    }
   },
   components: {
     PostForm,

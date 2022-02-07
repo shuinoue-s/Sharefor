@@ -1,12 +1,13 @@
 import { format } from 'date-fns'
 import app from '../../firebase/firebase'
-import { getFirestore, collection, getDocs, query, orderBy } from 'firebase/firestore'
+import { getFirestore, getDocs, query, orderBy, collectionGroup } from 'firebase/firestore'
 
 const db = getFirestore(app)
 
 const state = {
   posts: [],
-  tags: []
+  tags: [],
+  eachUserPosts: []
 }
 const getters = {
   posts: state => state.posts,
@@ -20,8 +21,9 @@ const mutations = {
 }
 const actions = {
   async getPosts({ commit }) {
-    const postsRef = collection(db, 'posts')
-    const q = query(postsRef, orderBy('created_at', 'desc'))
+    const postsCollectionGroup = collectionGroup(db, 'posts')
+    // const usersCollectionRef = collection(db, 'users', 'posts')
+    const q = query(postsCollectionGroup, orderBy('created_at', 'desc'))
     const querySnapshot = await getDocs(q)
     let postList = querySnapshot.docs.map(doc => doc.data())
     let tags = []
