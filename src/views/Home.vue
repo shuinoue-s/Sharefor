@@ -106,12 +106,7 @@
         const auth = getAuth()
         signOut(auth).then(() => {
           this.isSignOut()
-          this.signOutMessage = 'ログアウトしました'
-          if(this.signOutMessage !== undefined){
-            setTimeout(() => {
-              this.signOutMessage = undefined
-            }, 3000)
-          }
+          this.$router.push({name: 'Login', params: {message: 'ログアウトしました'}})
         }).catch(() => {
           this.signOutErrorMessage = 'ログアウトに失敗しました'
           this.closeMessageThreeSecondsLater(this.signOutErrorMessage)

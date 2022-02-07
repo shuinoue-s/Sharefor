@@ -21,8 +21,9 @@ export default new Vuex.Store({
   plugins: [createPersistedState({
     key: 'sharefor',
     paths: [
-      'loading.isLoading'
+      'loading.isLoading',
+      'auth.isAuthenticated'
     ],
-    storage: window.sessionStorage
+    // storage: window.sessionStorage
   })]
 })

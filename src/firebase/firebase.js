@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app"
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth"
 
 const config = {
   apiKey: process.env.VUE_APP_API_KEY,
@@ -11,5 +12,9 @@ const config = {
 }
 
 const app = initializeApp(config)
+
+const auth = getAuth()
+
+setPersistence(auth, browserLocalPersistence)
 
 export default app
