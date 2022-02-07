@@ -74,11 +74,15 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
-  props: ['message'],
   data() {
     return {
       errorMessage: undefined,
     }
+  },
+  created() {
+    setTimeout(() => {
+      this.stopLoading()
+    },  6000)
   },
   mounted() {
     this.closeMessageThreeSecondsLater()
@@ -91,7 +95,7 @@ export default {
         this.loading()
         const auth = getAuth()
         const provider = new TwitterAuthProvider()
-        signInWithRedirect(auth, provider).catch((error) => {
+        signInWithRedirect(auth, provider).catch(error => {
           if(error) {
             this.setErrorMessage()
           }
@@ -99,13 +103,13 @@ export default {
     },
     getSignInResult() {
       const auth = getAuth()
-      getRedirectResult(auth).then((result) => {
+      getRedirectResult(auth).then(result => {
         if(result) {
           this.stopLoading()
           this.setResult(result.user)
           this.$router.push({name: 'Home', params: {message: 'ログインしました'}})
         }
-      }).catch((error) => {
+      }).catch(error => {
         if(error) {
           this.setErrorMessage()
         }
