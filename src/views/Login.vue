@@ -10,6 +10,16 @@
       {{errorMessage}}
     </v-alert>
 
+    <v-alert
+      :value="signOutMessage !== undefined"
+      type="success"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{signOutMessage}}
+    </v-alert>
+
     <v-progress-circular
     v-if="isLoading"
       indeterminate
@@ -74,12 +84,16 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
+  props: ['message'],
   data() {
     return {
       errorMessage: undefined,
+      signOutMessage: undefined
     }
   },
   created() {
+    this.setSignOutMessage()
+    this.signInRedirect()
     setTimeout(() => {
       this.stopLoading()
     },  6000)
@@ -89,7 +103,7 @@ export default {
     this.getSignInResult()
   },
   methods: {
-    ...mapActions('auth', ['setResult']),
+    ...mapActions('auth', ['setResult', 'onAuth']),
     ...mapActions('loading', ['loading', 'stopLoading']),
     signInTwitter() {
         this.loading()
@@ -127,9 +141,23 @@ export default {
         this.errorMessage = 'ログインに失敗しました'
         this.closeMessageThreeSecondsLater()
     },
+    setSignOutMessage() {
+      this.signOutMessage = this.message
+      if(this.signOutMessage !== undefined){
+        setTimeout(() => {
+          this.signOutMessage = undefined
+        }, 3000)
+      }
+    },
+    signInRedirect() {
+      if(this.isAuthenticated) {
+        this.$router.push({name: 'Home'})
+      }
+    }
   },
   computed: {
-    ...mapGetters('loading', ['isLoading'])
+    ...mapGetters('loading', ['isLoading']),
+    ...mapGetters('auth', ['isAuthenticated'])
   }
 }
 </script>
