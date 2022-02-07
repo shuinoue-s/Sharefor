@@ -2,7 +2,7 @@
   <div>
     <v-container>
       <v-row class="d-sm-flex flex-sm-wrap">
-        <v-col cols="12" sm="6" lg="4" v-for="(post, index) in posts" :key="index">
+        <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.post_id">
           <v-card
             class="mx-auto rounded-0"
             max-width="344"
@@ -95,6 +95,7 @@ export default {
   },
   computed: {
     ...mapGetters('posts', ['posts']),
+    ...mapGetters('auth', ['user'])
   }
 }
 </script>
