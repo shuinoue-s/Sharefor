@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home'
+import store from '../store/index'
 
 Vue.use(VueRouter)
 
@@ -23,11 +24,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
   },
   {
-    path: '/login/loading',
-    name: 'Loading',
-    component: () => import(/* webpackChunkName: "login/loading" */ '../views/Loading.vue'),
-  },
-  {
     path: '/*',
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "not_found" */ '../views/NotFound.vue'),
@@ -38,6 +34,13 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = store.getters['auth/isAuthenticated']
+  if(to.name !== 'Login' && !isAuthenticated) next({name: 'Login'})
+  else next()
 })
 
 export default router
