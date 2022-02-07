@@ -40,7 +40,7 @@
       </v-tab>
       
       <v-spacer></v-spacer>
-      <v-tab href="#recruitment-list" active-class="active" class="font">
+      <v-tab href="#ask-list" active-class="active" class="font">
         募集
       </v-tab>
       <v-spacer></v-spacer>
@@ -50,8 +50,8 @@
         <post-list />
       </v-tab-item>
 
-      <v-tab-item value="recruitment-list">
-        <recruitment-list />
+      <v-tab-item value="ask-list">
+        <ask-list />
       </v-tab-item>
     </v-tabs>
 
@@ -61,7 +61,7 @@
 
 <script>
   import PostList from './PostList'
-  import  RecruitmentList from './RecruitmentList'
+  import AskList from './AskList'
   import { mapGetters, mapActions } from 'vuex'
   import { getAuth, signOut } from "firebase/auth"
 
@@ -70,7 +70,7 @@
     props: ['message'],
     components: {
       PostList,
-      RecruitmentList
+      AskList
     },
     head: {
       title: {
@@ -125,7 +125,7 @@
 </script>
 
 <style scoped>
-@import '../css/style.css';
+  @import '../css/style.css';
 
   .active  {
     color: #21BF73;

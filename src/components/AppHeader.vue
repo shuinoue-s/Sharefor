@@ -43,15 +43,9 @@
 </template>
 
 <script>
-// import { mdiHome } from '@mdi/js'
 
 export default {
-    name: "AppHeader",
-    data() {
-        return {
-            // path: mdiHome
-        }
-    }
+    name: "AppHeader"
 }
 </script>
 

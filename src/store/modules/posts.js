@@ -7,7 +7,7 @@ const db = getFirestore(app)
 const state = {
   posts: [],
   tags: [],
-  eachUserPosts: []
+  // eachUserPosts: []
 }
 const getters = {
   posts: state => state.posts,

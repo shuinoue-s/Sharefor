@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'RecruitmentShow',
+  name: 'AskShow',
 }
 </script>
 
