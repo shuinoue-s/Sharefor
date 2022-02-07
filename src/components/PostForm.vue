@@ -17,7 +17,7 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title class="custom-light-green mx-auto">POST</v-toolbar-title>
+          <v-toolbar-title class="mx-auto" style="color: #B0EACD;">POST</v-toolbar-title>
           <v-toolbar-items>
             <v-btn
               dark
@@ -157,6 +157,7 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
+import pathInfo from '../modules/pathInfo'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
@@ -164,7 +165,7 @@ import { ValidationObserver, ValidationProvider, setInteractionMode, extend } fr
 import { required, max, image, size } from 'vee-validate/dist/rules'
 import { mapGetters, mapActions } from 'vuex'
 
-setInteractionMode('eager');
+setInteractionMode('eager')
 
 extend('image', {
   ...image,
@@ -220,7 +221,7 @@ export default {
     }
   },
   created() {
-    this.db = getFirestore()
+    this.db = getFirestore(app)
     this.storage = getStorage(app)
   },
   mounted() {
@@ -322,7 +323,7 @@ export default {
         file_name: this.fileName,
         file_path: filePath,
         tags: this.selected,
-        icon_name: this.pathInfo(this.user.photoURL).basename,
+        icon_name: pathInfo(this.user.photoURL).basename,
         icon_path: this.user.photoURL,
         uid: this.user.uid,
         user_name: this.user.displayName,
@@ -334,33 +335,7 @@ export default {
       })
       this.clear()
       this.getPosts()
-    },
-    pathInfo(p){
-      let basename = "",
-          dirname = [],
-          filename = [],
-          ext = ""
-      let p2 = p.split("?")
-      let urls = p2[0].split("/")
-      for(let i = 0; i < urls.length - 1; i++){
-        dirname.push(urls[i])
-      }
-      basename = urls[urls.length - 1]
-      let basenames = basename.split(".")
-      for(let i = 0; i < basenames.length - 1; i++){
-        filename.push(basenames[i])
-      }
-      ext = basenames[basenames.length-1]
-      return {
-        "hostname": urls[2],
-        "basename": basename,
-        "dirname": dirname.join("/"),
-        "filename": filename.join("."),
-        "extension": ext,
-        "query": (p2[1]) ? p2[1] : "",
-        "path": p2[0]
-      }
-    },
+    }
   },
   computed: {
     ...mapGetters('posts', ['tags']),
@@ -374,14 +349,10 @@ export default {
 </script>
 
 <style scoped>
-  .custom-light-green {
-    color: #B0EACD;
+  #map {
+    height: 400px;
+    width: 80%;
+    margin: auto;
+    background: gray;
   }
-
-#map {
-  height: 400px;
-  width: 80%;
-  margin: auto;
-  background: gray;
-}
 </style>

@@ -6,6 +6,7 @@
 
 <script>
   export default {
+    name: 'About',
     head: {
       title: {     inner: 'Aboutしよう',
         separator: '-',

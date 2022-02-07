@@ -62,7 +62,7 @@
 
 <script>
 export default {
-  name: 'RecruitmentList',
+  name: 'AskList',
    data() {
      return {
        posts: {

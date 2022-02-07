@@ -9,6 +9,16 @@
     >
       {{postErrorMessage}}
     </v-alert>
+
+    <v-alert
+      :value="askErrorMessage !== undefined"
+      type="error"
+      dense
+      class="mt-0 text-center"
+      transition="slide-y-transition"
+    >
+      {{askErrorMessage}}
+    </v-alert>
     
     <v-row justify="center">
       <v-dialog
@@ -45,7 +55,7 @@
               <v-list-item v-on="listItemActivator.on" @click="postButtonClicked = !postButtonClicked">
                   <v-list-item-title class="text-center">投稿</v-list-item-title>
               </v-list-item>
-              <v-list-item v-on="listItemActivator.on" @click="recruitmentButtonClicked = !recruitmentButtonClicked">
+              <v-list-item v-on="listItemActivator.on" @click="askButtonClicked = !askButtonClicked">
                   <v-list-item-title class="text-center">募集</v-list-item-title>
               </v-list-item>
           </v-list>
@@ -57,12 +67,16 @@
           <post-form
             @recieve-close="checkClicked"
             @recieve-send="checkClicked"
-            @post-error="setMessage"
+            @post-error="setPostMessage"
           />
         </v-card>
 
-        <v-card v-show="recruitmentButtonClicked">
-          <recruitment-form />
+        <v-card v-show="askButtonClicked">
+          <ask-form
+            @recieve-close="checkClicked"
+            @recieve-send="checkClicked"
+            @ask-post-error="setAskMessage"
+           />
         </v-card>
 
       </v-dialog>
@@ -73,8 +87,7 @@
 
 <script>
 import PostForm from '../components/PostForm'
-import RecruitmentForm from '../components/RecruitmentForm'
-import jLeagueTeamList from '../jLeagueTeamList'
+import AskForm from '../components/AskForm'
 
 export default {
   name: 'Form',
@@ -83,14 +96,9 @@ export default {
       db: null,
       dialog: false,
       postButtonClicked: false,
-      recruitmentButtonClicked: false,
+      askButtonClicked: false,
       postErrorMessage: undefined,
-      recruitmentForm: {
-        stadiums: jLeagueTeamList,
-        text2: '',
-        picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
-        // new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
-      }
+      askErrorMessage: undefined
     }
   },
   methods: {
@@ -98,21 +106,19 @@ export default {
       this.dialog = false 
       setTimeout(() => {
         this.postButtonClicked = false
-        this.recruitmentButtonClicked = false
+        this.askButtonClicked = false
       }, 300)
     },
-    setMessage(message) {
-      console.log(message)
+    setPostMessage(message) {
       this.postErrorMessage = message
+    },
+    setAskMessage(message) {
+      this.askErrorMessage = message
     }
   },
   components: {
     PostForm,
-    RecruitmentForm,
+    AskForm,
   },
 }
 </script>
-
-<style scoped>
-
-</style>
