@@ -10,6 +10,7 @@
           >
             <v-img
               :src="post.file_path"
+              :alt="post.file_name"
               height="200px"
             ></v-img>
 
@@ -17,11 +18,11 @@
               <v-avatar class="my-auto">
                 <img
                   :src="post.icon_path"
-                  alt="John"
+                  :alt="post.icon_name"
                 >
               </v-avatar>
 
-              <v-card-text class="card-text" ref="getParentWidth">
+              <v-card-text class="card-text">
                 @{{ post.uid.slice(0, 14) + (post.uid.length > 14 ? '...' : '') }}
                 <br>
                 {{ post.user_name.slice(0, 8) + (post.user_name.length > 8 ? '...' : '') }}

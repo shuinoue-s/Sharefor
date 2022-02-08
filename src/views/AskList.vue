@@ -1,59 +1,112 @@
 <template>
   <div>
-    <v-spacer></v-spacer>
     <v-container>
       <v-row class="d-sm-flex flex-sm-wrap">
-        <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.id">
-          <v-card
-            class="mx-auto rounded-0"
+        <v-col cols="12" sm="6" lg="4" v-for="ask in asks" :key="ask.ask_id">
+          <v-sheet
+            outlined
+            color="customLightGreen"
             max-width="344"
-            color="customAlmostWhite"
+            elevation="4"
+            class="mx-auto"
           >
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              height="200px"
-            ></v-img>
+            <v-card
+              class="mx-0 rounded-0"
+              max-width="344"
+              color="customAlmostWhite"
+              outlined
+            >
+              <div class="d-flex justify-space-between mt-2 mx-4">
+                <v-avatar class="my-auto">
+                  <img
+                    :src="ask.icon_path"
+                    :alt="ask.icon_name"
+                  >
+                </v-avatar>
 
-            <v-card-title>
-              {{ post.title }}
-            </v-card-title>
+                <v-card-text class="card-text">
+                  @{{ ask.uid.slice(0, 14) + (ask.uid.length > 14 ? '...' : '') }}
+                  <br>
+                  {{ ask.user_name.slice(0, 8) + (ask.user_name.length > 8 ? '...' : '') }}
+                </v-card-text>
 
-            <v-card-subtitle>
-              {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
-            </v-card-subtitle>
-
-            <v-card-actions>
-              <v-btn
-                color="orange lighten-2"
-                text
-              >
-                Explore
-              </v-btn>
-
-              <v-spacer></v-spacer>
-
-              <v-btn
-                icon
-                @click="post.show = !post.show"
-              >
-                <v-icon>{{ post.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-              </v-btn>
-            </v-card-actions>
-
-            <v-expand-transition>
-              <div v-show="post.show">
-                <v-divider></v-divider>
-
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-              height="200px"
-            ></v-img>
+                <v-card-text class="card-text">
+                  {{ ask.created_at }}
+                </v-card-text>
               </div>
-            </v-expand-transition>
-          </v-card>
-        </v-col>
+              
+              <v-divider class="mx-4"></v-divider>
 
-       
+              <v-card-title class="card-title pt-3 pb-0 mb-0">
+                {{ ask.stadium }}
+              </v-card-title>
+              <p class="small-text mx-4">周辺のおすすめスポット</p>
+
+              <v-card-subtitle class="pb-0">
+                {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
+              </v-card-subtitle>
+
+              <v-card-actions class="mt-2">
+                <div class="d-flex justify-space-between mx-1" style="width: 100%">          
+                  <v-btn
+                    color="customGreen"
+                    text
+                  >
+                    コメント
+                  </v-btn>
+
+                  <v-sheet
+                    outlined
+                    rounded
+                    color="customPink"
+                    v-if="ask.is_asking"
+                  >
+                    <v-card
+                      color="customPink"
+                      outlined
+                      rounded
+                    >
+                      <v-card-text
+                        class="font py-1"
+                        style="color: #fff;"
+                      >
+                        <v-icon
+                          color="white"
+                          size="20"
+                        >{{ mdiCommentSearchOutline }}</v-icon>
+                        募集中
+                      </v-card-text>
+                    </v-card>
+                  </v-sheet>
+
+                  <v-sheet
+                    outlined
+                    rounded
+                    color="customGray"
+                    v-if="!ask.is_asking"
+                  >
+                    <v-card
+                      color="customGray"
+                      outlined
+                      rounded
+                    >
+                      <v-card-text
+                        class="font py-1"
+                        style="color: #fff;"
+                      >
+                        <v-icon
+                          color="white"
+                          size="20"
+                        >{{ mdiCommentRemoveOutline }}</v-icon>
+                        募集終了
+                      </v-card-text>
+                    </v-card>
+                  </v-sheet>
+                </div>
+              </v-card-actions>
+            </v-card>
+          </v-sheet>
+        </v-col>
       </v-row>
     </v-container>
     <v-spacer></v-spacer>
@@ -61,65 +114,41 @@
 </template>
 
 <script>
+import { mdiCommentSearchOutline, mdiCommentRemoveOutline } from '@mdi/js'
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'AskList',
-   data() {
-     return {
-       posts: {
-         post1: {
-           id: 1,
-          date: '2022-01-20',
-          name: 'しゅーへー',
-          title: '鹿島神宮',
-          body: 'これは募集です',
-          show: false,
-          },
-          post2: {
-            id: 2,
-            date: '2022-01-20',
-            name: 'へーしゅー',
-            title: '鹿島スタジアム',
-            body: 'これは募集ですここめっちゃおすすめです！！！厳かな雰囲気でとても趣がありました。',
-            show: false,
-          },
-          post3: {
-            id: 3,
-            date: '2022-01-20',
-            name: 'へい',
-            title: 'らあめんしかお',
-            body: 'これは募集ですううううううううううう！！！！ここめっちゃおすすめです！！！厳かな雰囲気でとても趣がありました。',
-            show: false,
-          },        
-          post4: {
-            id: 4,
-            date: '2022-01-20',
-            name: 'へい',
-            title: 'らあめんしかお',
-            body: '鹿島あっっっっっっっslっっs神宮に行ってきました！ここめっちゃおすすめです！！！厳かな雰囲気でとても趣がありました。',
-            show: false,
-          },       
-          post5: {
-            id: 5,
-            date: '2022-01-20',
-            name: 'へい',
-            title: 'らあめんしかお',
-            body: '鹿島神宮に行ってきました！ここめっちゃおすすめです！！！厳かな雰囲気でとても趣がありました。',
-            show: false,
-          },       
-          post6: {
-            id: 6,
-            date: '2022-01-20',
-            name: 'へい',
-            title: 'らあめんしかお',
-            body: '鹿島神宮に行ってきました！ここめっちゃおすすめです！！！厳かな雰囲気でとても趣がありました。',
-            show: false,
-          },
-        }
-      }
+  data() {
+    return {
+      mdiCommentSearchOutline,
+      mdiCommentRemoveOutline
     }
+  },
+  created() {
+    this.getAsks()
+  },
+  methods: {
+    ...mapActions('asks', [('getAsks')])
+  },
+  computed: {
+    ...mapGetters('asks', ['asks'])
+  }
 }
 </script>
 
 <style scoped>
+@import '../css/style.css';
 
+  .card-title {
+    font-size: 18px;
+  }
+  .card-text {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 13px;
+  }
+  .small-text {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+  }
 </style>
