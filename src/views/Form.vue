@@ -1,25 +1,5 @@
 <template>
-  <div>
-    <v-alert
-      :value="postErrorMessage !== undefined"
-      type="error"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{postErrorMessage}}
-    </v-alert>
-
-    <v-alert
-      :value="askErrorMessage !== undefined"
-      type="error"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{askErrorMessage}}
-    </v-alert>
-    
+  <div>    
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
@@ -67,7 +47,6 @@
           <post-form
             @recieve-close="checkClicked"
             @recieve-send="checkClicked"
-            @post-error="setPostMessage"
           />
         </v-card>
 
@@ -75,7 +54,6 @@
           <ask-form
             @recieve-close="checkClicked"
             @recieve-send="checkClicked"
-            @ask-post-error="setAskMessage"
            />
         </v-card>
 
@@ -91,14 +69,16 @@ import AskForm from '../components/AskForm'
 
 export default {
   name: 'Form',
+  components: {
+    PostForm,
+    AskForm
+  },
   data() {
     return {
       db: null,
       dialog: false,
       postButtonClicked: false,
-      askButtonClicked: false,
-      postErrorMessage: undefined,
-      askErrorMessage: undefined
+      askButtonClicked: false
     }
   },
   methods: {
@@ -108,17 +88,7 @@ export default {
         this.postButtonClicked = false
         this.askButtonClicked = false
       }, 300)
-    },
-    setPostMessage(message) {
-      this.postErrorMessage = message
-    },
-    setAskMessage(message) {
-      this.askErrorMessage = message
     }
-  },
-  components: {
-    PostForm,
-    AskForm,
   },
 }
 </script>

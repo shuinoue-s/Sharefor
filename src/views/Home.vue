@@ -1,35 +1,10 @@
 <template>
   <div>
-    <v-alert
-      :value="successMessage !== undefined"
-      type="success"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{message}}
-    </v-alert>
-
-    <v-alert
-      :value="signOutMessage !== undefined"
-      type="success"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{signOutMessage}}
-    </v-alert>
-
-    <v-alert
-      :value="signOutErrorMessage !== undefined"
-      type="error"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{signOutErrorMessage}}
-    </v-alert>
-    
+    <message-alert :message="signInMessage" type="success" />
+    <message-alert :message="signOutErrorMessage" type="error" />
+    <message-alert :message="postErrorMessage" type="error" />
+    <message-alert :message="askErrorMessage" type="error" />
+        
     <v-tabs align-with-title>
       <v-tabs-slider color="customLightGreen"></v-tabs-slider>
 
@@ -64,13 +39,15 @@
   import AskList from './AskList'
   import { mapGetters, mapActions } from 'vuex'
   import { getAuth, signOut } from "firebase/auth"
+  import MessageAlert from '../components/MessageAlert'
 
   export default {
     name: 'Home',
     props: ['message'],
     components: {
       PostList,
-      AskList
+      AskList,
+      MessageAlert
     },
     head: {
       title: {
@@ -81,45 +58,28 @@
     },
     data() {
       return {
-        successMessage: undefined,
-        signOutMessage: undefined,
-        signOutErrorMessage: undefined
       }
     },
     created() {
       this.onAuth()
     },
-    mounted() {
-      this.successMessage = this.message
-      this.closeMessageThreeSecondsLater()
-    },
     methods: {
       ...mapActions('auth',['onAuth', 'isSignOut']),
-      closeMessageThreeSecondsLater() {
-        if(this.successMessage !== undefined){
-          setTimeout(() => {
-            this.successMessage = undefined
-          }, 3000)
-        }
-      },
+      ...mapActions('alertMessage',['setSignOutMessage', 'setSignOutErrorMessage']),
       signOut() {
         const auth = getAuth()
         signOut(auth).then(() => {
           this.isSignOut()
-          this.$router.push({name: 'Login', params: {message: 'ログアウトしました'}})
+          this.setSignOutMessage('ログアウトしました')
+          this.$router.push({name: 'Login'})
         }).catch(() => {
-          this.signOutErrorMessage = 'ログアウトに失敗しました'
-          this.closeMessageThreeSecondsLater(this.signOutErrorMessage)
-          if(this.signOutErrorMessage !== undefined){
-            setTimeout(() => {
-              this.signOutErrorMessage = undefined
-            }, 3000)
-          }
+          this.setSignOutErrorMessage('ログアウトに失敗しました')
         })
       },
     },
     computed: {
-      ...mapGetters('auth', ['isAuthenticated'])
+      ...mapGetters('auth', ['isAuthenticated']),
+      ...mapGetters('alertMessage', ['signInMessage', 'signOutErrorMessage', 'postErrorMessage', 'askErrorMessage'])
     },
   }
 </script>

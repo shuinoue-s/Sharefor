@@ -61,7 +61,7 @@
                   :counter="300"
                   color="customGreen"
                   label="どんな場所が知りたいですか？"
-                  placeholder="カシマスタジアム周辺で居心地のいいカフェを探しています。おすすめの場所を教えてください！"
+                  placeholder="カシマスタジアム周辺の居心地のいいカフェを探しています。おすすめの場所を教えてください！"
                   hint="おすすめの場所を聞いてみましょう"
                   v-model="text"
                   required
@@ -74,39 +74,22 @@
                 rules="required|max:20|maxlength:10"
                 name="タグ"
               >
-                  <v-combobox
-                    class="mb-4 mx-4"
-                    :error-messages="errors"
-                    :counter="10"
-                    v-model="selected"
-                    :items="tags"
-                    label="タグを入力してください"
-                    color="customGreen"
-                    item-color="customGreen"
-                    multiple
-                    chips
-                    deletable-chips
-                    clearable
-                  >
-                  </v-combobox>
-              </validation-provider>
-
-              <!-- <validation-provider
-                v-slot="{ errors }"
-                name="datepicker"
-                rules="required"
-              >
-                <v-row justify="center"
+                <v-combobox
+                  class="mb-4 mx-4"
                   :error-messages="errors"
+                  :counter="10"
+                  v-model="selected"
+                  :items="tags"
+                  label="タグを入力してください"
+                  color="customGreen"
+                  item-color="customGreen"
+                  multiple
+                  chips
+                  deletable-chips
+                  clearable
                 >
-                  <v-date-picker
-                    v-model="picker"
-                    color="customGreen"
-                    :min="now"
-                    locale=”ja-jp”
-                  ></v-date-picker>
-                </v-row>
-              </validation-provider> -->
+                </v-combobox>
+              </validation-provider>
 
               <v-spacer></v-spacer>
               <v-btn 
@@ -129,7 +112,7 @@ import { ValidationObserver, ValidationProvider, setInteractionMode, extend } fr
 import { required, max } from 'vee-validate/dist/rules'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import app from '../firebase/firebase'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 setInteractionMode('eager')
 
@@ -163,14 +146,15 @@ export default {
       stadiums: jLeagueTeamList,
       text: '',
       selected: [],
-      picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
-      // new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
+      // picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
+      // // new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
     }
   },
     created() {
     this.db = getFirestore(app)
   },
   methods: {
+    ...mapActions('alertMessage', ['setAskErrorMessage']),
     emitClose() {
       this.$emit('recieve-close')
     },
@@ -197,8 +181,7 @@ export default {
         created_at: serverTimestamp()
       }
       await setDoc(asksDocumentRef, askData).catch(() => {
-        this.$emit('ask-post-error', '投稿に失敗しました')
-        console.log('error')
+        this.setAskErrorMessage('投稿に失敗しました')
       })
       this.clear()
     }
