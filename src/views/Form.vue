@@ -33,10 +33,10 @@
           </template>
           <v-list>
               <v-list-item v-on="listItemActivator.on" @click="postButtonClicked = !postButtonClicked">
-                  <v-list-item-title class="text-center">投稿</v-list-item-title>
+                  <v-list-item-title class="font color text-center">投稿</v-list-item-title>
               </v-list-item>
               <v-list-item v-on="listItemActivator.on" @click="askButtonClicked = !askButtonClicked">
-                  <v-list-item-title class="text-center">募集</v-list-item-title>
+                  <v-list-item-title class="font color text-center" >募集</v-list-item-title>
               </v-list-item>
           </v-list>
           </v-menu>
@@ -92,3 +92,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  @import '../css/style.css';
+
+  .color {
+    color: rgb(33, 191, 115);
+  }
+</style>

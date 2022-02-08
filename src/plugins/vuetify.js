@@ -16,7 +16,8 @@ export default new Vuetify({
                 customAlmostWhite: "#F9FCFB",
                 customLightGreen: "#B0EACD",
                 customGreen: "#21BF73",
-                customPink: '#F881DD',
+                customPink: "#F881DD",
+                customGray: "CFCFCF",
                 twitterColor: "#1DA1F2",
                 googleColor: "#4285F4"
             }

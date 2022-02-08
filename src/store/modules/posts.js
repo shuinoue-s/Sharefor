@@ -1,22 +1,22 @@
-import { format } from 'date-fns'
-import app from '../../firebase/firebase'
+import { dateFormat, splitArray } from '@/modules/methodsUsedInVuex'
+import app from '@/firebase/firebase'
 import { getFirestore, getDocs, query, orderBy, collectionGroup } from 'firebase/firestore'
 
 const db = getFirestore(app)
 
 const state = {
   posts: [],
-  tags: [],
+  postTags: [],
   // eachUserPosts: []
 }
 const getters = {
   posts: state => state.posts,
-  tags: state =>  state.tags,
+  postTags: state =>  state.postTags,
 }
 const mutations = {
   setPosts(state, {postList, tags}) {
     state.posts = postList
-    state.tags = tags
+    state.postTags = tags
   }
 }
 const actions = {
@@ -26,12 +26,8 @@ const actions = {
     const q = query(postsCollectionGroup, orderBy('created_at', 'desc'))
     const querySnapshot = await getDocs(q)
     let postList = querySnapshot.docs.map(doc => doc.data())
-    let tags = []
-    for(let i = 0; i < postList.length; i++) {
-      postList[i].created_at = postList[i].created_at.toDate()
-      postList[i].created_at = format(postList[i].created_at, 'yyyy/MM/dd HH:mm:ss')
-      tags.push(...postList[i].tags)
-    }
+    postList = dateFormat(postList)
+    const tags = splitArray(postList)
     commit('setPosts', {postList, tags})
   }
 }

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import posts from './modules/posts'
+import asks from './modules/asks'
 import auth from './modules/auth'
 import loading from './modules/loading'
 import alertMessage from './modules/alertMessage'
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     posts,
+    asks,
     auth,
     loading,
     alertMessage

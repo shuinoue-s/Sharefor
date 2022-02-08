@@ -4,7 +4,10 @@
       ref="observer"
       v-slot="{ invalid }"
     >
-      <form @submit.prevent="saveStorage()">
+      <v-form
+        ref="form"
+        @submit.prevent="saveStorage()"
+      >
         <v-toolbar
           dark
           color="customGreen"
@@ -13,11 +16,11 @@
           <v-btn
             icon
             dark
-            @click="emitClose"
+            @click="clickClose"
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title class="mx-auto" style="color: #B0EACD;">POST</v-toolbar-title>
+          <v-toolbar-title class="font mx-auto" style="color: #B0EACD;">POST</v-toolbar-title>
           <v-toolbar-items>
             <v-btn
               dark
@@ -68,6 +71,7 @@
               <v-btn
                 color="customGreen"
                 style="color: #fff"
+                class="font"
                 @click="mapSearch"
               >
                 検索
@@ -98,13 +102,12 @@
         <validation-provider
           v-slot="{ errors }"
           name="image"
-          ref="provider"
           rules="required|image|size:5000"
         >
           <v-file-input
             class="mb-4 mx-4"
             v-model="image"
-            @change="handleFileChange"
+            @change="setFileName"
             :error-messages="errors"
             label="写真も一緒に投稿しましょう"
             prepend-icon="mdi-camera"
@@ -131,7 +134,7 @@
               :error-messages="errors"
               :counter="10"
               v-model="selected"
-              :items="tags"
+              :items="postTags"
               label="タグを入力してください"
               color="customGreen"
               item-color="customGreen"
@@ -146,11 +149,11 @@
         <v-spacer></v-spacer>
         <v-btn 
         @click="clear"
-        class="ma-4"
+        class="font ma-4"
         >
           clear
         </v-btn>
-      </form>
+      </v-form>
     </validation-observer>
   </div>
 </template>
@@ -283,6 +286,10 @@ export default {
         }
       })
     },
+    clickClose() {
+      this.emitClose()
+      this.clear()
+    },
     emitClose() {
       this.$emit('recieve-close')
     },
@@ -290,18 +297,13 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.title = ''
-      this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
-      this.body = ''
-      this.image = ''
-      this.address = ''
-      this.selected = []
       this.$refs.observer.reset()
+      this.$refs.form.reset()
+      this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
       this.getGoogleMap()
     },
-    handleFileChange(e) {
-      this.$refs.provider.validate(e)
-      this.fileName = e.name
+    setFileName(image) {
+      this.fileName = image.name
     },
     saveStorage() {
       const storageRef = ref(this.storage, `images/${this.fileName}`)
@@ -339,7 +341,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('posts', ['tags']),
+    ...mapGetters('posts', ['postTags']),
     ...mapGetters('auth', ['user']),
     previewImage() {
       if(!this.image) return;
@@ -350,6 +352,8 @@ export default {
 </script>
 
 <style scoped>
+  @import '../css/style.css';
+
   #map {
     height: 400px;
     width: 80%;

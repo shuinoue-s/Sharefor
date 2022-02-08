@@ -1,106 +1,109 @@
 <template>
   <div>
-          <validation-observer
-            ref="observer"
-            v-slot="{ invalid }"
-          >
-            <form @submit.prevent="sendAsk()">
-          <v-toolbar
+    <validation-observer
+      ref="observer"
+      v-slot="{ invalid }"
+    >
+      <v-form
+      ref="form"
+        @submit.prevent="sendAsk()"
+      >
+        <v-toolbar
+          dark
+          color="customGreen"
+          dense
+        >
+          <v-btn
+            icon
             dark
-            color="customGreen"
-            dense
+            @click="clickClose"
           >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title class="font mx-auto" style="color: #B0EACD;">ASK</v-toolbar-title>
+          <v-toolbar-items>
             <v-btn
-              icon
               dark
-              @click="emitClose"
+              text
+              @click="emitSend"
+              type="submit"
+              :disabled="invalid"
             >
-              <v-icon>mdi-close</v-icon>
+              <v-icon>{{ mdiSend }}</v-icon>
             </v-btn>
-            <v-toolbar-title class="mx-auto" style="color: #B0EACD;">ASK</v-toolbar-title>
-            <v-toolbar-items>
-              <v-btn
-                dark
-                text
-                @click="emitSend"
-                type="submit"
-                :disabled="invalid"
-              >
-                <v-icon>{{ mdiSend }}</v-icon>
-              </v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-          
-              <validation-provider
-                v-slot="{ errors }"
-                name="title"
-                rules="required"
-              >
-                <v-select
-                  class="mb-4 mx-4"
-                  id="title"
-                  :items="stadiums.j1"
-                  :error-messages="errors"
-                  color="customGreen"
-                  item-color="customGreen"
-                  label="スタジアムを選択してください"
-                  chips
-                  clearable
-                ></v-select>
-              </validation-provider>
+          </v-toolbar-items>
+        </v-toolbar>
+    
+        <validation-provider
+          v-slot="{ errors }"
+          name="title"
+          rules="required"
+        >
+          <v-select
+            class="mb-4 mx-4"
+            id="title"
+            v-model="selectedStadium"
+            :items="stadiums.j1"
+            :error-messages="errors"
+            color="customGreen"
+            item-color="customGreen"
+            label="スタジアムを選択してください"
+            chips
+            clearable
+          ></v-select>
+        </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                name="text"
-                rules="required|max:300"
-              >
-                <v-textarea
-                  class="mb-4 mx-4"
-                  name="text"
-                  :error-messages="errors"
-                  :counter="300"
-                  color="customGreen"
-                  label="どんな場所が知りたいですか？"
-                  placeholder="カシマスタジアム周辺の居心地のいいカフェを探しています。おすすめの場所を教えてください！"
-                  hint="おすすめの場所を聞いてみましょう"
-                  v-model="text"
-                  required
-                  clearable
-                ></v-textarea>
-              </validation-provider>
+        <validation-provider
+          v-slot="{ errors }"
+          name="text"
+          rules="required|max:300"
+        >
+          <v-textarea
+            class="mb-4 mx-4"
+            name="text"
+            :error-messages="errors"
+            :counter="300"
+            color="customGreen"
+            label="どんな場所が知りたいですか？"
+            placeholder="カシマスタジアム周辺の居心地のいいカフェを探しています。おすすめの場所を教えてください！"
+            hint="おすすめの場所を聞いてみましょう"
+            v-model="text"
+            required
+            clearable
+          ></v-textarea>
+        </validation-provider>
 
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required|max:20|maxlength:10"
-                name="タグ"
-              >
-                <v-combobox
-                  class="mb-4 mx-4"
-                  :error-messages="errors"
-                  :counter="10"
-                  v-model="selected"
-                  :items="tags"
-                  label="タグを入力してください"
-                  color="customGreen"
-                  item-color="customGreen"
-                  multiple
-                  chips
-                  deletable-chips
-                  clearable
-                >
-                </v-combobox>
-              </validation-provider>
+        <validation-provider
+          v-slot="{ errors }"
+          rules="required|max:20|maxlength:10"
+          name="タグ"
+        >
+          <v-combobox
+            class="mb-4 mx-4"
+            :error-messages="errors"
+            :counter="10"
+            v-model="selected"
+            :items="askTags"
+            label="タグを入力してください"
+            color="customGreen"
+            item-color="customGreen"
+            multiple
+            chips
+            deletable-chips
+            clearable
+          >
+          </v-combobox>
+        </validation-provider>
 
-              <v-spacer></v-spacer>
-              <v-btn 
-              @click="clear"
-              class="ma-4"
-              >
-                clear
-              </v-btn>
-
-            </form>
-          </validation-observer>
+        <v-spacer></v-spacer>
+        <v-btn 
+        @click="clear"
+        class="font ma-4"
+        >
+          clear
+        </v-btn>
+      </v-form>
+    </validation-observer>
   </div>
 </template>
 
@@ -144,6 +147,7 @@ export default {
     return {
       mdiSend,
       stadiums: jLeagueTeamList,
+      selectedStadium: '',
       text: '',
       selected: [],
       // picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
@@ -155,6 +159,11 @@ export default {
   },
   methods: {
     ...mapActions('alertMessage', ['setAskErrorMessage']),
+    ...mapActions('asks', ['getAsks']),
+    clickClose() {
+      this.emitClose()
+      this.clear()
+    },
     emitClose() {
       this.$emit('recieve-close')
     },
@@ -162,15 +171,15 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.text = ''
-      this.selected = []
       this.$refs.observer.reset()
+      this.$refs.form.reset()
     },
     async sendAsk() {
       const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'asks')
       const asksDocumentRef = doc(usersCollectionRef)
       const askData = {
         ask_id: asksDocumentRef.id,
+        stadium: this.selectedStadium,
         text: this.text,
         tags: this.selected,
         icon_name: pathInfo(this.user.photoURL).basename,
@@ -184,15 +193,16 @@ export default {
         this.setAskErrorMessage('投稿に失敗しました')
       })
       this.clear()
+      this.getAsks()
     }
   },
   computed: {
-    ...mapGetters('posts', ['tags']),
     ...mapGetters('auth', ['user']),
+    ...mapGetters('asks', ['askTags'])
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+  @import '../css/style.css';
 </style>
