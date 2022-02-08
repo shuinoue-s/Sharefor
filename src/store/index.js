@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import posts from './modules/posts'
 import auth from './modules/auth'
 import loading from './modules/loading'
+import alertMessage from './modules/alertMessage'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     posts,
     auth,
     loading,
+    alertMessage
   },
 
   plugins: [createPersistedState({

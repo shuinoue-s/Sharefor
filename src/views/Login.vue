@@ -1,25 +1,8 @@
 <template>
   <div>
-    <v-alert
-      :value="errorMessage !== undefined"
-      type="error"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{errorMessage}}
-    </v-alert>
-
-    <v-alert
-      :value="signOutMessage !== undefined"
-      type="success"
-      dense
-      class="mt-0 text-center"
-      transition="slide-y-transition"
-    >
-      {{signOutMessage}}
-    </v-alert>
-
+    <message-alert :message="signOutMessage" type="success" />
+    <message-alert :message="signInErrorMessage" type="error" />
+    
     <v-progress-circular
     v-if="isLoading"
       indeterminate
@@ -79,32 +62,26 @@
 </template>
 
 <script>
+import MessageAlert from '../components/MessageAlert'
 import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult } from "firebase/auth"
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
-  props: ['message'],
-  data() {
-    return {
-      errorMessage: undefined,
-      signOutMessage: undefined
-    }
+  components: {
+    MessageAlert
   },
   created() {
-    this.setSignOutMessage()
     this.signInRedirect()
-    setTimeout(() => {
-      this.stopLoading()
-    },  6000)
+    this.errorStopRoading()
   },
   mounted() {
-    this.closeMessageThreeSecondsLater()
     this.getSignInResult()
   },
   methods: {
     ...mapActions('auth', ['setResult', 'onAuth']),
     ...mapActions('loading', ['loading', 'stopLoading']),
+    ...mapActions('alertMessage', ['setSignInMessage', 'setSignInErrorMessage']),
     signInTwitter() {
         this.loading()
         const auth = getAuth()
@@ -121,7 +98,8 @@ export default {
         if(result) {
           this.stopLoading()
           this.setResult(result.user)
-          this.$router.push({name: 'Home', params: {message: 'ログインしました'}})
+          this.setSignInMessage('ログインしました')
+          this.$router.push({name: 'Home'})
         }
       }).catch(error => {
         if(error) {
@@ -129,35 +107,25 @@ export default {
         }
       })
     },
-    closeMessageThreeSecondsLater() {
-      if(this.errorMessage !== undefined){
-        setTimeout(() => {
-          this.errorMessage = undefined
-        }, 3000)
-      }
-    },
     setErrorMessage() {
         this.stopLoading()
-        this.errorMessage = 'ログインに失敗しました'
-        this.closeMessageThreeSecondsLater()
-    },
-    setSignOutMessage() {
-      this.signOutMessage = this.message
-      if(this.signOutMessage !== undefined){
-        setTimeout(() => {
-          this.signOutMessage = undefined
-        }, 3000)
-      }
+        this.setSignInErrorMessage('ログインに失敗しました')
     },
     signInRedirect() {
       if(this.isAuthenticated) {
         this.$router.push({name: 'Home'})
       }
+    },
+    errorStopRoading() {
+      setTimeout(() => {
+        this.stopLoading()
+      }, 6000)
     }
   },
   computed: {
     ...mapGetters('loading', ['isLoading']),
-    ...mapGetters('auth', ['isAuthenticated'])
+    ...mapGetters('auth', ['isAuthenticated']),
+    ...mapGetters('alertMessage', ['signInErrorMessage', 'signOutMessage'])
   }
 }
 </script>

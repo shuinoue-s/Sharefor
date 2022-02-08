@@ -229,6 +229,7 @@ export default {
   },
   methods: {
     ...mapActions('posts', ['getPosts']),
+    ...mapActions('alertMessage', ['setPostErrorMessage']),
     getGoogleMap() {
     if(!window.mapLoadStarted) {
       window.mapLoadStarted = true
@@ -308,8 +309,8 @@ export default {
         getDownloadURL(storageRef).then(url => {
           this.sendPost(url)
         })
-      }).catch((error) => {
-        console.log(error)
+      }).catch(() => {
+        this.setPostErrorMessage('投稿に失敗しました')
       })
     },
     async sendPost(filePath) {
@@ -331,7 +332,7 @@ export default {
         created_at: serverTimestamp()
       }
       await setDoc(postsDocumentRef, postData).catch(() => {
-        this.$emit('post-error', '投稿に失敗しました')
+        this.setPostErrorMessage('投稿に失敗しました')
       })
       this.clear()
       this.getPosts()
