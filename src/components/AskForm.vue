@@ -43,13 +43,15 @@
             class="mb-4 mx-4"
             id="title"
             v-model="selectedStadium"
-            :items="stadiums.j1"
+            :items="stadiums"
             :error-messages="errors"
             color="customGreen"
             item-color="customGreen"
             label="スタジアムを選択してください"
             chips
             clearable
+            item-text="name"
+            item-value="name"
           ></v-select>
         </validation-provider>
 

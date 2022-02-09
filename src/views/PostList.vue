@@ -8,11 +8,14 @@
             max-width="344"
             color="customAlmostWhite"
           >
-            <v-img
-              :src="post.file_path"
-              :alt="post.file_name"
-              height="200px"
-            ></v-img>
+            <router-link :to="{ name: 'PostShow', params: { id:post.post_id  } }">
+              <v-img
+                :src="post.file_path"
+                :alt="post.file_name"
+                height="200px"
+                lazy-src
+              ></v-img>
+            </router-link>
 
             <div class="d-flex justify-space-between mx-4 mt-2">
               <v-avatar class="my-auto">
