@@ -1,4 +1,4 @@
-import { dateFormat, splitArray } from '@/modules/methodsUsedInVuex'
+import { arrayDateFormat, arraySplitTags } from '@/modules/methodsUsedInVuex'
 import app from '@/firebase/firebase'
 import { getFirestore, getDocs, query, orderBy, collectionGroup } from 'firebase/firestore'
 
@@ -6,8 +6,7 @@ const db = getFirestore(app)
 
 const state = {
   posts: [],
-  postTags: [],
-  // eachUserPosts: []
+  postTags: []
 }
 const getters = {
   posts: state => state.posts,
@@ -22,12 +21,11 @@ const mutations = {
 const actions = {
   async getPosts({ commit }) {
     const postsCollectionGroup = collectionGroup(db, 'posts')
-    // const usersCollectionRef = collection(db, 'users', 'posts')
     const q = query(postsCollectionGroup, orderBy('created_at', 'desc'))
     const querySnapshot = await getDocs(q)
     let postList = querySnapshot.docs.map(doc => doc.data())
-    postList = dateFormat(postList)
-    const tags = splitArray(postList)
+    postList = arrayDateFormat(postList)
+    const tags = arraySplitTags(postList)
     commit('setPosts', {postList, tags})
   }
 }

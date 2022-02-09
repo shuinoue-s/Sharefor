@@ -1,4 +1,5 @@
 import { getAuth, onAuthStateChanged } from "firebase/auth"
+import app from '@/firebase/firebase'
 
 const state = {
   user: '',
@@ -22,7 +23,7 @@ const actions = {
       commit('setUser', user)
   },
   onAuth({ commit }) {
-    const auth = getAuth()
+    const auth = getAuth(app)
     onAuthStateChanged(auth, user => {
       if(user) {
         user = user ? user : {}

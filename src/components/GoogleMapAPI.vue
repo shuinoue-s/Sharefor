@@ -1,13 +1,22 @@
 <template>
   <div>
-    <div id="map" ref="map" />
+    <div id="map" ref="map" :style="mapStyle" />
   </div>
 </template>
 
 <script>
 export default {
   name: 'GoogleMapAPI',
-  props: ['geopoint'],
+  props: {
+    geopoint: {
+      type: Object,
+      required: true
+    },
+    mapStyle: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
     }

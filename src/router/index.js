@@ -15,18 +15,23 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "About" */ '../views/About.vue'),
   },
   {
     path: '/login',
     name: 'Login',
     props: true,
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+    component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue'),
+  },
+  {
+    path: '/post/:id',
+    name: 'PostShow',
+    component: () => import(/* webpackChunkName: "PostShow" */ '../views/PostShow.vue'),
   },
   {
     path: '/*',
     name: 'NotFound',
-    component: () => import(/* webpackChunkName: "not_found" */ '../views/NotFound.vue'),
+    component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound.vue'),
   },
 ]
 
