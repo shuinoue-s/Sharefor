@@ -38,13 +38,18 @@
             
             <v-divider class="mx-4"></v-divider>
 
-            <v-card-title class="card-title pt-3 mb-2">
-              {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
-            </v-card-title>
+            <router-link
+              :to="{ name: 'PostShow', params: { id:post.post_id  } }"
+              style="color: #000; text-decoration: none;"
+            >
+              <v-card-title class="card-title pt-3 mb-2">
+                {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
+              </v-card-title>
 
-            <v-card-subtitle class="pb-0">
-              {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
-            </v-card-subtitle>
+              <v-card-subtitle class="pb-0">
+                {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
+              </v-card-subtitle>
+            </router-link>
 
             <v-card-actions>
               <v-btn
@@ -105,8 +110,11 @@ export default {
 </script>
 
 <style scoped>
+  @import '../css/style.css';
+
   .card-title {
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: bold;
   }
   .card-text {
     color: rgba(0, 0, 0, 0.6);
