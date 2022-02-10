@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import auth from './modules/auth'
 import posts from './modules/posts'
 import asks from './modules/asks'
-import auth from './modules/auth'
+import comments from './modules/comments'
 import loading from './modules/loading'
 import alertMessage from './modules/alertMessage'
 import createPersistedState from 'vuex-persistedstate'
@@ -15,9 +16,10 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
+    auth,
     posts,
     asks,
-    auth,
+    comments,
     loading,
     alertMessage
   },

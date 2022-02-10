@@ -77,12 +77,18 @@
           </v-card-actions>
         </v-card>
       </v-sheet>
+
+      <PostComment
+        :postId="post.post_id"
+      />
     </v-container>
+    <div style="height: 500px"></div> <!--あとで消す-->
   </div>
 </template>
 
 <script>
 import GoogleMapAPI from '@/components/GoogleMapAPI'
+import PostComment from '@/components/PostComment'
 import { dateFormat, splitTags } from '@/modules/methodsUsedInVuex'
 import app from '@/firebase/firebase'
 import { getFirestore, getDoc, doc } from 'firebase/firestore'
@@ -93,33 +99,37 @@ const db = getFirestore(app)
 export default {
   name: 'PostShow',
   components: {
-    GoogleMapAPI
+    GoogleMapAPI,
+    PostComment
   },
   data() {
     return {
       post: [],
       tags: [],
-      mapStyle: 'width: 390px; height: 300px;'
+      mapStyle: 'width: 390px; height: 300px;',
     }
   },
   created() {
     this.onAuth()
     this.getPost()
+    this.getComments({ uid: this.user.uid, postId: this.post.post_id })
   },
   methods: {
     ...mapActions('auth', ['onAuth']),
+    ...mapActions('comments', ['getComments']),
     async getPost() {
       if(this.user) {
         const postDocument = doc(db, 'users', this.user.uid, 'posts', this.$route.params.id)
-        const postSpan = await getDoc(postDocument)
-        let post = postSpan.data()
+        const postSnap = await getDoc(postDocument)
+        let post = postSnap.data()
         this.post = dateFormat(post)
         this.tags = splitTags(post)
       }
     },
   },
   computed: {
-    ...mapGetters('auth', ['user'])
+    ...mapGetters('auth', ['user']),
+    ...mapGetters('comments', ['comments']),
   },
   watch: {
     user() {
@@ -130,6 +140,8 @@ export default {
 </script>
 
 <style scoped>
+  @import '../css/style.css';
+
   .container-width {
     width: 95%;
   }
@@ -151,6 +163,7 @@ export default {
     width: 390px;
     margin: auto;
   }
+
   @media screen and (min-width: 800px) {
     .container-width {
       width: 50%;
