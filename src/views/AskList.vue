@@ -7,7 +7,7 @@
             outlined
             color="customLightGreen"
             max-width="344"
-            elevation="4"
+            elevation="3"
             class="mx-auto"
           >
             <v-card

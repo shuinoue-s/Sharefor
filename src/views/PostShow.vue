@@ -5,7 +5,7 @@
         outlined
         color="customLightGreen"
         class="mx-auto"
-        elevation="2"
+        elevation="3"
       >
         <v-card
           outlined
