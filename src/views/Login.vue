@@ -62,14 +62,24 @@
 </template>
 
 <script>
+import pathInfo from '@/modules/pathInfo'
 import MessageAlert from '../components/MessageAlert'
-import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult } from "firebase/auth"
+import app from '../firebase/firebase'
+import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult, getAdditionalUserInfo } from 'firebase/auth'
+import { doc, getFirestore, getDoc, setDoc,  serverTimestamp } from 'firebase/firestore'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Login',
   components: {
     MessageAlert
+  },
+  data() {
+    return {
+      twitterId: '',
+      displayName: '',
+      photoURL: ''
+    }
   },
   created() {
     this.signInRedirect()
@@ -96,9 +106,11 @@ export default {
       const auth = getAuth()
       getRedirectResult(auth).then(result => {
         if(result) {
-          this.stopLoading()
+          const userInfo = getAdditionalUserInfo(result)
+          this.sendUser(result.user.uid, userInfo.profile)
           this.setResult(result.user)
           this.setSignInMessage('ログインしました')
+          this.stopLoading()
           this.$router.push({name: 'Home'})
         }
       }).catch(error => {
@@ -120,6 +132,25 @@ export default {
       setTimeout(() => {
         this.stopLoading()
       }, 6000)
+    },
+    async sendUser(uid, profile) {
+      const iconPath = profile.profile_image_url_https
+      const db = getFirestore(app)
+      const userDocumentRef = doc(db, 'users', uid)
+      const docSnap = await getDoc(userDocumentRef)
+      if(!docSnap.exists()) {
+        const postData = {
+          uid: uid,
+          user_id: profile.screen_name,
+          user_name: profile.name,
+          icon_name: iconPath ? pathInfo(iconPath).basename : iconPath,
+          icon_path: iconPath,
+          created_at: serverTimestamp()
+        }
+        await setDoc(userDocumentRef, postData).catch(() => {
+          // this.setPostErrorMessage('投稿に失敗しました')
+        })
+      }
     }
   },
   computed: {

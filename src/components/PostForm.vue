@@ -207,8 +207,6 @@ export default {
   data() {
     return {
       mdiSend,
-      db: '',
-      storage: '',
       title: '',
       address: '',
       map: {},
@@ -222,10 +220,6 @@ export default {
       // tags: [], mapGettersで取得
       selected: [],
     }
-  },
-  created() {
-    this.db = getFirestore(app)
-    this.storage = getStorage(app)
   },
   mounted() {
     this.getGoogleMap()
@@ -306,7 +300,8 @@ export default {
       this.fileName = image.name
     },
     saveStorage() {
-      const storageRef = ref(this.storage, `images/${this.fileName}`)
+      const storage = getStorage(app)
+      const storageRef = ref(storage, `images/${this.fileName}`)
       uploadBytes(storageRef, this.image).then(() => {
         getDownloadURL(storageRef).then(url => {
           this.sendPost(url)
@@ -316,7 +311,8 @@ export default {
       })
     },
     async sendPost(filePath) {
-      const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'posts')
+      const db = getFirestore(app)
+      const usersCollectionRef = collection(db, 'users', this.user.uid, 'posts')
       const postsDocumentRef = doc(usersCollectionRef)
       const postData = {
         post_id: postsDocumentRef.id,
