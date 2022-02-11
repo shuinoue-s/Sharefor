@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import auth from './modules/auth'
 import posts from './modules/posts'
 import asks from './modules/asks'
-import comments from './modules/comments'
 import loading from './modules/loading'
 import alertMessage from './modules/alertMessage'
 import createPersistedState from 'vuex-persistedstate'
@@ -19,7 +18,6 @@ export default new Vuex.Store({
     auth,
     posts,
     asks,
-    comments,
     loading,
     alertMessage
   },

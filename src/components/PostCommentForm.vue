@@ -45,13 +45,17 @@
                   @blur="reset"
                   label="コメント"
                 ></v-textarea>
-                <v-btn
-                  :disabled="invalid"
+
+                <v-btn                  
                   type="submit"
                   color="customGreen"
+                  style="color: #fff;"
                   class="mb-5"
+                  :disabled="invalid"
                 >
-                  送信
+                  <v-icon
+                    size="20"
+                  >{{ mdiSend }}</v-icon>送信
                 </v-btn>
               </v-card-actions>
             </validation-provider>
@@ -64,6 +68,7 @@
 
 <script>
 import pathInfo from '../modules/pathInfo'
+import { mdiSend } from '@mdi/js'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max } from 'vee-validate/dist/rules'
 import { getFirestore, serverTimestamp, collection, doc, setDoc } from "firebase/firestore"
@@ -91,6 +96,7 @@ export default {
   props: ['postId'],
   data() {
     return {
+      mdiSend,
       comment: ''
     }
   },
@@ -119,10 +125,9 @@ export default {
       }
       await setDoc(commentsDocumentRef, commentData).catch(() => {
         // this.setAskErrorMessage('投稿に失敗しました')
-        console.log('error')
       })
       this.clear()
-      // this.getAsks()
+      this.$emit('send-comment')
     },
     clear() {
       this.$refs.observer.reset()
