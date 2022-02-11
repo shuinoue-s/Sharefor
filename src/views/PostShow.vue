@@ -79,7 +79,7 @@
       </v-sheet>
 
       <PostComment
-        :postId="post.post_id"
+        :postId="this.postId"
       />
     </v-container>
     <div style="height: 500px"></div> <!--あとで消す-->
@@ -91,7 +91,7 @@ import GoogleMapAPI from '@/components/GoogleMapAPI'
 import PostComment from '@/components/PostComment'
 import { dateFormat, splitTags } from '@/modules/methodsUsedInVuex'
 import app from '@/firebase/firebase'
-import { getFirestore, getDoc, doc } from 'firebase/firestore'
+import { getFirestore, query, getDocs, collectionGroup, where } from 'firebase/firestore'
 import { mapGetters, mapActions } from 'vuex'
 
 const db = getFirestore(app)
@@ -102,8 +102,10 @@ export default {
     GoogleMapAPI,
     PostComment
   },
+  props: ['id'],
   data() {
     return {
+      postId: this.id,
       post: [],
       tags: [],
       mapStyle: 'width: 390px; height: 300px;',
@@ -112,30 +114,22 @@ export default {
   created() {
     this.onAuth()
     this.getPost()
-    this.getComments({ uid: this.user.uid, postId: this.post.post_id })
   },
   methods: {
     ...mapActions('auth', ['onAuth']),
-    ...mapActions('comments', ['getComments']),
     async getPost() {
-      if(this.user) {
-        const postDocument = doc(db, 'users', this.user.uid, 'posts', this.$route.params.id)
-        const postSnap = await getDoc(postDocument)
-        let post = postSnap.data()
-        this.post = dateFormat(post)
-        this.tags = splitTags(post)
-      }
+      const postsCollectionGroup = collectionGroup(db, 'posts')
+      const q = query(postsCollectionGroup, where('post_id', '==', this.postId))
+      const querySnapshot = await getDocs(q)
+      const posts = querySnapshot.docs.map(doc => doc.data())
+      let post = posts[0]
+      this.post = dateFormat(post)
+      this.tags = splitTags(post)
     },
   },
   computed: {
-    ...mapGetters('auth', ['user']),
-    ...mapGetters('comments', ['comments']),
+    ...mapGetters('auth', ['user'])
   },
-  watch: {
-    user() {
-      this.getPost()
-    }
-  }
 }
 </script>
 

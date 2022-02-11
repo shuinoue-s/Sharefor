@@ -5,6 +5,7 @@
         v-show="isShow"
         :postId="postId"
         @click-close="isShow = !isShow"
+        @send-comment="getComments"
       />
     </v-expand-transition>
 
@@ -24,6 +25,7 @@
     <v-card
       v-for="comment in comments"
       :key="comment.comment_id"
+      class="comment-style"
     >
       {{comment.comment}}
     </v-card>
@@ -32,8 +34,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
 import PostCommentForm from './PostCommentForm'
+import { arrayDateFormat } from '@/modules/methodsUsedInVuex'
+import app from '@/firebase/firebase'
+import { getFirestore, getDocs, query, where, collectionGroup, orderBy } from 'firebase/firestore'
 
 export default {
   name: 'PostComment',
@@ -43,26 +47,22 @@ export default {
   props: ['postId'],
   data() {
     return {
+      comments: '',
       isShow: false
     }
   },
   created() {
-      this.getComments({ uid: this.user.uid, postId: this.postId })
+    this.getComments()
   },
   methods: {
-    ...mapActions('comments', ['getComments'])
-  },
-  computed: {
-    ...mapGetters('comments', ['comments']),
-    ...mapGetters('auth', ['user']),
-    watchPostIdAndUser() {
-      return [this.postId, this.user]
-    }
-  },
-  watch: {
-    watchPostIdAndUser() {
-      if(this.postId && this.user) {
-        this.getComments({ uid: this.user.uid, postId: this.postId })
+    async getComments() {
+      const db = getFirestore(app)
+      if(this.postId) {
+        const commentsCollectionGroup = collectionGroup(db, 'comments')
+        const q = query(commentsCollectionGroup, orderBy('created_at', 'desc'), where('post_id', '==', this.postId))
+        const querySnapshot = await getDocs(q)
+        let commentList = querySnapshot.docs.map(doc => doc.data())
+        this.comments = arrayDateFormat(commentList)
       }
     }
   },
@@ -70,5 +70,7 @@ export default {
 </script>
 
 <style>
-
+  .comment-style{
+    white-space: pre-wrap;
+  }
 </style>

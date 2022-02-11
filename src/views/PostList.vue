@@ -39,7 +39,7 @@
             <v-divider class="mx-4"></v-divider>
 
             <router-link
-              :to="{ name: 'PostShow', params: { id:post.post_id  } }"
+              :to="{ name: 'PostShow', params: { id:post.post_id } }"
               style="color: #000; text-decoration: none;"
             >
               <v-card-title class="card-title pt-3 mb-2">
