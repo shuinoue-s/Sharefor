@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <app-header/>
+    <AppHeader/>
       <v-main>
         <router-view/>
         <Form v-if="isAuthenticated" />
