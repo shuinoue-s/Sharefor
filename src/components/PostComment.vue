@@ -35,7 +35,7 @@
 
 <script>
 import PostCommentForm from './PostCommentForm'
-import { arrayDateFormat } from '@/modules/methodsUsedInVuex'
+import { arrayDateFormat } from '@/modules/storeModifications'
 import app from '@/firebase/firebase'
 import { getFirestore, getDocs, query, where, collectionGroup, orderBy } from 'firebase/firestore'
 
