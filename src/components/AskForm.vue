@@ -172,8 +172,8 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.$refs.observer.reset()
       this.$refs.form.reset()
+      this.$refs.observer.reset()
     },
     async sendAsk() {
       const db = getFirestore(app)

@@ -25,9 +25,8 @@
                 </v-avatar>
 
                 <v-card-text class="card-text">
-                  @{{ ask.userInfo.user_id.slice(0, 14) + (ask.userInfo.user_id.length > 14 ? '...' : '') }}
-                  <br>
-                  {{ ask.userInfo.user_name.slice(0, 8) + (ask.userInfo.user_name.length > 8 ? '...' : '') }}
+                  <p class="card-text mb-0">@{{ ask.userInfo.user_id.slice(0, 14) + (ask.userInfo.user_id.length > 14 ? '...' : '') }}</p>
+                  <p class="card-text mb-0 ml-1">{{ ask.userInfo.user_name.slice(0, 8) + (ask.userInfo.user_name.length > 8 ? '...' : '') }}</p>
                 </v-card-text>
 
                 <v-card-text class="card-text">
@@ -42,7 +41,7 @@
               </v-card-title>
               <p class="small-text mx-4">周辺のおすすめスポット</p>
 
-              <v-card-subtitle class="pb-0">
+              <v-card-subtitle class="py-0">
                 {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
               </v-card-subtitle>
 
