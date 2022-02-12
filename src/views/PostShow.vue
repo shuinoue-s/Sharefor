@@ -20,17 +20,17 @@
             <div class="d-flex justify-space-between px-2 mx-auto width-full"> 
               <v-avatar class="my-auto">
                 <img
-                  :src="post.icon_path"
-                  :alt="post.icon_name"
+                  :src="post.userInfo.icon_path"
+                  :alt="post.userInfo.icon_name"
                 >
               </v-avatar>
 
               <div>
                 <v-card-text class="card-text pb-0">
-                  @{{ post.uid }}
+                  @{{ post.userInfo.user_id }}
                 </v-card-text>
                 <v-card-text class="card-text pt-0">
-                  {{ post.user_name }}
+                  {{ post.userInfo.user_name}}
                 </v-card-text>
               </div>
 
@@ -89,7 +89,7 @@
 <script>
 import GoogleMapAPI from '@/components/GoogleMapAPI'
 import PostComment from '@/components/PostComment'
-import { dateFormat, splitTags } from '@/modules/storeModifications'
+import { dateFormat, splitTags, addUserInfo } from '@/modules/storeModifications'
 import app from '@/firebase/firebase'
 import { getFirestore, query, getDocs, collectionGroup, where } from 'firebase/firestore'
 import { mapGetters, mapActions } from 'vuex'
@@ -122,7 +122,8 @@ export default {
       const q = query(postsCollectionGroup, where('post_id', '==', this.postId))
       const querySnapshot = await getDocs(q)
       const posts = querySnapshot.docs.map(doc => doc.data())
-      let post = posts[0]
+      let post = await addUserInfo(posts[0])
+      console.log(post)
       this.post = dateFormat(post)
       this.tags = splitTags(post)
     },

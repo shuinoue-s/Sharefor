@@ -1,4 +1,4 @@
-import { arrayDateFormat, arraySplitTags, addUserInfo } from '@/modules/storeModifications'
+import { arrayDateFormat, arraySplitTags, arrayAddUserInfo } from '@/modules/storeModifications'
 import app from '@/firebase/firebase'
 import { getFirestore, getDocs, query, orderBy, collectionGroup } from 'firebase/firestore'
 
@@ -26,7 +26,7 @@ const actions = {
     let postList = querySnapshot.docs.map(doc => doc.data())
     postList = arrayDateFormat(postList)
     const tags = arraySplitTags(postList)
-    postList = await addUserInfo(postList)
+    postList = await arrayAddUserInfo(postList)
     commit('setPosts', {postList, tags})
   }
 }

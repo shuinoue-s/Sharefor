@@ -30,7 +30,7 @@ function splitTags(data) {
   return tags
 }
 
-async function addUserInfo(list) {
+async function arrayAddUserInfo(list) {
   const db = getFirestore(app)
   for(let i = 0; i < list.length; i++) {
     const docRef = doc(db, 'users', list[i].uid)
@@ -40,4 +40,19 @@ async function addUserInfo(list) {
   return list
 }
 
-export { arrayDateFormat, arraySplitTags, dateFormat, splitTags, addUserInfo }
+async function addUserInfo(data) {
+  const db = getFirestore(app)
+  const docRef = doc(db, 'users', data.uid)
+  const docSnap = await getDoc(docRef)
+  data.userInfo = docSnap.data()
+  return data
+}
+
+export {
+  arrayDateFormat,
+  arraySplitTags,
+  dateFormat,
+  splitTags,
+  arrayAddUserInfo,
+  addUserInfo
+}
