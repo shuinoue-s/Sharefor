@@ -66,7 +66,6 @@
 <script>
 import PostForm from '../components/PostForm'
 import AskForm from '../components/AskForm'
-import { mapActions } from 'vuex'
 
 export default {
   name: 'Form',
@@ -82,13 +81,7 @@ export default {
       askButtonClicked: false
     }
   },
-  created() {
-    this.getPosts()
-    this.getAsks()
-  },
   methods: {
-    ...mapActions('posts', ['getPosts']),
-    ...mapActions('asks', ['getAsks']),
     checkClicked() {
       this.dialog = false 
       setTimeout(() => {

@@ -111,7 +111,6 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
-import pathInfo from '../modules/pathInfo'
 import jLeagueTeamList from '../jLeagueTeamList'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max } from 'vee-validate/dist/rules'
@@ -156,8 +155,8 @@ export default {
       // // new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
     }
   },
-    created() {
-    this.db = getFirestore(app)
+  created() {
+    this.getAsks()
   },
   methods: {
     ...mapActions('alertMessage', ['setAskErrorMessage']),
@@ -177,17 +176,15 @@ export default {
       this.$refs.form.reset()
     },
     async sendAsk() {
-      const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'asks')
+      const db = getFirestore(app)
+      const usersCollectionRef = collection(db, 'users', this.user.uid, 'asks')
       const asksDocumentRef = doc(usersCollectionRef)
       const askData = {
+        uid: this.user.uid,
         ask_id: asksDocumentRef.id,
         stadium: this.selectedStadium,
         text: this.text,
         tags: this.selected,
-        icon_name: pathInfo(this.user.photoURL).basename,
-        icon_path: this.user.photoURL,
-        uid: this.user.uid,
-        user_name: this.user.displayName,
         is_asking: true,
         created_at: serverTimestamp()
       }

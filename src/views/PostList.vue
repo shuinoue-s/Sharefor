@@ -20,15 +20,15 @@
             <div class="d-flex justify-space-between mx-4 mt-2">
               <v-avatar class="my-auto">
                 <img
-                  :src="post.icon_path"
-                  :alt="post.icon_name"
+                  :src="post.userInfo.icon_path"
+                  :alt="post.userInfo.icon_name"
                 >
               </v-avatar>
 
               <v-card-text class="card-text">
-                @{{ post.uid.slice(0, 14) + (post.uid.length > 14 ? '...' : '') }}
+                @{{ post.userInfo.user_id.slice(0, 14) + (post.userInfo.user_id.length > 14 ? '...' : '') }}
                 <br>
-                {{ post.user_name.slice(0, 8) + (post.user_name.length > 8 ? '...' : '') }}
+                {{ post.userInfo.user_name.slice(0, 8) + (post.userInfo.user_name.length > 8 ? '...' : '') }}
               </v-card-text>
 
               <v-card-text class="card-text">

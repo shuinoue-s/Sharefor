@@ -89,7 +89,7 @@
 <script>
 import GoogleMapAPI from '@/components/GoogleMapAPI'
 import PostComment from '@/components/PostComment'
-import { dateFormat, splitTags } from '@/modules/methodsUsedInVuex'
+import { dateFormat, splitTags } from '@/modules/storeModifications'
 import app from '@/firebase/firebase'
 import { getFirestore, query, getDocs, collectionGroup, where } from 'firebase/firestore'
 import { mapGetters, mapActions } from 'vuex'

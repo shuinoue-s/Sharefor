@@ -160,7 +160,6 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
-import pathInfo from '../modules/pathInfo'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
@@ -220,6 +219,9 @@ export default {
       // tags: [], mapGettersで取得
       selected: [],
     }
+  },
+  created() {
+    this.getPosts()
   },
   mounted() {
     this.getGoogleMap()
@@ -315,6 +317,7 @@ export default {
       const usersCollectionRef = collection(db, 'users', this.user.uid, 'posts')
       const postsDocumentRef = doc(usersCollectionRef)
       const postData = {
+        uid: this.user.uid,
         post_id: postsDocumentRef.id,
         title: this.title,
         body: this.body,
@@ -322,10 +325,6 @@ export default {
         file_name: this.fileName,
         file_path: filePath,
         tags: this.selected,
-        icon_name: pathInfo(this.user.photoURL).basename,
-        icon_path: this.user.photoURL,
-        uid: this.user.uid,
-        user_name: this.user.displayName,
         is_show: false,
         created_at: serverTimestamp()
       }
