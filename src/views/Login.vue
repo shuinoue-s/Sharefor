@@ -148,7 +148,7 @@ export default {
           created_at: serverTimestamp()
         }
         await setDoc(userDocumentRef, postData).catch(() => {
-          // this.setPostErrorMessage('投稿に失敗しました')
+          this.setSignInErrorMessage('ログインに失敗しました')
         })
       }
     }
