@@ -12,33 +12,27 @@
           color="white"
           class="rounded-0"
         >
-          <v-card-title class="pb-0">
+          <v-card-title class="pt-2 pb-0">
             <h1 class="card-title">{{ post.title }}</h1>
           </v-card-title>
           
-          <v-card-actions class="py-0">
-            <div class="d-flex justify-space-between px-2 mx-auto width-full"> 
-              <v-avatar class="my-auto">
+          <v-card-actions class="py-1">
+              <v-avatar
+                class="my-0 ml-2 mr-2"
+                size="45"
+              >
                 <img
                   :src="post.userInfo.icon_path"
                   :alt="post.userInfo.icon_name"
                 >
               </v-avatar>
 
-              <div>
-                <v-card-text class="card-text pb-0">
-                  @{{ post.userInfo.user_id }}
-                </v-card-text>
-                <v-card-text class="card-text pt-0">
-                  {{ post.userInfo.user_name}}
-                </v-card-text>
-              </div>
-
-              <v-card-text class="card-text text-right">
-                {{ post.created_at }}
-              </v-card-text>
-            </div>
+              <p class="card-text mb-0 mr-4">@{{ post.userInfo.user_id }}</p>
+              <p class="card-text mb-0 mr-4">{{ post.userInfo.user_name}}</p>
+              <p class="card-text mb-0 ml-auto mr-4">{{ post.created_at }}</p>
           </v-card-actions>
+
+          <v-divider class="mx-4 mb-2"></v-divider>
 
           <v-img
             :src="post.file_path"
@@ -69,24 +63,31 @@
 
           <v-card-actions>
             <v-btn
+              @click="showComment = !showComment"
               color="customGreen"
               text
             >
-              コメント
+              <v-icon
+                size="25"
+              >{{ mdiCommentOutline }}</v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-sheet>
 
-      <PostComment
-        :postId="this.postId"
-      />
+      <v-expand-transition>
+        <PostComment
+          v-show="showComment"
+          :postId="this.postId"
+        />
+      </v-expand-transition>
     </v-container>
     <div style="height: 500px"></div> <!--あとで消す-->
   </div>
 </template>
 
 <script>
+import { mdiCommentOutline } from '@mdi/js'
 import GoogleMapAPI from '@/components/GoogleMapAPI'
 import PostComment from '@/components/PostComment'
 import { dateFormat, splitTags, addUserInfo } from '@/modules/storeModifications'
@@ -105,9 +106,11 @@ export default {
   props: ['id'],
   data() {
     return {
+      mdiCommentOutline,
       postId: this.id,
       post: [],
       tags: [],
+      showComment: false,
       mapStyle: 'width: 390px; height: 300px;',
     }
   },
@@ -123,7 +126,6 @@ export default {
       const querySnapshot = await getDocs(q)
       const posts = querySnapshot.docs.map(doc => doc.data())
       let post = await addUserInfo(posts[0])
-      console.log(post)
       this.post = dateFormat(post)
       this.tags = splitTags(post)
     },
@@ -161,7 +163,7 @@ export default {
 
   @media screen and (min-width: 800px) {
     .container-width {
-      width: 50%;
+      width: 40%;
     }
     #map {
       width: 80%;

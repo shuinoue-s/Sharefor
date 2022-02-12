@@ -293,8 +293,8 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.$refs.observer.reset()
       this.$refs.form.reset()
+      this.$refs.observer.reset()
       this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
       this.getGoogleMap()
     },

@@ -3,7 +3,7 @@
     <v-sheet
       outlined
       color="customLightGreen"
-      class="mx-auto mt-1 mb-16"
+      class="mx-auto mt-2 mb-2"
       elevation="3"
     >
       <v-card
@@ -67,13 +67,12 @@
 </template>
 
 <script>
-import pathInfo from '../modules/pathInfo'
 import { mdiSend } from '@mdi/js'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max } from 'vee-validate/dist/rules'
 import { getFirestore, serverTimestamp, collection, doc, setDoc } from "firebase/firestore"
 import app from '../firebase/firebase'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 setInteractionMode('eager')
 
@@ -102,8 +101,10 @@ export default {
   },
   created() {
     this.db = getFirestore(app)
+    this.reset() 
   },
   methods: {
+    ...mapActions('alertMessage', ['setAskErrorMessage']),
     reset() {
       this.$refs.observer.reset()
     },
@@ -114,24 +115,21 @@ export default {
       const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'posts', this.postId, 'comments')
       const commentsDocumentRef = doc(usersCollectionRef)
       const commentData = {
+        uid: this.user.uid,
         comment_id: commentsDocumentRef.id,
         post_id: this.postId,
         comment: this.comment,
-        created_at: serverTimestamp(),
-        icon_name: pathInfo(this.user.photoURL).basename,
-        icon_path: this.user.photoURL,
-        uid: this.user.uid,
-        user_name: this.user.displayName
+        created_at: serverTimestamp()
       }
       await setDoc(commentsDocumentRef, commentData).catch(() => {
-        // this.setAskErrorMessage('投稿に失敗しました')
+        this.setAskErrorMessage('投稿に失敗しました')
       })
       this.clear()
-      this.$emit('send-comment')
+      this.$emit('get-comment')
     },
     clear() {
-      this.$refs.observer.reset()
       this.$refs.form.reset()
+      this.$refs.observer.reset()
     }
   },
   computed: {

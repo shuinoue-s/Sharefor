@@ -17,7 +17,7 @@
               ></v-img>
             </router-link>
 
-            <div class="d-flex justify-space-between mx-4 mt-2">
+            <div class="d-flex justify-space-between mx-4 mt-0">
               <v-avatar class="my-auto">
                 <img
                   :src="post.userInfo.icon_path"
@@ -25,13 +25,12 @@
                 >
               </v-avatar>
 
-              <v-card-text class="card-text">
-                @{{ post.userInfo.user_id.slice(0, 14) + (post.userInfo.user_id.length > 14 ? '...' : '') }}
-                <br>
-                {{ post.userInfo.user_name.slice(0, 8) + (post.userInfo.user_name.length > 8 ? '...' : '') }}
+              <v-card-text class="py-3">
+                <p class="card-text mb-0">@{{ post.userInfo.user_id.slice(0, 14) + (post.userInfo.user_id.length > 14 ? '...' : '') }}</p>
+                <p class="card-text mb-0 ml-1">{{ post.userInfo.user_name.slice(0, 8) + (post.userInfo.user_name.length > 8 ? '...' : '') }}</p>
               </v-card-text>
 
-              <v-card-text class="card-text">
+              <v-card-text class="card-text py-3">
                 {{ post.created_at }}
               </v-card-text>
             </div>
@@ -42,11 +41,11 @@
               :to="{ name: 'PostShow', params: { id:post.post_id } }"
               style="color: #000; text-decoration: none;"
             >
-              <v-card-title class="card-title pt-3 mb-2">
+              <v-card-title class="card-title py-1">
                 {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
               </v-card-title>
 
-              <v-card-subtitle class="pb-0">
+              <v-card-subtitle class="my-0 pb-0">
                 {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
               </v-card-subtitle>
             </router-link>
