@@ -332,7 +332,7 @@ export default {
         this.setPostErrorMessage('投稿に失敗しました')
       })
       this.clear()
-      this.getPosts()
+      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home'}) : this.getPosts()
     }
   },
   computed: {
