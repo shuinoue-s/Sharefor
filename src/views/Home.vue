@@ -5,7 +5,10 @@
     <message-alert :message="postErrorMessage" type="error" />
     <message-alert :message="askErrorMessage" type="error" />
         
-    <v-tabs align-with-title>
+    <v-tabs
+      align-with-title
+      v-model="tab"
+    >
       <v-tabs-slider color="customLightGreen"></v-tabs-slider>
 
       <v-spacer></v-spacer>
@@ -43,7 +46,12 @@
 
   export default {
     name: 'Home',
-    props: ['message'],
+    props: {
+      setTab: {
+        type: String,
+        default: null
+      }
+    },
     components: {
       PostList,
       AskList,
@@ -58,6 +66,7 @@
     },
     data() {
       return {
+        tab: this.setTab
       }
     },
     created() {

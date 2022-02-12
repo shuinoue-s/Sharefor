@@ -27,7 +27,6 @@ const actions = {
     askList = arrayDateFormat(askList)
     const tags = arraySplitTags(askList)
     askList = await arrayAddUserInfo(askList)
-    console.log(askList)
     commit('setAsks', {askList, tags})
   }
 }
