@@ -87,7 +87,6 @@
     </v-container>
     <v-spacer></v-spacer>
 
-<div style="height: 400"></div>
     <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">
       <span slot="no-more"></span>
       <span slot="no-results"></span>
@@ -100,7 +99,7 @@ import { mdiCommentOutline } from '@mdi/js'
 import { mapGetters, mapActions } from 'vuex'
 import GoogleMapAPI from '../components/GoogleMapAPI'
 import InfiniteLoading from 'vue-infinite-loading'
- import { ref } from 'vue'
+import { ref } from 'vue'
 
 export default {
   name: 'PostList',

@@ -156,11 +156,11 @@ export default {
     }
   },
   created() {
-    this.getAsks()
+    this.firstGetAsks()
   },
   methods: {
     ...mapActions('alertMessage', ['setAskErrorMessage']),
-    ...mapActions('asks', ['getAsks']),
+    ...mapActions('asks', ['firstGetAsks']),
     clickClose() {
       this.emitClose()
       this.clear()
@@ -192,7 +192,7 @@ export default {
         this.setAskErrorMessage('投稿に失敗しました')
       })
       this.clear()
-      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home', params: {setTab: 'ask-list'}}) : this.getAsks()
+      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home', params: {setTab: 'ask-list'}}) : this.firstGetAsks()
     }
   },
   computed: {
