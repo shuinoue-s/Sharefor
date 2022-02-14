@@ -111,27 +111,52 @@
       </v-row>
     </v-container>
     <v-spacer></v-spacer>
+
+    <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">
+      <span slot="no-more"></span>
+      <span slot="no-results"></span>
+    </InfiniteLoading>
   </div>
 </template>
 
 <script>
 import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline } from '@mdi/js'
 import { mapActions, mapGetters } from 'vuex'
+import InfiniteLoading from 'vue-infinite-loading'
+import { ref } from 'vue'
 
 export default {
   name: 'AskList',
+  components: {
+    InfiniteLoading
+  },
+  setup() {
+    const posted = ref(false)
+    return { posted }
+  },
   data() {
     return {
       mdiCommentSearchOutline,
       mdiCommentRemoveOutline,
-      mdiCommentOutline
+      mdiCommentOutline,
+      lastVisiblePost: {},
+      posted: ''
     }
   },
-  created() {
-    this.getAsks()
+  async created() {
+    this.lastVisiblePost = await this.firstGetAsks()
+    this.posted = true
   },
   methods: {
-    ...mapActions('asks', [('getAsks')])
+    ...mapActions('asks', [('firstGetAsks')]),
+    ...mapActions('asks', [('nextAsks')]),
+    async infiniteLoad() {
+      this.lastVisiblePost = await this.nextAsks(this.lastVisiblePost)
+      this.$refs.infiniteLoading.stateChanger.loaded()
+      if(!this.lastVisiblePost) {
+        this.$refs.infiniteLoading.stateChanger.complete()
+      }
+    },
   },
   computed: {
     ...mapGetters('asks', ['asks'])
