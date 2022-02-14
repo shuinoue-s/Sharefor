@@ -4,6 +4,7 @@
       <v-main>
         <router-view/>
         <Form v-if="isAuthenticated" />
+        <div style="height: 150px;"></div>
       </v-main>
   </v-app>
 </template>

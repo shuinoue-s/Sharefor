@@ -51,7 +51,9 @@
                     color="customGreen"
                     text
                   >
-                    コメント
+                    <v-icon
+                      size="20"
+                    >{{ mdiCommentOutline }}</v-icon>
                   </v-btn>
 
                   <v-sheet
@@ -113,7 +115,7 @@
 </template>
 
 <script>
-import { mdiCommentSearchOutline, mdiCommentRemoveOutline } from '@mdi/js'
+import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline } from '@mdi/js'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -121,7 +123,8 @@ export default {
   data() {
     return {
       mdiCommentSearchOutline,
-      mdiCommentRemoveOutline
+      mdiCommentRemoveOutline,
+      mdiCommentOutline
     }
   },
   created() {

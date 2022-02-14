@@ -221,13 +221,13 @@ export default {
     }
   },
   created() {
-    this.getPosts()
+    this.firstGetPosts()
   },
   mounted() {
     this.getGoogleMap()
   },
   methods: {
-    ...mapActions('posts', ['getPosts']),
+    ...mapActions('posts', ['firstGetPosts']),
     ...mapActions('alertMessage', ['setPostErrorMessage']),
     getGoogleMap() {
     if(!window.mapLoadStarted) {
@@ -332,7 +332,7 @@ export default {
         this.setPostErrorMessage('投稿に失敗しました')
       })
       this.clear()
-      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home'}) : this.getPosts()
+      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home'}) : this.firstGetPosts()
     }
   },
   computed: {

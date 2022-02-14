@@ -75,6 +75,8 @@
         </v-card>
       </v-sheet>
 
+      <div id="comment"></div>
+
       <v-expand-transition>
         <PostComment
           v-show="showComment"
@@ -82,7 +84,6 @@
         />
       </v-expand-transition>
     </v-container>
-    <div style="height: 500px"></div> <!--あとで消す-->
   </div>
 </template>
 
@@ -117,6 +118,9 @@ export default {
   created() {
     this.onAuth()
     this.getPost()
+  },
+  mounted() {
+    this.triggerScroll()
   },
   methods: {
     ...mapActions('auth', ['onAuth']),

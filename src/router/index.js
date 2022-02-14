@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home'
 import store from '../store/index'
+// import goTo from 'vuetify/lib/services/goto'
 
 Vue.use(VueRouter)
 
@@ -24,7 +25,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "Login" */ '../views/Login.vue'),
   },
   {
-    path: '/post/', //:id
+    path: '/post/:id',
     name: 'PostShow',
     props: true,
     component: () => import(/* webpackChunkName: "PostShow" */ '../views/PostShow.vue'),
@@ -39,7 +40,18 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  routes,
+  // scrollBehavior: (to, from, savedPosition) => {
+  //   setTimeout(() => {
+  //     let scrollTo = 0
+  //     if (to.hash) {
+  //       scrollTo = to.hash
+  //     } else if (savedPosition) {
+  //       scrollTo = savedPosition.y
+  //     }
+  //     return goTo(scrollTo)
+  //   }, 300)
+  // },
 })
 
 router.beforeEach((to, from, next) => {
