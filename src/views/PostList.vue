@@ -51,12 +51,19 @@
             </router-link>
 
             <v-card-actions>
-              <v-btn
-                color="customGreen"
-                text
+              <router-link
+                :to="{ name: 'PostShow', params: { id:post.post_id }, hash: '#comment' }"
+                style="color: #000; text-decoration: none;"
               >
-                コメント
-              </v-btn>
+                <v-btn
+                  color="customGreen"
+                  text
+                >
+                  <v-icon
+                    size="20"
+                  >{{ mdiCommentOutline }}</v-icon>
+                </v-btn>
+              </router-link>
 
               <v-spacer></v-spacer>
 
@@ -79,27 +86,53 @@
       </v-row>
     </v-container>
     <v-spacer></v-spacer>
+
+<div style="height: 400"></div>
+    <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">
+      <span slot="no-more"></span>
+      <span slot="no-results"></span>
+    </InfiniteLoading>
   </div>
 </template>
 
 <script>
+import { mdiCommentOutline } from '@mdi/js'
 import { mapGetters, mapActions } from 'vuex'
 import GoogleMapAPI from '../components/GoogleMapAPI'
+import InfiniteLoading from 'vue-infinite-loading'
+ import { ref } from 'vue'
 
 export default {
   name: 'PostList',
   components: {
-    GoogleMapAPI
+    GoogleMapAPI,
+    InfiniteLoading
+  },
+  setup() {
+    const posted = ref(false)
+    return { posted }
   },
   data() {
     return {
+      mdiCommentOutline,
+      lastVisiblePost: {},
+      posted: ''
     }
   },
-  created() {
-    this.getPosts()
+  async created() {
+    this.lastVisiblePost = await this.firstGetPosts()
+    this.posted = true
   },
   methods: {
-    ...mapActions('posts', ['getPosts']),
+    ...mapActions('posts', ['firstGetPosts']),
+    ...mapActions('posts', ['nextPosts']),
+    async infiniteLoad() {
+      this.lastVisiblePost = await this.nextPosts(this.lastVisiblePost)
+      this.$refs.infiniteLoading.stateChanger.loaded()
+      if(!this.lastVisiblePost) {
+        this.$refs.infiniteLoading.stateChanger.complete()
+      }
+    },
   },
   computed: {
     ...mapGetters('posts', ['posts']),
