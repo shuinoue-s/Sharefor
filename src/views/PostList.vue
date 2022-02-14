@@ -39,7 +39,7 @@
 
             <router-link
               :to="{ name: 'PostShow', params: { id:post.post_id } }"
-              style="color: #000; text-decoration: none;"
+              class="link-style-none"
             >
               <v-card-title class="card-title py-1">
                 {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
@@ -53,7 +53,7 @@
             <v-card-actions>
               <router-link
                 :to="{ name: 'PostShow', params: { id:post.post_id }, hash: '#comment' }"
-                style="color: #000; text-decoration: none;"
+                class="link-style-none"
               >
                 <v-btn
                   color="customGreen"
@@ -150,5 +150,9 @@ export default {
   .card-text {
     color: rgba(0, 0, 0, 0.6);
     font-size: 13px;
+  }
+  .link-style-none {
+    color: #000;
+    text-decoration: none;
   }
 </style>

@@ -119,9 +119,6 @@ export default {
     this.onAuth()
     this.getPost()
   },
-  mounted() {
-    this.triggerScroll()
-  },
   methods: {
     ...mapActions('auth', ['onAuth']),
     async getPost() {

@@ -100,7 +100,6 @@ export default {
     }
   },
   created() {
-    this.db = getFirestore(app)
     this.reset() 
   },
   methods: {
@@ -112,7 +111,8 @@ export default {
       this.$emit('click-close')
     },
     async sendComment() {
-      const usersCollectionRef = collection(this.db, 'users', this.user.uid, 'posts', this.postId, 'comments')
+      const db = getFirestore(app)
+      const usersCollectionRef = collection(db, 'users', this.user.uid, 'posts', this.postId, 'comments')
       const commentsDocumentRef = doc(usersCollectionRef)
       const commentData = {
         uid: this.user.uid,
