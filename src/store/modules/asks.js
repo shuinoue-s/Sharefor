@@ -16,6 +16,10 @@ const mutations = {
   setAsks(state, {askList, tags}) {
     state.asks = askList
     state.askTags = tags
+  },
+  pushAsks(state, {askList, tags}) {
+    state.asks.push(...askList)
+    state.askTags.push(...tags)
   }
 }
 const actions = {

@@ -35,15 +35,21 @@
               </div>
               
               <v-divider class="mx-4"></v-divider>
+              
+              <router-link
+                :to="{ name: 'AskShow', params: { id:ask.ask_id  } }"
+                class="link-style-none"
+              >
 
-              <v-card-title class="card-title pt-3 pb-0 mb-0">
-                {{ ask.stadium }}
-              </v-card-title>
-              <p class="small-text mx-4">周辺のおすすめスポット</p>
+                <v-card-title class="card-title pt-3 pb-0 mb-0">
+                  {{ ask.stadium }}
+                </v-card-title>
+                <p class="small-text mx-4">周辺のおすすめスポット</p>
 
-              <v-card-subtitle class="py-0">
-                {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
-              </v-card-subtitle>
+                <v-card-subtitle class="py-0">
+                  {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
+                </v-card-subtitle>
+              </router-link>
 
               <v-card-actions class="mt-2">
                 <div class="d-flex justify-space-between mx-1" style="width: 100%">          
@@ -177,5 +183,9 @@ export default {
   .small-text {
     color: rgba(0, 0, 0, 0.6);
     font-size: 12px;
+  }
+  .link-style-none {
+    color: #000;
+    text-decoration: none;
   }
 </style>

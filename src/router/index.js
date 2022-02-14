@@ -31,6 +31,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "PostShow" */ '../views/PostShow.vue'),
   },
   {
+    path: '/ask/:id',
+    name: 'AskShow',
+    props: true,
+    component: () => import(/* webpackChunkName: "AskShow" */ '../views/AskShow.vue'),
+  },
+  {
     path: '/*',
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound.vue'),
