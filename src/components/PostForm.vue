@@ -303,7 +303,7 @@ export default {
     },
     saveStorage() {
       const storage = getStorage(app)
-      const storageRef = ref(storage, `images/${this.fileName}`)
+      const storageRef = ref(storage, `users/${this.user.uid}/${this.fileName}`)
       uploadBytes(storageRef, this.image).then(() => {
         getDownloadURL(storageRef).then(url => {
           this.sendPost(url)
