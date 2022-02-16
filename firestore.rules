@@ -15,6 +15,7 @@ service cloud.firestore {
     }
     function isValidUser(user) {
       return user.size() == 6
+        && user.keys().hasOnly(['uid', 'user_id', 'user_name', 'icon_path', 'icon_name', 'created_at'])
         && 'uid' in user && user.uid is string
         && 'user_id' in user && user.user_id is string && minMax(user.user_id, 1, 15)
         && 'user_name' in user && user.user_name is string && minMax(user.user_name, 1, 50)
@@ -24,6 +25,7 @@ service cloud.firestore {
     }
     function isValidPost(post) {
       return post.size() == 10
+        && post.keys().hasOnly(['uid', 'post_id', 'title', 'body', 'geopoint','file_path','file_name', 'tags', 'is_show', 'created_at'])
         && 'uid' in post && post.uid is string
         && 'post_id' in post && post.post_id is string
         && 'title' in post && post.title is string && minMax(post.title, 1, 50)
@@ -37,6 +39,7 @@ service cloud.firestore {
     }
     function isValidAsk(ask) {
       return ask.size() == 7
+        && ask.keys().hasOnly(['uid', 'ask_id', 'stadium', 'text', 'tags', 'is_asking', 'created_at'])
         && 'uid' in ask && ask.uid is string
         && 'ask_id' in ask && ask.ask_id is string
         && 'stadium' in ask && ask.stadium is string && max(ask.stadium, 100)
@@ -47,6 +50,7 @@ service cloud.firestore {
     }
     function isValidPostComment(comment) {
       return comment.size() == 5
+        && user.keys().hasOnly(['uid', 'comment_id', 'post_id', 'comment', 'created_at'])
         && 'uid' in comment && comment.uid is string
         && 'comment_id' in comment && comment.comment_id is string
         && 'post_id' in comment && comment.post_id is string
@@ -55,6 +59,7 @@ service cloud.firestore {
     }
     function isValidAskComment(comment) {
       return comment.size() == 5
+        && user.keys().hasOnly(['uid', 'comment_id', 'ask_id', 'comment', 'created_at'])
         && 'uid' in comment && comment.uid is string
         && 'comment_id' in comment && comment.comment_id is string
         && 'ask_id' in comment && comment.ask_id is string
