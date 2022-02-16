@@ -54,8 +54,9 @@
             <v-chip
               class="ma-2"
               color="customGreen"
-              v-for="tag in  post.tags"
+              v-for="tag in post.tags"
               :key="tag"
+              @click="clickTag(tag)"
             >
               <p style="color: #fff;" class="mb-0">{{ tag }}</p>
             </v-chip>
@@ -96,8 +97,6 @@ import app from '@/firebase/firebase'
 import { getFirestore, query, getDocs, collectionGroup, where } from 'firebase/firestore'
 import { mapGetters, mapActions } from 'vuex'
 
-const db = getFirestore(app)
-
 export default {
   name: 'PostShow',
   components: {
@@ -122,6 +121,7 @@ export default {
   methods: {
     ...mapActions('auth', ['onAuth']),
     async getPost() {
+      const db = getFirestore(app)
       const postsCollectionGroup = collectionGroup(db, 'posts')
       const q = query(postsCollectionGroup, where('post_id', '==', this.postId))
       const querySnapshot = await getDocs(q)
@@ -130,6 +130,9 @@ export default {
       this.post = dateFormat(post)
       this.tags = splitTags(post)
     },
+    clickTag(tag) {
+      this.$router.push({ name: 'TaggedPostList', params: {tag} })
+    }
   },
   computed: {
     ...mapGetters('auth', ['user'])

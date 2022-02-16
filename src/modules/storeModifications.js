@@ -18,6 +18,16 @@ function arraySplitTags(list) {
   return tags
 }
 
+async function arrayAddUserInfo(list) {
+  const db = getFirestore(app)
+  for(let i = 0; i < list.length; i++) {
+    const docRef = doc(db, 'users', list[i].uid)
+    const docSnap = await getDoc(docRef)
+    list[i].userInfo = docSnap.data()
+  }
+  return list
+}
+
 function dateFormat(data) {
   data.created_at = data.created_at.toDate()
   data.created_at = format(data.created_at, 'yyyy/MM/dd HH:mm:ss')
@@ -28,16 +38,6 @@ function splitTags(data) {
   let tags = []
   tags.push(...data.tags)
   return tags
-}
-
-async function arrayAddUserInfo(list) {
-  const db = getFirestore(app)
-  for(let i = 0; i < list.length; i++) {
-    const docRef = doc(db, 'users', list[i].uid)
-    const docSnap = await getDoc(docRef)
-    list[i].userInfo = docSnap.data()
-  }
-  return list
 }
 
 async function addUserInfo(data) {
