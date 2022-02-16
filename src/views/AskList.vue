@@ -40,7 +40,6 @@
                 :to="{ name: 'AskShow', params: { id:ask.ask_id  } }"
                 class="link-style-none"
               >
-
                 <v-card-title class="card-title pt-3 pb-0 mb-0">
                   {{ ask.stadium }}
                 </v-card-title>
@@ -52,39 +51,50 @@
               </router-link>
 
               <v-card-actions class="mt-2">
-                <div class="d-flex justify-space-between mx-1" style="width: 100%">          
-                  <v-btn
-                    color="customGreen"
-                    text
-                  >
-                    <v-icon
-                      size="20"
-                    >{{ mdiCommentOutline }}</v-icon>
-                  </v-btn>
+                <div class="d-flex justify-space-between mx-1" style="width: 100%">    
 
-                  <v-sheet
-                    outlined
-                    rounded
-                    color="customPink"
-                    v-if="ask.is_asking"
-                  >
-                    <v-card
-                      color="customPink"
+                  <router-link
+                    :to="{ name: 'AskShow', params: { id:ask.ask_id  } }"
+                    class="link-style-none"
+                  >      
+                    <v-btn
+                      color="customGreen"
+                      text
+                    >
+                      <v-icon
+                        size="20"
+                      >{{ mdiCommentOutline }}</v-icon>
+                    </v-btn>
+                  </router-link>
+
+                  <router-link
+                    :to="{ name: 'Asking' }"
+                    class="link-style-none"
+                  >    
+                    <v-sheet
                       outlined
                       rounded
+                      color="customPink"
+                      v-if="ask.is_asking"
                     >
-                      <v-card-text
-                        class="font py-1"
-                        style="color: #fff;"
+                      <v-card
+                        color="customPink"
+                        outlined
+                        rounded
                       >
-                        <v-icon
-                          color="white"
-                          size="20"
-                        >{{ mdiCommentSearchOutline }}</v-icon>
-                        募集中
-                      </v-card-text>
-                    </v-card>
-                  </v-sheet>
+                        <v-card-text
+                          class="font py-1"
+                          style="color: #fff;"
+                        >
+                          <v-icon
+                            color="white"
+                            size="20"
+                          >{{ mdiCommentSearchOutline }}</v-icon>
+                          募集中
+                        </v-card-text>
+                      </v-card>
+                    </v-sheet>
+                  </router-link>
 
                   <v-sheet
                     outlined
