@@ -16,6 +16,7 @@
     "core-js": "^3.6.5",
     "date-fns": "^2.28.0",
     "firebase": "^9.6.4",
+    "fs": "^0.0.1-security",
     "vee-validate": "^3.4.14",
     "vue": "^2.6.11",
     "vue-head": "^2.2.0",
@@ -26,6 +27,7 @@
     "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "^2.0.2",
     "@mdi/font": "^6.5.95",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",

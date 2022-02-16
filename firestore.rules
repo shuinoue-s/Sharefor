@@ -1,9 +1,129 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2022, 2, 25);
+    function isAuthenticated() {
+      return request.auth != null;
     }
+    function isUserAuthenticated(userId) {
+      return isAuthenticated() && userId == request.auth.uid;
+    }
+    function max(value, max) {
+      return value.size() <= max
+    }
+    function minMax(value, min, max) {
+      return value.size() >= min && value.size() <= max
+    }
+    function isValidUser(user) {
+      return user.size() == 6
+        && 'uid' in user && user.uid is string
+        && 'user_id' in user && user.user_id is string && minMax(user.user_id, 1, 15)
+        && 'user_name' in user && user.user_name is string && minMax(user.user_name, 1, 50)
+        && 'icon_path' in user && user.icon_path is string && max(user.icon_path, 500)
+        && 'icon_name' in user && user.icon_name is string && max(user.icon_name, 500)
+        && 'created_at' in user && user.created_at is timestamp;
+    }
+    function isValidPost(post) {
+      return post.size() == 10
+        && 'uid' in post && post.uid is string
+        && 'post_id' in post && post.post_id is string
+        && 'title' in post && post.title is string && minMax(post.title, 1, 50)
+        && 'body' in post && post.body is string && minMax(post.body, 1, 300)
+        && 'geopoint' in post && post.geopoint is map && map.size() == 2
+        && 'file_path' in post && post.file_path is string && max(post.file_path, 500)
+        && 'file_name' in post && post.file_name is string && max(post.file_name, 500)
+        && 'tags' in post && post.tags is list && post.tags.size() <= 10
+        && 'is_show' in post && post.is_show is bool
+        && 'created_at' in post && post.created_at is timestamp;
+    }
+    function isValidAsk(ask) {
+      return ask.size() == 7
+        && 'uid' in ask && ask.uid is string
+        && 'ask_id' in ask && ask.ask_id is string
+        && 'stadium' in ask && ask.stadium is string && max(ask.stadium, 100)
+        && 'text' in ask && ask.text is string && minMax(ask.text, 1, 300)
+        && 'tags' in ask && ask.tags is list && ask.tags.size() <= 10
+        && 'is_asking' in ask && ask.is_asking is bool
+        && 'created_at' in ask && ask.created_at is timestamp;
+    }
+    function isValidPostComment(comment) {
+      return comment.size() == 5
+        && 'uid' in comment && comment.uid is string
+        && 'comment_id' in comment && comment.comment_id is string
+        && 'post_id' in comment && comment.post_id is string
+        && 'comment' in comment && comment.comment is string && minMax(comment.comment, 1, 300)
+        && 'created_at' in comment && comment.created_at is timestamp
+    }
+    function isValidAskComment(comment) {
+      return comment.size() == 5
+        && 'uid' in comment && comment.uid is string
+        && 'comment_id' in comment && comment.comment_id is string
+        && 'ask_id' in comment && comment.ask_id is string
+        && 'comment' in comment && comment.comment is string && minMax(comment.comment, 1, 300)
+        && 'created_at' in comment && comment.created_at is timestamp
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isUserAuthenticated(userId)
+        && isValidUser(request.resource.data)
+        && request.resource.data.created_at == request.time
+        && request.resource.data.uid == userId;
+      allow update: if isUserAuthenticated(userId)
+        && isValidUser(request.resource.data)
+        && request.resource.data.created_at == resource.data.created_at;
+      allow delete: if isUserAuthenticated(userId);
+
+      match /posts/{postId} {
+        allow create: if isUserAuthenticated(userId)
+          && isValidPost(request.resource.data)
+          && request.resource.data.created_at == request.time
+          && request.resource.data.uid == userId;
+        allow update: if isUserAuthenticated(userId)
+          && isValidPost(request.resource.data)
+          && request.resource.data.created_at == resource.data.created_at;
+        allow delete: if isUserAuthenticated(userId);
+
+        match /comments/{commentId} {
+          allow create: if isUserAuthenticated(userId)
+            && isValidPostComment(request.resource.data)
+            && request.resource.data.created_at == request.time
+            && request.resource.data.uid == userId;
+          allow update: if false;
+          allow delete: if isUserAuthenticated(userId);
+        }
+      }
+
+      match /asks/{askId} {
+        allow create: if isUserAuthenticated(userId)
+          && isValidAsk(request.resource.data)
+          && request.resource.data.created_at == request.time
+          && request.resource.data.uid == userId;
+        allow update: if isUserAuthenticated(userId)
+          && isValidAsk(request.resource.data)
+          && request.resource.data.created_at == resource.data.created_at;
+        allow delete: if isUserAuthenticated(userId);
+
+        match /comments/{commentId} {
+          allow create: if isUserAuthenticated(userId)
+            && isValidAskComment(request.resource.data)
+            && request.resource.data.created_at == request.time
+            && request.resource.data.uid == userId;
+          allow update: if false;
+          allow delete: if isUserAuthenticated(userId);
+        }
+      }
+    }
+
+    match /{Path=**}/posts/{postId} {
+      allow read: if isAuthenticated();
+    }   
+
+    match /{Path=**}/comments/{commentId} {
+      allow read: if isAuthenticated();
+    } 
+
+    match /{Path=**}/asks/{askId} {
+      allow read: if isAuthenticated();
+    } 
   }
 }
