@@ -58,11 +58,7 @@
       MessageAlert
     },
     head: {
-      title: {
-        inner: 'Jリーグスタジアム周辺のおすすめスポットを共有しよう',
-        separator: '-',
-        complement: 'Sharefor'
-      }
+      title: { inner: 'Jリーグスタジアム周辺のおすすめスポットを共有しましょう', separator: '-', complement: 'Sharefor' }
     },
     data() {
       return {

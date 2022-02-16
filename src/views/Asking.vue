@@ -52,15 +52,21 @@
               </router-link>
 
               <v-card-actions class="mt-2">
-                <div class="d-flex justify-space-between mx-1" style="width: 100%">          
-                  <v-btn
-                    color="customGreen"
-                    text
-                  >
-                    <v-icon
-                      size="20"
-                    >{{ mdiCommentOutline }}</v-icon>
-                  </v-btn>
+                <div class="d-flex justify-space-between mx-1" style="width: 100%">   
+
+                  <router-link
+                    :to="{ name: 'AskShow', params: { id:asking.ask_id } }"
+                    class="link-style-none"
+                  >       
+                    <v-btn
+                      color="customGreen"
+                      text
+                    >
+                      <v-icon
+                        size="20"
+                      >{{ mdiCommentOutline }}</v-icon>
+                    </v-btn>
+                  </router-link>
 
                   <v-sheet
                     outlined
@@ -106,6 +112,7 @@ import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline } f
 import InfiniteLoading from 'vue-infinite-loading'
 import { ref } from 'vue'
 import { getFirestore, getDocs, query, orderBy, collectionGroup, startAfter, limit, where } from 'firebase/firestore'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Asking',
@@ -130,10 +137,12 @@ export default {
     }
   },
   async created() {
+    this.onAuth()
     this.lastVisiblePost = await this.firstGetAsking()
     this.posted = true
   },
   methods: {
+    ...mapActions('auth', ['onAuth']),
     async infiniteLoad() {
       this.lastVisiblePost = await this.nextAsking(this.lastVisiblePost)
       this.$refs.infiniteLoading.stateChanger.loaded()
@@ -163,9 +172,10 @@ export default {
       askingList = await arrayAddUserInfo(askingList)
       this.askingList.push(...askingList)
       return lastVisiblePost
-    }
+    },
   },
   computed: {
+    ...mapGetters('auth', ['user'])
   }
 }
 </script>
