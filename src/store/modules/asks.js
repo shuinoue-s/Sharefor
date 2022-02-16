@@ -6,11 +6,11 @@ const db = getFirestore(app)
 
 const state = {
   asks: [],
-  askTags: [],
+  askTags: []
 }
 const getters = {
   asks: state => state.asks,
-  askTags: state =>  state.askTags,
+  askTags: state => state.askTags
 }
 const mutations = {
   setAsks(state, {askList, tags}) {
@@ -25,7 +25,7 @@ const mutations = {
 const actions = {
   async firstGetAsks({ commit }) {
     const asksCollectionGroup = collectionGroup(db, 'asks')
-    const q = query(asksCollectionGroup, orderBy('created_at', 'desc'))
+    const q = query(asksCollectionGroup, orderBy('created_at', 'desc'), limit(10))
     const querySnapshot = await getDocs(q)
     const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
     let askList = querySnapshot.docs.map(doc => doc.data())
@@ -46,7 +46,7 @@ const actions = {
     askList = await arrayAddUserInfo(askList)
     commit('pushAsks', {askList, tags})
     return lastVisiblePost
-}
+  }
 }
 
 export default {
