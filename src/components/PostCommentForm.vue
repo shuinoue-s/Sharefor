@@ -63,10 +63,13 @@
         </validation-observer>
       </v-card>
     </v-sheet>
+
+    <MessageAlert :message="postCommentErrorMessage" type="error" />
   </div>
 </template>
 
 <script>
+import MessageAlert from '@/components/MessageAlert'
 import { mdiSend } from '@mdi/js'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max } from 'vee-validate/dist/rules'
@@ -78,7 +81,7 @@ setInteractionMode('eager')
 
 extend('max', {
   ...max,
-  message: '{_field_}は{length}文字以内で入力してください',
+  message: '{length}文字以内で入力してください',
 })
 
 extend('required', {
@@ -89,6 +92,7 @@ extend('required', {
 export default {
   name: 'PostCommentForm',
   components: {
+    MessageAlert,
     ValidationObserver,
     ValidationProvider
   },
@@ -103,7 +107,7 @@ export default {
     this.reset() 
   },
   methods: {
-    ...mapActions('alertMessage', ['setAskErrorMessage']),
+    ...mapActions('alertMessage', ['setPostCommentErrorMessage']),
     reset() {
       this.$refs.observer.reset()
     },
@@ -122,7 +126,7 @@ export default {
         created_at: serverTimestamp()
       }
       await setDoc(commentsDocumentRef, commentData).catch(() => {
-        this.setAskErrorMessage('投稿に失敗しました')
+        this.setPostCommentErrorMessage('投稿に失敗しました')
       })
       this.clear()
       this.$emit('get-comment')
@@ -134,6 +138,7 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['user']),
+    ...mapGetters('alertMessage', ['postCommentErrorMessage']),
   }
 }
 </script>

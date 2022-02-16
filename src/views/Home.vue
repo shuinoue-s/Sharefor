@@ -1,9 +1,9 @@
 <template>
   <div>
-    <message-alert :message="signInMessage" type="success" />
-    <message-alert :message="signOutErrorMessage" type="error" />
-    <message-alert :message="postErrorMessage" type="error" />
-    <message-alert :message="askErrorMessage" type="error" />
+    <MessageAlert :message="signInMessage" type="success" />
+    <MessageAlert :message="signOutErrorMessage" type="error" />
+    <MessageAlert :message="postErrorMessage" type="error" />
+    <MessageAlert :message="askErrorMessage" type="error" />
         
     <v-tabs
       align-with-title
@@ -38,11 +38,11 @@
 </template>
 
 <script>
-  import PostList from './PostList'
-  import AskList from './AskList'
+  import PostList from '@/views/PostList'
+  import AskList from '@/views/AskList'
   import { mapGetters, mapActions } from 'vuex'
   import { getAuth, signOut } from "firebase/auth"
-  import MessageAlert from '../components/MessageAlert'
+  import MessageAlert from '@/components/MessageAlert'
 
   export default {
     name: 'Home',
