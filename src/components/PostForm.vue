@@ -126,7 +126,7 @@
 
         <validation-provider
           v-slot="{ errors }"
-          rules="required|max:20|maxlength:10"
+          rules="required|maxlength:10"
           name="タグ"
         >
             <v-combobox

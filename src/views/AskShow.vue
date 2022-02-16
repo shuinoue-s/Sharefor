@@ -138,7 +138,7 @@
 </template>
 
 <script>
-import { mdiCommentOutline } from '@mdi/js'
+import { mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline } from '@mdi/js'
 // import GoogleMapAPI from '@/components/GoogleMapAPI'
 import AskComment from '@/components/AskComment'
 import { dateFormat, splitTags, addUserInfo } from '@/modules/storeModifications'
@@ -158,6 +158,8 @@ export default {
   data() {
     return {
       mdiCommentOutline,
+      mdiCommentSearchOutline,
+      mdiCommentRemoveOutline,
       askId: this.id,
       ask: [],
       tags: [],
