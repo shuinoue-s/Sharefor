@@ -22,7 +22,7 @@
                     </v-tab>
 
                     <v-spacer></v-spacer>
-                    <v-tab to="/about" class="caption text-sm-subtitle-1">
+                    <v-tab to="/asking" class="caption text-sm-subtitle-1">
                         <p class="mb-0 font">募集中</p>
                     </v-tab>
 
