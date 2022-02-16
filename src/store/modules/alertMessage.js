@@ -4,7 +4,9 @@ const state = {
   signOutMessage: '',
   signOutErrorMessage: '',
   postErrorMessage: '',
-  askErrorMessage: ''
+  askErrorMessage: '',
+  postCommentErrorMessage: '',
+  askCommentErrorMessage: ''
 }
 const getters = {
   signInMessage: state => {
@@ -42,7 +44,19 @@ const getters = {
       state.askErrorMessage = ''
     }, 3000)
     return state.askErrorMessage
-  } 
+  },
+  postCommentErrorMessage: state => {
+    setTimeout(() => {
+      state.postCommentErrorMessage = ''
+    }, 2000)
+    return state.postCommentErrorMessage
+  },
+  askCommentErrorMessage: state => {
+    setTimeout(() => {
+      state.askCommentErrorMessage = ''
+    }, 2000)
+    return state.askCommentErrorMessage
+  },
 }
 const mutations = {
   setSignInMessage(state, message) {
@@ -62,6 +76,12 @@ const mutations = {
   },
   setAskErrorMessage(state, message) {
     state.askErrorMessage = message
+  },
+  setPostCommentErrorMessage(state, message) {
+    state.postCommentErrorMessage = message
+  },
+  setAskCommentErrorMessage(state, message) {
+    state.askCommentErrorMessage = message
   }
 }
 const actions = {
@@ -82,6 +102,12 @@ const actions = {
   },
   setAskErrorMessage({ commit }, message) {
     commit('setAskErrorMessage', message)
+  },
+  setPostCommentErrorMessage({ commit }, message) {
+    commit('setPostCommentErrorMessage', message)
+  },
+  setAskCommentErrorMessage({ commit }, message) {
+    commit('setAskCommentErrorMessage', message)
   }
 }
 

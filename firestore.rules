@@ -30,7 +30,7 @@ service cloud.firestore {
         && 'post_id' in post && post.post_id is string
         && 'title' in post && post.title is string && minMax(post.title, 1, 50)
         && 'body' in post && post.body is string && minMax(post.body, 1, 300)
-        && 'geopoint' in post && post.geopoint is map && map.size() == 2
+        && 'geopoint' in post && post.geopoint is map
         && 'file_path' in post && post.file_path is string && max(post.file_path, 500)
         && 'file_name' in post && post.file_name is string && max(post.file_name, 500)
         && 'tags' in post && post.tags is list && post.tags.size() <= 10
