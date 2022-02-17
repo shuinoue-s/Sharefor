@@ -103,9 +103,6 @@ export default {
       comment: ''
     }
   },
-  created() {
-    this.reset() 
-  },
   methods: {
     ...mapActions('alertMessage', ['setPostCommentErrorMessage']),
     reset() {

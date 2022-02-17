@@ -50,7 +50,7 @@ service cloud.firestore {
     }
     function isValidPostComment(comment) {
       return comment.size() == 5
-        && user.keys().hasOnly(['uid', 'comment_id', 'post_id', 'comment', 'created_at'])
+        && comment.keys().hasOnly(['uid', 'comment_id', 'post_id', 'comment', 'created_at'])
         && 'uid' in comment && comment.uid is string
         && 'comment_id' in comment && comment.comment_id is string
         && 'post_id' in comment && comment.post_id is string
@@ -59,7 +59,7 @@ service cloud.firestore {
     }
     function isValidAskComment(comment) {
       return comment.size() == 5
-        && user.keys().hasOnly(['uid', 'comment_id', 'ask_id', 'comment', 'created_at'])
+        && comment.keys().hasOnly(['uid', 'comment_id', 'ask_id', 'comment', 'created_at'])
         && 'uid' in comment && comment.uid is string
         && 'comment_id' in comment && comment.comment_id is string
         && 'ask_id' in comment && comment.ask_id is string

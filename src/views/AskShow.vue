@@ -23,6 +23,7 @@
               <v-avatar
                 class="my-0 ml-2 mr-2"
                 size="45"
+                v-if="ask.userInfo"
               >
                 <img
                   :src="ask.userInfo.icon_path"
@@ -30,8 +31,8 @@
                 >
               </v-avatar>
 
-              <p class="card-text mb-0 mr-4">@{{ ask.userInfo.user_id }}</p>
-              <p class="card-text mb-0 mr-4">{{ ask.userInfo.user_name}}</p>
+              <p v-if="ask.userInfo" class="card-text mb-0 mr-4">@{{ ask.userInfo.user_id }}</p>
+              <p v-if="ask.userInfo" class="card-text mb-0 mr-4">{{ ask.userInfo.user_name}}</p>
               <p class="card-text mb-0 ml-auto mr-4">{{ ask.created_at }}</p>
           </v-card-actions>
 
@@ -56,6 +57,7 @@
               color="customGreen"
               v-for="tag in  ask.tags"
               :key="tag"
+              @click="clickTag(tag)"
             >
               <p style="color: #fff;" class="mb-0">{{ tag }}</p>
             </v-chip>
@@ -182,6 +184,9 @@ export default {
       this.ask = dateFormat(ask)
       this.tags = splitTags(ask)
     },
+    clickTag(tag) {
+      this.$router.push({ name: 'TaggedAskList', params: {tag} })
+    }
   },
   computed: {
     ...mapGetters('auth', ['user'])

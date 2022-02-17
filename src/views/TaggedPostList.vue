@@ -9,7 +9,7 @@
       <v-divider class="mb-4"></v-divider>
       
       <v-row class="d-sm-flex flex-sm-wrap">
-        <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.post_id">
+        <v-col cols="12" sm="6" lg="4" v-for="post in postsList" :key="post.post_id">
           <v-card
             class="mx-auto rounded-0"
             max-width="344"
@@ -104,30 +104,65 @@
 <script>
 import { mdiTagMultipleOutline, mdiCommentOutline } from '@mdi/js'
 import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
-import { getFirestore, query, getDocs, collectionGroup, where } from 'firebase/firestore'
+import { getFirestore, query, getDocs, collectionGroup, where, orderBy, limit, startAfter } from 'firebase/firestore'
+import InfiniteLoading from 'vue-infinite-loading'
+import { ref } from 'vue'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'TaggedPostList',
+  components: {
+    InfiniteLoading
+  },
+  setup() {
+    const posted = ref(false)
+    return { posted }
+  },
   data() {
     return {
       mdiTagMultipleOutline,
       mdiCommentOutline,
-      posts: []
+      posted: '',
+      postsList: []
     }
   },
-  created() {
-    this.getTaaggedPosts()
+  async created() {
+    this.onAuth()
+    this.lastVisiblePost = await this.firstGetTaaggedPosts()
+    this.posted = true
   },
   methods: {
-    async getTaaggedPosts() {
+    ...mapActions('auth', ['onAuth']),
+    async infiniteLoad() {
+      this.lastVisiblePost = await this.nextTaggedPosts(this.lastVisiblePost)
+      this.$refs.infiniteLoading.stateChanger.loaded()
+      if(!this.lastVisiblePost) {
+        this.$refs.infiniteLoading.stateChanger.complete()
+      }
+    },
+    async firstGetTaaggedPosts() {
       const db = getFirestore()
       const postsCollectionGroup = collectionGroup(db, 'posts')
-      const q = query(postsCollectionGroup, where("tags", "array-contains", this.$route.params.tag))
+      const q = query(postsCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), limit(10))
       const querySnapshot = await getDocs(q)
-      let posts = querySnapshot.docs.map(doc => doc.data())
-      posts = await arrayAddUserInfo(posts)
-      posts = arrayDateFormat(posts)
-      this.posts = posts
+      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+      let postsList = querySnapshot.docs.map(doc => doc.data())
+      postsList = arrayDateFormat(postsList)
+      postsList = await arrayAddUserInfo(postsList)
+      this.postsList = postsList
+      return lastVisiblePost
+    },
+    async nextTaggedPosts(prelastVisiblePost) {
+      const db = getFirestore()
+      const postsCollectionGroup = collectionGroup(db, 'posts')
+      const nextPosts = query(postsCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), startAfter(prelastVisiblePost),  limit(10))
+      const querySnapshot = await getDocs(nextPosts)
+      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+      let postsList = querySnapshot.docs.map(doc => doc.data())
+      postsList = arrayDateFormat(postsList)
+      postsList = await arrayAddUserInfo(postsList)
+      this.postsList.push(...postsList)
+      return lastVisiblePost
     }
   }
 }

@@ -20,6 +20,7 @@
               <v-avatar
                 class="my-0 ml-2 mr-2"
                 size="45"
+                v-if="post.userInfo"
               >
                 <img
                   :src="post.userInfo.icon_path"
@@ -27,8 +28,8 @@
                 >
               </v-avatar>
 
-              <p class="card-text mb-0 mr-4">@{{ post.userInfo.user_id }}</p>
-              <p class="card-text mb-0 mr-4">{{ post.userInfo.user_name}}</p>
+              <p v-if="post.userInfo" class="card-text mb-0 mr-4">@{{ post.userInfo.user_id }}</p>
+              <p v-if="post.userInfo" class="card-text mb-0 mr-4">{{ post.userInfo.user_name}}</p>
               <p class="card-text mb-0 ml-auto mr-4">{{ post.created_at }}</p>
           </v-card-actions>
 

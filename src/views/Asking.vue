@@ -107,8 +107,8 @@
 </template>
 
 <script>
-import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
 import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline } from '@mdi/js'
+import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
 import InfiniteLoading from 'vue-infinite-loading'
 import { ref } from 'vue'
 import { getFirestore, getDocs, query, orderBy, collectionGroup, startAfter, limit, where } from 'firebase/firestore'
