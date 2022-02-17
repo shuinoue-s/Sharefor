@@ -40,14 +40,14 @@
           name="タイトル"
         >
           <v-text-field
-          class="ma-4"
+            ref="title"
+            class="ma-4"
             v-model="title"
             color="customGreen"
             :counter="50"
             :error-messages="errors"
             clearable
             label="おすすめの場所はどこですか？"
-
           ></v-text-field>
         </validation-provider>
 
@@ -58,6 +58,7 @@
           rules=""
         >
           <v-text-field
+            ref="address"
             class="mb-4 mx-4"
             v-model="address"
             @change="mapSearch"
@@ -86,6 +87,7 @@
           rules="required|max:300"
         >
           <v-textarea
+            ref="body"
             class="mb-4 mx-4"
             v-model="body"
             name="body"
@@ -105,6 +107,7 @@
           rules="required|image|size:5000"
         >
           <v-file-input
+            ref="image"
             class="mb-4 mx-4"
             v-model="image"
             @change="setFileName"
@@ -118,6 +121,7 @@
             max-height="300"
             max-width="400"
             contain
+            v-if="previewImage"
             :src="previewImage"
             class="mx-auto"
           >
@@ -129,21 +133,21 @@
           rules="required|maxlength:10"
           name="タグ"
         >
-            <v-combobox
-              class="mb-4 mx-4"
-              :error-messages="errors"
-              :counter="10"
-              v-model="selected"
-              :items="postTags"
-              label="タグを入力してください"
-              color="customGreen"
-              item-color="customGreen"
-              multiple
-              chips
-              deletable-chips
-              clearable
-            >
-            </v-combobox>
+          <v-combobox
+            class="mb-4 mx-4"
+            :error-messages="errors"
+            :counter="10"
+            v-model="selected"
+            :items="postTags"
+            label="タグを入力してください"
+            color="customGreen"
+            item-color="customGreen"
+            multiple
+            chips
+            deletable-chips
+            clearable
+          >
+          </v-combobox>
         </validation-provider>
 
         <v-spacer></v-spacer>
@@ -206,16 +210,16 @@ export default {
   data() {
     return {
       mdiSend,
-      title: '',
-      address: '',
+      title: null,
+      address: null,
       map: {},
       marker: null,
       geocoder: {},
       geopoint: { lat: 35.9919136, lng: 140.6410921 },
-      body: '',
-      image: '',
-      fileName: '',
-      filePath: '',
+      body: null,
+      image: null,
+      fileName: null,
+      filePath: null,
       // tags: [], mapGettersで取得
       selected: [],
     }
@@ -293,10 +297,17 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.$refs.form.reset()
+      this.resetForm()
       this.$refs.observer.reset()
       this.geopoint = { lat: 35.9919136, lng: 140.6410921 }
       this.getGoogleMap()
+    },
+    resetForm() {
+      if(this.title) this.title = null
+      if(this.body) this.body = null
+      if(this.address) this.address = null
+      if(this.image) this.image = null
+      if(this.selected) this.selected = []
     },
     setFileName(image) {
       this.fileName = image.name

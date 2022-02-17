@@ -148,8 +148,8 @@ export default {
     return {
       mdiSend,
       stadiums: jLeagueTeamList,
-      selectedStadium: '',
-      text: '',
+      selectedStadium: null,
+      text: null,
       selected: [],
       // picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
       // // new Date(Date.now() + ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000))
@@ -172,8 +172,13 @@ export default {
       this.$emit('recieve-send')
     },
     clear() {
-      this.$refs.form.reset()
+      this.resetForm()
       this.$refs.observer.reset()
+    },
+    resetForm() {
+      if(this.selectedStadium) this.selectedStadium = null
+      if(this.text) this.text = null
+      if(this.selected) this.selected = []
     },
     async sendAsk() {
       const db = getFirestore(app)
