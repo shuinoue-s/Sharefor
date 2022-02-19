@@ -38,14 +38,6 @@
 
           <v-divider class="mx-4 mb-2"></v-divider>
 
-          <v-img
-            :src="ask.file_path"
-            :alt="ask.file_name"
-            class="mx-auto"
-            style="border-radius: 0"
-            max-width="390px"
-          ></v-img>
-
           <v-card-text>
             <p class="body-style">{{ ask.text }}</p>
           </v-card-text>

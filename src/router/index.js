@@ -47,6 +47,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "TaggedAskList" */ '../views/TaggedAskList.vue'),
   },
   {
+    path: '/mypage',
+    name: 'MyPage',
+    component: () => import(/* webpackChunkName: "MyPage" */ '../views/MyPage.vue'),
+  },
+  {
     path: '/*',
     name: 'NotFound',
     component: () => import(/* webpackChunkName: "NotFound" */ '../views/NotFound.vue'),

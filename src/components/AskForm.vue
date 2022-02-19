@@ -111,7 +111,7 @@
 
 <script>
 import { mdiSend } from '@mdi/js'
-import jLeagueTeamList from '../jLeagueTeamList'
+import jLeagueStadiumList from '@/jLeagueStadiumList'
 import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
 import { required, max } from 'vee-validate/dist/rules'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
@@ -122,7 +122,7 @@ setInteractionMode('eager')
 
 extend('max', {
   ...max,
-  message: '{_field_}は{length}文字以内で入力してください',
+  message: '{length}文字以内で入力してください',
 })
 
 extend('required', {
@@ -147,7 +147,7 @@ export default {
   data() {
     return {
       mdiSend,
-      stadiums: jLeagueTeamList,
+      stadiums: jLeagueStadiumList,
       selectedStadium: null,
       text: null,
       selected: [],

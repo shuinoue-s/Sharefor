@@ -172,27 +172,22 @@ import { required, max, image, size } from 'vee-validate/dist/rules'
 import { mapGetters, mapActions } from 'vuex'
 
 setInteractionMode('eager')
-
 extend('image', {
   ...image,
   message: '画像を選択してください',
 })
-
 extend('max', {
   ...max,
-  message: '{_field_}は{length}文字以内で入力してください',
+  message: '{length}文字以内で入力してください',
 })
-
 extend('required', {
   ...required,
   message: '入力必須です',
 })
-
 extend('size', {
   ...size,
   message: '{size}KB以内である必要があります'
 })
-
 extend('maxlength', {
   validate: (select, {max}) => {
     return select.length <= max
