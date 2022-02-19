@@ -32,7 +32,7 @@
                     </v-tab>
                     
                     <v-spacer></v-spacer>
-                    <v-tab to="" class="caption text-sm-subtitle-1">
+                    <v-tab to="/mypage" class="caption text-sm-subtitle-1">
                         <p class="mb-0 font">マイページ</p>
                     </v-tab>
                     <v-spacer></v-spacer>
