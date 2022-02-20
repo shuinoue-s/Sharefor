@@ -1,6 +1,7 @@
 <template>
   <div>
     <MessageAlert :message="userEditErrorMessage" type="error" />
+
     <v-container class="container-width">
       <v-card
         outlined
@@ -20,7 +21,6 @@
               <div>
                 <p class="card-title mb-0">{{ userInfo.user_name}}</p>
                 <p class="card-text mb-0">@{{ userInfo.user_id }}</p>
-                <p class="card-text mb-0">@{{ userInfo.description}}</p>
               </div>
           </v-card-actions>
           <v-spacer></v-spacer>
@@ -65,7 +65,10 @@
         <v-spacer></v-spacer>
 
         <v-tab-item value="profile">
-          <Profile />
+          <Profile
+            v-if="userInfo"
+            :setUser="userInfo"
+          />
         </v-tab-item>
 
         <v-tab-item value="my-post-list">
@@ -82,7 +85,10 @@
       </v-tabs>
     </v-container>
     
-    <MyPageForm ref="myPageForm" @get-profile="getUserInfo" />
+    <MyPageForm
+      ref="myPageForm"
+      @get-profile="getUserInfo"
+    />
   </div>
 </template>
 
