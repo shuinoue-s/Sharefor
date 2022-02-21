@@ -31,8 +31,8 @@ service cloud.firestore {
         && 'user_name' in user && user.user_name is string && minMax(user.user_name, 1, 50)
         && 'icon_path' in user && user.icon_path is string && max(user.icon_path, 500)
         && 'icon_name' in user && user.icon_name is string && max(user.icon_name, 500)
-        && 'description' in user && user.description is string && minMax(user.description, 1, 300)
-        && 'favorite_place' in user && user.favorite_place is string && minMax(user.favorite_place, 1, 50)
+        && 'description' in user && user.description is string && minMax(user.description, 0, 300)
+        && 'favorite_place' in user && user.favorite_place is string && minMax(user.favorite_place, 0, 50)
         && 'favorite_team' in user && user.favorite_team is list && user.favorite_team.size() <= 3 
         && 'favorite_player' in user && user.favorite_player is list && user.favorite_player.size() <= 3
         && 'created_at' in user && user.created_at is timestamp
