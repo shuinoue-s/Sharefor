@@ -4,7 +4,7 @@
     <message-alert :message="signInErrorMessage" type="error" />
     
     <v-progress-circular
-    v-if="isLoading"
+      v-if="isLoading"
       indeterminate
       color="customGreen"
       class="position-center"
@@ -81,7 +81,7 @@ export default {
   },
   created() {
     this.signInRedirect()
-    this.errorStopRoading()
+    this.errorStopLoading()
   },
   mounted() {
     this.getSignInResult()
@@ -126,7 +126,7 @@ export default {
         this.$router.push({name: 'Home'})
       }
     },
-    errorStopRoading() {
+    errorStopLoading() {
       setTimeout(() => {
         this.stopLoading()
       }, 6000)
