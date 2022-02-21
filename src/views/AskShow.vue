@@ -67,29 +67,22 @@
                 >{{ mdiCommentOutline }}</v-icon>
               </v-btn>
 
-              <v-sheet
-                outlined
-                rounded
-                color="customPink"
-                v-if="ask.is_asking"
-              >
-                <v-card
+              <router-link
+                :to="{ name: 'Asking' }"
+                class="link-style-none"
+              >    
+                <v-btn
+                  class="font"
+                  style="color: #fff"
                   color="customPink"
-                  outlined
-                  rounded
                 >
-                  <v-card-text
-                    class="font py-1"
-                    style="color: #fff;"
-                  >
-                    <v-icon
-                      color="white"
-                      size="20"
-                    >{{ mdiCommentSearchOutline }}</v-icon>
-                    募集中
-                  </v-card-text>
-                </v-card>
-              </v-sheet>
+                  <v-icon
+                    color="white"
+                    size="18"
+                  >{{ mdiCommentSearchOutline }}</v-icon>
+                  募集中
+                </v-btn>
+              </router-link>
 
               <v-sheet
                 outlined
@@ -213,6 +206,10 @@ export default {
   #map {
     width: 390px;
     margin: auto;
+  }
+  .link-style-none {
+    color: #000;
+    text-decoration: none;
   }
 
   @media screen and (min-width: 800px) {
