@@ -1,6 +1,40 @@
 <template>
   <div>
     <v-container>
+      <v-dialog
+        v-model="dialog"
+        width="350"
+      >
+        <v-card>
+          <v-card-text class="font text-center pt-2 pb-1">
+            本当に募集を終了しますか？
+          </v-card-text>
+          <v-card-text class="dialog-text text-center pt-0 pb-4">
+            一度募集を終了すると元には戻せません。
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              class="font"
+              color="customGreen"
+              text
+              @click="changeAsking"
+            >
+              はい
+            </v-btn>
+            <v-btn
+              class="font ml-4"
+              color="customGreen"
+              text
+              @click="dialog = false"
+            >
+              いいえ
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <v-row class="d-sm-flex flex-sm-wrap">
         <v-col cols="12" sm="6" lg="4" v-for="ask in asksList" :key="ask.ask_id">
           <v-sheet
@@ -16,6 +50,15 @@
               color="customAlmostWhite"
               outlined
             >
+              <v-btn
+                v-if="ask.is_asking"
+                class="font"
+                color="customPink"
+                style="color: #fff"
+                tile
+                block
+                @click="clickAsking(ask.ask_id)"
+              >募集を終了する</v-btn>
               <div class="d-flex justify-space-between mt-2 mx-4">
                 <v-avatar class="my-auto">
                   <img
@@ -136,12 +179,13 @@
 </template>
 
 <script>
-import { mdiTagMultipleOutline, mdiCommentOutline, mdiCommentSearchOutline } from '@mdi/js'
+import { mdiTagMultipleOutline, mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline } from '@mdi/js'
 import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
-import { getFirestore, query, getDocs, collection, limit, startAfter, orderBy } from 'firebase/firestore'
+import { getFirestore, query, getDocs, collection, limit, startAfter, orderBy, doc, updateDoc } from 'firebase/firestore'
 import InfiniteLoading from 'vue-infinite-loading'
 import { ref } from 'vue'
 import { mapActions, mapGetters } from 'vuex'
+import app from '../firebase/firebase'
 
 export default {
   name: 'MyAskList',
@@ -157,8 +201,11 @@ export default {
       mdiTagMultipleOutline,
       mdiCommentOutline,
       mdiCommentSearchOutline,
+      mdiCommentRemoveOutline,
       posted: '',
-      asksList: []
+      asksList: [],
+      dialog: false,
+      changeAskingId: null
     }
   },
   async created() {
@@ -207,6 +254,21 @@ export default {
         return false
       }
     },
+    clickAsking(askId) {
+      this.changeAskingId = askId
+      this.dialog = true
+    },
+    changeAsking() {
+      const db = getFirestore(app)
+      const askDocRef = doc(db, 'users', this.user.uid, 'asks', this.changeAskingId)
+      const askData = {
+        is_asking: false
+      }
+      updateDoc(askDocRef, askData).then(() => {
+        this.lastVisiblePost = this.firstGetTaggedAsks()
+        this.dialog = false
+      })
+    }
   },
   computed: {
     ...mapGetters('auth', ['user']),
@@ -222,6 +284,9 @@ export default {
 <style scoped>
   @import '../css/style.css';
 
+  .dialog-text {
+    font-size: 12px;
+  }
   .card-title {
     font-size: 16px;
     font-weight: bold;
