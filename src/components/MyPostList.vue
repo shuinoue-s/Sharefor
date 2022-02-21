@@ -123,7 +123,7 @@ export default {
   },
   async created() {
     this.onAuth()
-    this.lastVisiblePost = await this.firstGetTaaggedPosts()
+    this.lastVisiblePost = await this.firstGetTaggedPosts()
     this.posted = true
   },
   methods: {
@@ -135,7 +135,7 @@ export default {
         this.$refs.infiniteLoading.stateChanger.complete()
       }
     },
-    async firstGetTaaggedPosts() {
+    async firstGetTaggedPosts() {
       if(this.user.uid) {
         const db = getFirestore()
         const postsCollection = collection(db, 'users', this.user.uid, 'posts')
@@ -177,7 +177,7 @@ export default {
   },
   watch: {
     async user() {
-      this.lastVisiblePost = await this.firstGetTaaggedPosts()
+      this.lastVisiblePost = await this.firstGetTaggedPosts()
     }
   }
 }
