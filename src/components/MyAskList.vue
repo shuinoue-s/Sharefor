@@ -7,10 +7,10 @@
       >
         <v-card>
           <v-card-text class="font text-center pt-2 pb-1">
-            本当に募集を終了しますか？
+            募集を終了しますか？
           </v-card-text>
           <v-card-text class="dialog-text text-center pt-0 pb-4">
-            一度募集を終了すると元には戻せません。
+            ※一度募集を終了すると元には戻せません
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
@@ -50,15 +50,6 @@
               color="customAlmostWhite"
               outlined
             >
-              <v-btn
-                v-if="ask.is_asking"
-                class="font"
-                color="customPink"
-                style="color: #fff"
-                tile
-                block
-                @click="clickAsking(ask.ask_id)"
-              >募集を終了する</v-btn>
               <div class="d-flex justify-space-between mt-2 mx-4">
                 <v-avatar class="my-auto">
                   <img
@@ -94,12 +85,11 @@
               </router-link>
 
               <v-card-actions class="mt-2">
-                <div class="d-flex justify-space-between mx-1" style="width: 100%">    
-
+                <div class="d-flex justify-space-between align-end mx-1" style="width: 100%">    
                   <router-link
                     :to="{ name: 'AskShow', params: { id:ask.ask_id } }"
                     class="link-style-none"
-                  >      
+                  >  
                     <v-btn
                       color="customGreen"
                       text
@@ -110,34 +100,26 @@
                     </v-btn>
                   </router-link>
 
-                  <router-link
-                    :to="{ name: 'Asking' }"
-                    class="link-style-none"
-                  >    
-                    <v-sheet
-                      outlined
-                      rounded
-                      color="customPink"
-                      v-if="ask.is_asking"
+                  <div v-if="ask.is_asking">
+                    <v-card-text
+                      class="font pb-0"
+                      style="color: #F881DD"
                     >
-                      <v-card
+                      <v-icon
                         color="customPink"
-                        outlined
-                        rounded
-                      >
-                        <v-card-text
-                          class="font py-1"
-                          style="color: #fff;"
-                        >
-                          <v-icon
-                            color="white"
-                            size="20"
-                          >{{ mdiCommentSearchOutline }}</v-icon>
-                          募集中
-                        </v-card-text>
-                      </v-card>
-                    </v-sheet>
-                  </router-link>
+                        size="18"
+                      >{{ mdiCommentSearchOutline }}</v-icon>
+                      募集中
+                    </v-card-text>
+                    <v-btn
+                      class="font"
+                      style="color: #fff"
+                      color="customPink"
+                      @click="clickAsking(ask.ask_id)"
+                    >
+                      募集を終了する
+                    </v-btn>
+                  </div>
 
                   <v-sheet
                     outlined

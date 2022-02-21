@@ -77,30 +77,18 @@
                   <router-link
                     :to="{ name: 'Asking' }"
                     class="link-style-none"
-                  >    
-                    <v-sheet
-                      outlined
-                      rounded
+                  >      
+                    <v-btn
+                      class="font"
+                      style="color: #fff"
                       color="customPink"
-                      v-if="ask.is_asking"
                     >
-                      <v-card
-                        color="customPink"
-                        outlined
-                        rounded
-                      >
-                        <v-card-text
-                          class="font py-1"
-                          style="color: #fff;"
-                        >
-                          <v-icon
-                            color="white"
-                            size="20"
-                          >{{ mdiCommentSearchOutline }}</v-icon>
-                          募集中
-                        </v-card-text>
-                      </v-card>
-                    </v-sheet>
+                      <v-icon
+                        color="white"
+                        size="18"
+                      >{{ mdiCommentSearchOutline }}</v-icon>
+                      募集中
+                    </v-btn>
                   </router-link>
 
                   <v-sheet
