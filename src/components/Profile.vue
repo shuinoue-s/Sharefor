@@ -21,6 +21,15 @@
 
       <GreenLineVCard class="mb-4">
         <v-card-text class="text-style pa-1">
+          推しチーム
+        </v-card-text>
+        <v-card-text v-for="team in userInfo.favorite_team" :key="team" class="description-style pt-1 pb-2">
+          <p class="body-style mb-0">{{ team }}</p>
+        </v-card-text>
+      </GreenLineVCard>
+      
+      <GreenLineVCard class="mb-4">
+        <v-card-text class="text-style pa-1">
           推し選手
         </v-card-text>
         <v-card-text v-for="player in userInfo.favorite_player" :key="player" class="description-style pt-1 pb-2">
@@ -28,14 +37,6 @@
         </v-card-text>
       </GreenLineVCard>
 
-      <GreenLineVCard class="mb-4">
-        <v-card-text class="text-style pa-1">
-          推しチーム
-        </v-card-text>
-        <v-card-text v-for="team in userInfo.favorite_team" :key="team" class="description-style pt-1 pb-2">
-          <p class="body-style mb-0">{{ team }}</p>
-        </v-card-text>
-      </GreenLineVCard>
     </v-container>
   </div>
 </template>

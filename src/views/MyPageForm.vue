@@ -9,7 +9,38 @@
         hide-overlay
         transition="dialog-bottom-transition"
       >
-        <v-card>
+        <v-card v-show="isLoading">
+          <v-progress-circular
+            indeterminate
+            color="customGreen"
+            class="position-center"
+            size="50"
+          ></v-progress-circular>
+          <v-toolbar
+            dark
+            color="customGreen"
+            dense
+          >
+            <v-btn
+              icon
+              dark
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title class="font mx-auto" style="color: #B0EACD;">編集</v-toolbar-title>
+            <v-toolbar-items>
+              <v-btn
+                dark
+                text
+                disabled
+              >
+                <v-icon>{{ mdiContentSaveOutline }}</v-icon>保存
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+        </v-card>
+
+        <v-card v-show="!isLoading">
           <validation-observer
             ref="observer"
             v-slot="{ invalid }"
@@ -23,7 +54,7 @@
                 <v-btn
                   icon
                   dark
-                  @click="isShowDialog"
+                  @click="clear"
                 >
                   <v-icon>mdi-close</v-icon>
                 </v-btn>
@@ -54,6 +85,7 @@
                     @change="setIconName"
                   ></v-file-input>
                   <v-avatar
+                    v-if="previewImage"
                     class="avatar-style mb-1"
                     size="55"
                     @click="handleClickAvatar"
@@ -61,6 +93,15 @@
                     <v-img
                       :src="previewImage"
                     ></v-img>
+                  </v-avatar>
+                  <v-avatar
+                    v-if="!previewImage"
+                    class="my-0 mr-2"
+                    size="50"
+                  >
+                    <v-icon
+                      size="70"
+                    >{{ mdiAccountCircle }}</v-icon>
                   </v-avatar>
                 </validation-provider>
 
@@ -186,7 +227,7 @@
 </template>
 
 <script>
-import { mdiContentSaveOutline } from '@mdi/js'
+import { mdiContentSaveOutline, mdiAccountCircle } from '@mdi/js'
 import jLeagueTeamList from '@/jLeagueTeamList'
 import MessageAlert from '@/components/MessageAlert'
 import { required, max, image, size } from 'vee-validate/dist/rules'
@@ -230,6 +271,7 @@ export default {
   },
   data() {
     return {
+      mdiAccountCircle,
       mdiContentSaveOutline,
       dialog: false,
       uid: '',
@@ -248,8 +290,12 @@ export default {
       selectedPlayer: []
     }
   },
+  created() {
+    this.errorStopLoading()
+  },
   methods: {
     ...mapActions('alertMessage', ['setUserEditErrorMessage']),
+    ...mapActions('loading', ['loading', 'stopLoading']),
     isShowDialog() {
       this.dialog = !this.dialog
     },
@@ -261,6 +307,7 @@ export default {
       this.dialog = !this.dialog
     },
     saveStorage() {
+      this.loading()
       if(this.changedIconPath) {       
         const storage = getStorage(app)
         const iconRef = ref(storage, `users/${this.uid}/icon`)
@@ -274,9 +321,11 @@ export default {
                   this.sendProfile(url)
                 })
               }).catch(() => {
+                this.stopLoading()
                 this.setUserEditErrorMessage('保存できませんでした')
               })
             }).catch(() => {
+              this.stopLoading()
               this.setUserEditErrorMessage('保存できませんでした')
             })
           } else {
@@ -286,6 +335,7 @@ export default {
                 this.sendProfile(url)
               })
             }).catch(() => {
+              this.stopLoading()
               this.setUserEditErrorMessage('保存できませんでした')
             })
           }
@@ -309,6 +359,9 @@ export default {
         updated_at: serverTimestamp()
       }
       updateDoc(userDocRef, userData).then(() => {
+        this.stopLoading()
+        this.clear()
+        this.$emit('get-profile')
       }).catch(() => {
         const storage = getStorage(app)
         const iconRef = ref(storage, `users/${this.uid}/icon`)
@@ -316,17 +369,18 @@ export default {
           if(items.length) {
             const deleteRef = ref(storage, `users/${this.uid}/icon/${this.iconName}`)
             deleteObject(deleteRef).then(() => {
+              this.stopLoading()
               this.setUserEditErrorMessage('保存できませんでした')
             }).catch(() => {
+              this.stopLoading()
               this.setUserEditErrorMessage('保存できませんでした')
             })
           } else {
+            this.stopLoading()
             this.setUserEditErrorMessage('保存できませんでした')
           }
         })
       })
-      this.clear()
-      this.$emit('get-profile')
     },
     handleClickAvatar() {
       this.$refs.vFileInput.$el.querySelector("input").click()
@@ -339,10 +393,16 @@ export default {
         this.previewImage = null
         this.changedIconPath = null
       }
-    }
+    },
+    errorStopLoading() {
+      setTimeout(() => {
+        this.stopLoading()
+      }, 6000)
+    },
     },
     computed: {
       ...mapGetters('alertMessage', ['userEditErrorMessage']),
+      ...mapGetters('loading', ['isLoading']),
     }
   }
 </script>
@@ -365,6 +425,13 @@ export default {
   }
   .avatar-style:hover {
     cursor: pointer;
+  }
+  .position-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    transform: translate(-50%, -50%);
   }
 
   @media screen and (min-width: 800px) {

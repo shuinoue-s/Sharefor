@@ -8,6 +8,7 @@
         <v-card-actions class="py-1 px-0 mx-4">
           <v-card-actions class="py-1 px-0">
               <v-avatar
+                v-if="userInfo.icon_path"
                 class="my-0 mr-2"
                 size="50"
               >
@@ -15,6 +16,15 @@
                   :src="userInfo.icon_path"
                   :alt="userInfo.icon_name"
                 >
+              </v-avatar>
+              <v-avatar
+                v-if="!userInfo.icon_path"
+                class="my-0 mr-2"
+                size="50"
+              >
+                <v-icon
+                  size="70"
+                >{{ mdiAccountCircle }}</v-icon>
               </v-avatar>
               <div>
                 <p class="card-title mb-0">{{ userInfo.user_name}}</p>
@@ -91,7 +101,7 @@
 </template>
 
 <script>
-import { mdiAccountEdit } from '@mdi/js'
+import { mdiAccountEdit, mdiAccountCircle } from '@mdi/js'
 import Profile from '@/components/Profile'
 import MyPostList from '@/components/MyPostList'
 import MyAskList from '@/components/MyAskList'
@@ -111,6 +121,7 @@ export default {
   data() {
     return {
       mdiAccountEdit,
+      mdiAccountCircle,
       tab: 'profile',
       userInfo: '',
     }
