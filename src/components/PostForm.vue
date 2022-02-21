@@ -174,11 +174,11 @@ import { mapGetters, mapActions } from 'vuex'
 setInteractionMode('eager')
 extend('image', {
   ...image,
-  message: '画像を選択してください',
+  message: '画像を選択してください'
 })
 extend('max', {
   ...max,
-  message: '{length}文字以内で入力してください',
+  message: '{length}文字以内で入力してください'
 })
 extend('required', {
   ...required,
@@ -345,8 +345,8 @@ export default {
     ...mapGetters('posts', ['postTags']),
     ...mapGetters('auth', ['user']),
     previewImage() {
-      if(!this.image) return;
-      return URL.createObjectURL(this.image);
+      if(!this.image) return
+      return URL.createObjectURL(this.image)
     },
   },
 }

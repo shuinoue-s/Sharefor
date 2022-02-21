@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MessageAlert :message="userEditErrorMessage" type="error" />
-
     <v-container class="container-width">
       <v-card
         outlined
@@ -97,7 +95,6 @@ import { mdiAccountEdit } from '@mdi/js'
 import Profile from '@/components/Profile'
 import MyPostList from '@/components/MyPostList'
 import MyAskList from '@/components/MyAskList'
-import MessageAlert from '@/components/MessageAlert'
 import MyPageForm from '@/views/MyPageForm'
 import { mapActions, mapGetters } from 'vuex'
 import app from '../firebase/firebase'
@@ -109,8 +106,7 @@ export default {
     Profile,
     MyPostList,
     MyAskList,
-    MyPageForm,
-    MessageAlert
+    MyPageForm
   },
   data() {
     return {
@@ -134,8 +130,10 @@ export default {
       }
     },
     clickEdit() {
-      this.setChildData()
-      this.$refs.myPageForm.isShowDialog()
+      if(this.userInfo) {
+        this.setChildData()
+        this.$refs.myPageForm.isShowDialog()
+      }
     },
     setChildData() {
       if(this.userInfo) {
@@ -146,12 +144,14 @@ export default {
         this.$refs.myPageForm.favoritePlace = this.userInfo.favorite_place
         this.$refs.myPageForm.selectedTeam = this.userInfo.favorite_team
         this.$refs.myPageForm.selectedPlayer = this.userInfo.favorite_player
+        this.$refs.myPageForm.orignIconPath = this.userInfo.icon_path
+        this.$refs.myPageForm.originIconName = this.userInfo.icon_name
+        this.$refs.myPageForm.previewImage = this.userInfo.icon_path
       }
     }
   },
   computed: {
     ...mapGetters('auth', ['user']),
-    ...mapGetters('alertMessage', ['userEditErrorMessage']),
   },
   watch: {
     user() {
