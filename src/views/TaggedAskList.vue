@@ -187,24 +187,32 @@ export default {
       const asksCollectionGroup = collectionGroup(db, 'asks')
       const q = query(asksCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), limit(10))
       const querySnapshot = await getDocs(q)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let asksList = querySnapshot.docs.map(doc => doc.data())
-      asksList = arrayDateFormat(asksList)
-      asksList = await arrayAddUserInfo(asksList)
-      this.asksList = asksList
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let asksList = querySnapshot.docs.map(doc => doc.data())
+        asksList = arrayDateFormat(asksList)
+        asksList = await arrayAddUserInfo(asksList)
+        this.asksList = asksList
+        return lastVisiblePost
+      } else {
+        return false
+      }
     },
     async nextTaggedAsks(prelastVisiblePost) {
       const db = getFirestore()
       const asksCollectionGroup = collectionGroup(db, 'asks')
       const nextAsks = query(asksCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), startAfter(prelastVisiblePost),  limit(10))
       const querySnapshot = await getDocs(nextAsks)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let asksList = querySnapshot.docs.map(doc => doc.data())
-      asksList = arrayDateFormat(asksList)
-      asksList = await arrayAddUserInfo(asksList)
-      this.asksList.push(...asksList)
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let asksList = querySnapshot.docs.map(doc => doc.data())
+        asksList = arrayDateFormat(asksList)
+        asksList = await arrayAddUserInfo(asksList)
+        this.asksList.push(...asksList)
+        return lastVisiblePost
+      } else {
+        return false
+      }
     },
   }
 }

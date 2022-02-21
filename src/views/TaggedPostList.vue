@@ -147,24 +147,32 @@ export default {
       const postsCollectionGroup = collectionGroup(db, 'posts')
       const q = query(postsCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), limit(10))
       const querySnapshot = await getDocs(q)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let postsList = querySnapshot.docs.map(doc => doc.data())
-      postsList = arrayDateFormat(postsList)
-      postsList = await arrayAddUserInfo(postsList)
-      this.postsList = postsList
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let postsList = querySnapshot.docs.map(doc => doc.data())
+        postsList = arrayDateFormat(postsList)
+        postsList = await arrayAddUserInfo(postsList)
+        this.postsList = postsList
+        return lastVisiblePost
+      } else {
+        return false
+      }
     },
     async nextTaggedPosts(prelastVisiblePost) {
       const db = getFirestore()
       const postsCollectionGroup = collectionGroup(db, 'posts')
       const nextPosts = query(postsCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), startAfter(prelastVisiblePost),  limit(10))
       const querySnapshot = await getDocs(nextPosts)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let postsList = querySnapshot.docs.map(doc => doc.data())
-      postsList = arrayDateFormat(postsList)
-      postsList = await arrayAddUserInfo(postsList)
-      this.postsList.push(...postsList)
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let postsList = querySnapshot.docs.map(doc => doc.data())
+        postsList = arrayDateFormat(postsList)
+        postsList = await arrayAddUserInfo(postsList)
+        this.postsList.push(...postsList)
+        return lastVisiblePost
+      } else {
+        return false
+      }
     }
   }
 }

@@ -155,23 +155,31 @@ export default {
       const askingCollectionGroup = collectionGroup(db, 'asks')
       const q = query(askingCollectionGroup, where('is_asking', '==', true), orderBy('created_at', 'desc'), limit(10))
       const querySnapshot = await getDocs(q)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let askingList = querySnapshot.docs.map(doc => doc.data())
-      askingList = arrayDateFormat(askingList)
-      this.askingList = await arrayAddUserInfo(askingList)
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let askingList = querySnapshot.docs.map(doc => doc.data())
+        askingList = arrayDateFormat(askingList)
+        this.askingList = await arrayAddUserInfo(askingList)
+        return lastVisiblePost
+      } else {
+        return false
+      }
     },
     async nextAsking(prelastVisiblePost) {
       const db = getFirestore()
       const askingCollectionGroup = collectionGroup(db, 'asks')
       const nextAsking = query(askingCollectionGroup, where('is_asking', '==', true), orderBy('created_at', 'desc'), startAfter(prelastVisiblePost), limit(10))
       const querySnapshot = await getDocs(nextAsking)
-      const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
-      let askingList = querySnapshot.docs.map(doc => doc.data())
-      askingList = arrayDateFormat(askingList)
-      askingList = await arrayAddUserInfo(askingList)
-      this.askingList.push(...askingList)
-      return lastVisiblePost
+      if(querySnapshot.size) {
+        const lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length-1]
+        let askingList = querySnapshot.docs.map(doc => doc.data())
+        askingList = arrayDateFormat(askingList)
+        askingList = await arrayAddUserInfo(askingList)
+        this.askingList.push(...askingList)
+        return lastVisiblePost
+      } else {
+        return false
+      }
     },
   },
   computed: {
