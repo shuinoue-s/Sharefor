@@ -102,6 +102,7 @@
 </template>
 
 <script>
+import GoogleMapAPI from '../components/GoogleMapAPI'
 import { mdiTagMultipleOutline, mdiCommentOutline } from '@mdi/js'
 import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
 import { getFirestore, query, getDocs, collectionGroup, where, orderBy, limit, startAfter } from 'firebase/firestore'
@@ -112,7 +113,8 @@ import { mapActions } from 'vuex'
 export default {
   name: 'TaggedPostList',
   components: {
-    InfiniteLoading
+    InfiniteLoading,
+    GoogleMapAPI
   },
   setup() {
     const posted = ref(false)
