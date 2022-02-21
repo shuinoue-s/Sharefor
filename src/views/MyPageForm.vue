@@ -14,7 +14,7 @@
             indeterminate
             color="customGreen"
             class="position-center"
-            size="50"
+            size="40"
           ></v-progress-circular>
           <v-toolbar
             dark
