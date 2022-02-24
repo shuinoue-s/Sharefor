@@ -126,9 +126,10 @@
                 </validation-provider>
 
                 <validation-provider
+                  ref="userId"
                   v-slot="{ errors }"
                   name="user-id"
-                  rules="required|max:15|unique"
+                  rules="required|max:15|unique:@origin-user-id,@user-id-list"
                   mode="aggressive"
                 >
                   <v-text-field
@@ -140,6 +141,17 @@
                     dense
                     color="customGreen"
                   ></v-text-field>
+                </validation-provider>
+
+                <validation-provider
+                  name="origin-user-id"
+                >
+                  <input v-model="originUserId" v-show="false">
+                </validation-provider>
+                <validation-provider
+                  name="user-id-list"
+                >
+                  <input v-model="userIdList" v-show="false">
                 </validation-provider>
 
                 <validation-provider
@@ -269,18 +281,17 @@ extend('maxlength', {
   message: '最大{max}個まで入力可能です'
 })
 extend('unique', {
-  validate: async (userId) => {
-    const db = getFirestore(app)
-    const userIdCollectionGroup = collectionGroup(db, 'user_id')
-    const q = query(userIdCollectionGroup)
-    const querySnapshot = await getDocs(q)
-    const userIdList = querySnapshot.docs.map(doc => doc.id)
+  validate: async (userId, {originUserId, userIdList}) => {
+    console.log(originUserId)
     console.log(userIdList)
-    const result = userIdList.some((value) => {
-      return !(value === userId)
-    })
-    return result
+    if(originUserId === userId) {
+      return true
+    } else {
+      const result = userIdList.includes(userId)
+      return !result
+    }
   },
+  params: ['originUserId', 'userIdList'],
   message: 'すでに使用されているユーザーIDです'
 })
 
@@ -318,7 +329,6 @@ export default {
   created() {
     this.errorStopLoading()
     this.stopLoading()
-    this.getUserIds()
   },
   methods: {
     ...mapActions('alertMessage', ['setUserEditErrorMessage']),
@@ -459,18 +469,13 @@ export default {
       setTimeout(() => {
         this.stopLoading()
       }, 6000)
-    },
-    },
-    computed: {
-      ...mapGetters('alertMessage', ['userEditErrorMessage']),
-      ...mapGetters('loading', ['isLoading']),
-    },
-    watch: {
-      userId() {
-        this.getUserIds()
-      }
     }
+  },
+  computed: {
+    ...mapGetters('alertMessage', ['userEditErrorMessage']),
+    ...mapGetters('loading', ['isLoading']),
   }
+}
 </script>
 
 <style scoped>
