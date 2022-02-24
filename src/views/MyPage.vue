@@ -149,6 +149,7 @@ export default {
       if(this.userInfo) {
         this.setChildData()
         this.$refs.myPageForm.isShowDialog()
+        this.$refs.myPageForm.getUserIds()
       }
     },
     setChildData() {
