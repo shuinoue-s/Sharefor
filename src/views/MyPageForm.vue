@@ -1,7 +1,5 @@
 <template>
   <div>
-    <MessageAlert :message="userEditErrorMessage" type="error" />
-
     <v-row justify="center">
       <v-dialog
         v-model="dialog"
@@ -45,7 +43,7 @@
             ref="observer"
             v-slot="{ invalid }"
           >
-            <form @submit.prevent="saveStorage">
+            <form @submit.prevent="sendProfile">
               <v-toolbar
                 dark
                 color="customGreen"
@@ -70,6 +68,9 @@
                   </v-btn>
                 </v-toolbar-items>
               </v-toolbar>
+
+              <MessageAlert :message="userEditErrorMessage" type="error" />
+
               <v-container class="container-width px-0 mt-4">
                 <validation-provider
                   v-slot="{ errors }"
@@ -111,6 +112,7 @@
                   v-slot="{ errors }"
                   name="user-name"
                   rules="required|max:50"
+                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="userName"
@@ -126,7 +128,8 @@
                 <validation-provider
                   v-slot="{ errors }"
                   name="user-id"
-                  rules="required|max:15"
+                  rules="required|max:15|unique"
+                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="userId"
@@ -143,6 +146,7 @@
                   v-slot="{ errors }"
                   name="description"
                   rules="max:300"
+                  mode="aggressive"
                 >
                   <v-textarea
                     v-model="description"
@@ -159,6 +163,7 @@
                   v-slot="{ errors }"
                   name="favorite-place"
                   rules="max:50"
+                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="favoritePlace"
@@ -174,6 +179,7 @@
                   v-slot="{ errors }"
                   name="favorite-team"
                   rules="max:50|maxlength:3"
+                  mode="aggressive"
                 >
                   <v-select
                     v-model="selectedTeam"
@@ -198,6 +204,7 @@
                   v-slot="{ errors }"
                   name="favorite-player"
                   rules="max:30|maxlength:3"
+                  mode="aggressive"
                 >
                   <v-combobox
                     :error-messages="errors"
@@ -233,7 +240,7 @@ import MessageAlert from '@/components/MessageAlert'
 import { required, max, image, size } from 'vee-validate/dist/rules'
 import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import app from '../firebase/firebase'
-import { getFirestore, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
+import { getFirestore, doc, serverTimestamp, updateDoc, runTransaction, collectionGroup, query, getDocs } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'firebase/storage'
 import { mapActions, mapGetters } from 'vuex'
 
@@ -246,13 +253,6 @@ extend('max', {
   ...max,
   message: '{length}文字以内で入力してください',
 })
-extend('maxlength', {
-  validate: (select, {max}) => {
-    return select.length <= max
-  },
-  params: ['max'],
-  message: '最大{max}個まで入力可能です'
-})
 extend('image', {
   ...image,
   message: '画像を選択してください'
@@ -260,6 +260,28 @@ extend('image', {
 extend('size', {
   ...size,
   message: '{size}KB以内である必要があります'
+})
+extend('maxlength', {
+  validate: (select, {max}) => {
+    return select.length <= max
+  },
+  params: ['max'],
+  message: '最大{max}個まで入力可能です'
+})
+extend('unique', {
+  validate: async (userId) => {
+    const db = getFirestore(app)
+    const userIdCollectionGroup = collectionGroup(db, 'user_id')
+    const q = query(userIdCollectionGroup)
+    const querySnapshot = await getDocs(q)
+    const userIdList = querySnapshot.docs.map(doc => doc.id)
+    console.log(userIdList)
+    const result = userIdList.some((value) => {
+      return !(value === userId)
+    })
+    return result
+  },
+  message: 'すでに使用されているユーザーIDです'
 })
 
 export default {
@@ -274,8 +296,11 @@ export default {
       mdiAccountCircle,
       mdiContentSaveOutline,
       dialog: false,
+      message: '保存できませんでした',
       uid: '',
       userName: null,
+      originUserId: null,
+      userIdList: [],
       userId: null,
       orignIconPath: null,
       changedIconPath: null,
@@ -292,6 +317,8 @@ export default {
   },
   created() {
     this.errorStopLoading()
+    this.stopLoading()
+    this.getUserIds()
   },
   methods: {
     ...mapActions('alertMessage', ['setUserEditErrorMessage']),
@@ -306,81 +333,115 @@ export default {
       this.previewImage = null
       this.dialog = !this.dialog
     },
-    saveStorage() {
-      this.loading()
-      if(this.changedIconPath) {       
-        const storage = getStorage(app)
-        const iconRef = ref(storage, `users/${this.uid}/icon`)
-        listAll(iconRef).then(({ items }) => {
-          if(items.length) {
-            const deleteRef = ref(storage, `users/${this.uid}/icon/${this.originIconName}`)
-            deleteObject(deleteRef).then(() => {
-              const storageRef = ref(storage, `users/${this.uid}/icon/${this.iconName}`)
-              uploadBytes(storageRef, this.changedIconPath).then(() => {
-                getDownloadURL(storageRef).then(url => {
-                  this.sendProfile(url)
-                })
-              }).catch(() => {
-                this.stopLoading()
-                this.setUserEditErrorMessage('保存できませんでした')
-              })
-            }).catch(() => {
-              this.stopLoading()
-              this.setUserEditErrorMessage('保存できませんでした')
-            })
-          } else {
-            const storageRef = ref(storage, `users/${this.uid}/icon/${this.iconName}`)
-            uploadBytes(storageRef, this.changedIconPath).then(() => {
-              getDownloadURL(storageRef).then(url => {
-                this.sendProfile(url)
-              })
-            }).catch(() => {
-              this.stopLoading()
-              this.setUserEditErrorMessage('保存できませんでした')
-            })
-          }
-        })
-      } else {
-        this.sendProfile()
-      }
+    async getUserIds() {
+      const db = getFirestore(app)
+      const userIdCollectionGroup = collectionGroup(db, 'user_id')
+      const q = query(userIdCollectionGroup)
+      const querySnapshot = await getDocs(q)
+      this.userIdList = querySnapshot.docs.map(doc => doc.id)
     },
-    sendProfile(iconPath = this.orignIconPath) {
+    async sendProfile() {
+      this.loading()
       const db = getFirestore(app)
       const userDocRef = doc(db, 'users', this.uid)
       const userData = {
         user_name: this.userName,
-        user_id: this.userId,
-        icon_path: iconPath,
-        icon_name: this.iconName ? this.iconName : this.originIconName,
         description: this.description ? this.description : '',
         favorite_place: this.favoritePlace ? this.favoritePlace : '',
         favorite_team: this.selectedTeam ? this.selectedTeam : [],
         favorite_player: this.selectedPlayer ? this.selectedPlayer : [],
         updated_at: serverTimestamp()
       }
-      updateDoc(userDocRef, userData).then(() => {
-        this.stopLoading()
-        this.clear()
-        this.$emit('get-profile')
-      }).catch(() => {
-        const storage = getStorage(app)
-        const iconRef = ref(storage, `users/${this.uid}/icon`)
-        listAll(iconRef).then(({ items }) => {
-          if(items.length) {
-            const deleteRef = ref(storage, `users/${this.uid}/icon/${this.iconName}`)
-            deleteObject(deleteRef).then(() => {
-              this.stopLoading()
-              this.setUserEditErrorMessage('保存できませんでした')
-            }).catch(() => {
-              this.stopLoading()
-              this.setUserEditErrorMessage('保存できませんでした')
+      //ユーザーIDに変更があった場合の処理
+      if(this.userId && (this.userId !== this.originUserId)) {
+        try {
+          await runTransaction(db, async (transaction) => {
+            const userDocRef = doc(db, 'users', this.uid, 'unique', 'user_id')
+            const docSnap = await transaction.get(userDocRef)
+            if (!docSnap.exists()) {
+              throw this.message
+            }
+            transaction.update(userDocRef, {
+              user_id: this.userId
             })
-          } else {
+            const prevIndexRef = doc(db, 'index', 'users', 'user_id', docSnap.data()['user_id'])
+            transaction.delete(prevIndexRef)
+            const indexRef = doc(db, 'index', 'users', 'user_id', this.userId)
+            transaction.set(indexRef, {
+              user: this.uid
+            })
+          }).then(() => {
+            //アイコン画像に変更があった場合の処理
+            if(this.changedIconPath) {  
+              this.saveStorage(userDocRef, userData)
+            //アイコン画像に変更がなかった場合の処理
+            } else {
+              updateDoc(userDocRef, userData).then(() => {
+                this.stopLoading()
+                this.clear()
+                this.$emit('get-profile')
+              }).catch(() => { this.errorHundring() })
+            }
+          }).catch(() => { this.errorHundring() })
+        } catch (message) {
+          this.stopLoading()
+          this.setUserEditErrorMessage(message)
+        }
+      //ユーザーIDに変更がなかった場合の処理
+      } else {
+        //アイコン画像に変更があった場合の処理
+        if(this.changedIconPath) {  
+          this.saveStorage(userDocRef, userData)
+        } else {
+          //アイコン画像に変更がなかった場合の処理
+          updateDoc(userDocRef, userData).then(() => {
             this.stopLoading()
-            this.setUserEditErrorMessage('保存できませんでした')
-          }
-        })
-      })
+            this.clear()
+            this.$emit('get-profile')
+          }).catch(() => { this.errorHundring() })
+        }
+      }
+    },
+    saveStorage(userDocRef, userData) {     
+      const storage = getStorage(app)
+      const storageRef = ref(storage, `users/${this.uid}/icon/${this.iconName}`)
+      const iconRef = ref(storage, `users/${this.uid}/icon`)
+      listAll(iconRef).then(({ items }) => {
+        if(items.length) {
+          const deleteRef = ref(storage, `users/${this.uid}/icon/${this.originIconName}`)
+          deleteObject(deleteRef).then(() => {
+            uploadBytes(storageRef, this.changedIconPath).then(() => {
+              getDownloadURL(storageRef).then(url => {
+                userData.icon_path = url
+                userData.icon_name = this.iconName
+                userData.updated_at = serverTimestamp()
+                updateDoc(userDocRef, userData).then(() => {
+                  this.stopLoading()
+                  this.clear()
+                  this.$emit('get-profile')
+                }).catch(() => { this.errorHundring() })
+              }).catch(() => { this.errorHundring() })
+            }).catch(() => { this.errorHundring() })
+          }).catch(() => { this.errorHundring() })
+        } else {
+          uploadBytes(storageRef, this.changedIconPath).then(() => {
+            getDownloadURL(storageRef).then(url => {
+              userData.icon_path = url
+              userData.icon_name = this.iconName
+              userData.updated_at = serverTimestamp()
+              updateDoc(userDocRef, userData).then(() => {
+                this.stopLoading()
+                this.clear()
+                this.$emit('get-profile')
+              }).catch(() => { this.errorHundring() })
+            }).catch(() => { this.errorHundring() })
+          }).catch(() => { this.errorHundring() })
+        }
+      }).catch(() => { this.errorHundring() })
+    },
+    errorHundring() {
+      this.stopLoading()
+      this.setUserEditErrorMessage(this.message)
     },
     handleClickAvatar() {
       this.$refs.vFileInput.$el.querySelector("input").click()
@@ -403,6 +464,11 @@ export default {
     computed: {
       ...mapGetters('alertMessage', ['userEditErrorMessage']),
       ...mapGetters('loading', ['isLoading']),
+    },
+    watch: {
+      userId() {
+        this.getUserIds()
+      }
     }
   }
 </script>

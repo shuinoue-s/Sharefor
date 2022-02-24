@@ -66,7 +66,7 @@ import pathInfo from '@/modules/pathInfo'
 import MessageAlert from '../components/MessageAlert'
 import app from '../firebase/firebase'
 import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult, getAdditionalUserInfo } from 'firebase/auth'
-import { doc, getFirestore, getDoc, setDoc,  serverTimestamp } from 'firebase/firestore'
+import { doc, getFirestore, getDoc, setDoc,  serverTimestamp, writeBatch } from 'firebase/firestore'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -134,12 +134,12 @@ export default {
     async sendUser(uid, profile) {
       const iconPath = profile.profile_image_url_https
       const db = getFirestore(app)
+      const batch = writeBatch(db)
       const userDocumentRef = doc(db, 'users', uid)
       const docSnap = await getDoc(userDocumentRef)
       if(!docSnap.exists()) {
         const postData = {
           uid: uid,
-          user_id: profile.screen_name,
           user_name: profile.name,
           icon_name: iconPath ? pathInfo(iconPath).basename : iconPath,
           icon_path: iconPath,
@@ -148,6 +148,19 @@ export default {
         await setDoc(userDocumentRef, postData).catch(() => {
           this.setSignInErrorMessage('ログインに失敗しました')
         })
+        const uniqueDocumentRef = doc(db, 'users', uid, 'unique', 'user_id')
+        batch.set(uniqueDocumentRef, {
+          uid: uid,
+          user_id: profile.screen_name
+        })
+        const indexRef = doc(db, "index", "users", "user_id", profile.screen_name)
+        batch.set(indexRef, {
+          user: uid,
+        })
+        await batch.commit().catch((e) => {
+          console.log(e)
+          this.setSignInErrorMessage('ログインに失敗しました')
+        })     
       }
     }
   },
