@@ -123,7 +123,7 @@ export default {
       mdiAccountEdit,
       mdiAccountCircle,
       tab: 'profile',
-      userInfo: '',
+      userInfo: {},
     }
   },
   created() {
@@ -135,9 +135,14 @@ export default {
     async getUserInfo() {
       if(this.user) {
         const db = getFirestore(app)
+        const userIdDocRef = doc(db, 'users', this.user.uid, 'unique', 'user_id')
+        const userIdDocSnap = await getDoc(userIdDocRef)
+        const userId = userIdDocSnap.data().user_id
         const docRef = doc(db, 'users', this.user.uid)
         const docSnap = await getDoc(docRef)
-        this.userInfo = docSnap.data()
+        const userInfo = docSnap.data()
+        userInfo.user_id = userId
+        this.userInfo = userInfo
       }
     },
     clickEdit() {
@@ -150,6 +155,7 @@ export default {
       if(this.userInfo) {
         this.$refs.myPageForm.uid = this.userInfo.uid
         this.$refs.myPageForm.userName = this.userInfo.user_name
+        this.$refs.myPageForm.originUserId = this.userInfo.user_id
         this.$refs.myPageForm.userId = this.userInfo.user_id
         this.$refs.myPageForm.description = this.userInfo.description
         this.$refs.myPageForm.favoritePlace = this.userInfo.favorite_place

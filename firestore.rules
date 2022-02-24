@@ -1,6 +1,9 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function request() {
+      return request.resource.data
+    }
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -14,20 +17,18 @@ service cloud.firestore {
       return value.size() >= min && value.size() <= max
     }
     function isValidCreateUser(user) {
-      return user.size() == 6
-        && user.keys().hasOnly(['uid', 'user_id', 'user_name', 'icon_path', 'icon_name', 'created_at'])
+      return user.size() == 5
+        && user.keys().hasOnly(['uid', 'user_name', 'icon_path', 'icon_name', 'created_at'])
         && 'uid' in user && user.uid is string
-        && 'user_id' in user && user.user_id is string && minMax(user.user_id, 1, 15)
         && 'user_name' in user && user.user_name is string && minMax(user.user_name, 1, 50)
         && 'icon_path' in user && user.icon_path is string && max(user.icon_path, 500)
         && 'icon_name' in user && user.icon_name is string && max(user.icon_name, 500)
         && 'created_at' in user && user.created_at is timestamp;
     }
     function isValidUpdateUser(user) {
-      return user.size() == 11
-        && user.keys().hasOnly(['uid', 'user_id', 'user_name', 'icon_path', 'icon_name', 'description', 'favorite_place' ,'favorite_team', 'favorite_player', 'created_at', 'updated_at'])
+      return user.size() == 10
+        && user.keys().hasOnly(['uid', 'user_name', 'icon_path', 'icon_name', 'description', 'favorite_place' ,'favorite_team', 'favorite_player', 'created_at', 'updated_at'])
         && 'uid' in user && user.uid is string
-        && 'user_id' in user && user.user_id is string && minMax(user.user_id, 1, 15)
         && 'user_name' in user && user.user_name is string && minMax(user.user_name, 1, 50)
         && 'icon_path' in user && user.icon_path is string && max(user.icon_path, 500)
         && 'icon_name' in user && user.icon_name is string && max(user.icon_name, 500)
@@ -82,32 +83,74 @@ service cloud.firestore {
         && 'created_at' in comment && comment.created_at is timestamp
     }
 
+    match /index/users/user_id/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if 
+      	getAfter(
+          /databases/$(database)/documents/users/$(request.resource.data.user)/unique/user_id
+        ).data.user_id == userId;
+      allow delete: if
+        !existsAfter(
+          /databases/$(database)/documents/users/$(resource.data.user)/unique/user_id
+        )
+        || getAfter(
+          /databases/$(database)/documents/users/$(resource.data.user)/unique/user_id
+        ).data.user_id != userId;
+    }
+
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow create: if isUserAuthenticated(userId)
-        && isValidCreateUser(request.resource.data)
-        && request.resource.data.created_at == request.time
-        && request.resource.data.uid == userId;
+        && isValidCreateUser(request())
+        && request().created_at == request.time
+        && request().uid == userId;
       allow update: if isUserAuthenticated(userId)
-        && isValidUpdateUser(request.resource.data)
-        && request.resource.data.created_at == resource.data.created_at;
+        && isValidUpdateUser(request())
+        && request().created_at == resource.data.created_at;
       allow delete: if isUserAuthenticated(userId);
+      
+      match /unique/user_id {
+        allow read: if isAuthenticated();
+        allow create: if isUserAuthenticated(userId)
+          && request().size() == 2
+          && 'uid' in request() && request().uid is string
+          && 'user_id' in request() && request().user_id is string && minMax(request().user_id, 1, 15)
+          && request().uid == userId
+          && getAfter(
+            /databases/$(database)/documents/index/users/user_id/$(request().user_id)
+          ).data.user == userId;
+        allow update: if isUserAuthenticated(userId)
+          && request().size() == 2
+          && 'uid' in request() && request().uid is string
+          && 'user_id' in request() && request().user_id is string && minMax(request().user_id, 1, 15)
+          && request().uid == userId
+          && getAfter(
+            /databases/$(database)/documents/index/users/user_id/$(request().user_id)
+          ).data.user == userId
+          && !existsAfter(
+            /databases/$(database)/documents/index/users/user_id/$(resource.data.user_id)
+          );
+        allow delete: if isUserAuthenticated(userId)
+          && !existsAfter(
+            /databases/$(database)/documents/index/users/user_id/$(resource.data.user_id)
+          );
+      }
 
       match /posts/{postId} {
         allow create: if isUserAuthenticated(userId)
-          && isValidPost(request.resource.data)
-          && request.resource.data.created_at == request.time
-          && request.resource.data.uid == userId;
+          && isValidPost(request())
+          && request().created_at == request.time
+          && request().uid == userId;
         allow update: if isUserAuthenticated(userId)
-          && isValidPost(request.resource.data)
-          && request.resource.data.created_at == resource.data.created_at;
+          && isValidPost(request())
+          && request().created_at == resource.data.created_at;
         allow delete: if isUserAuthenticated(userId);
 
         match /comments/{commentId} {
           allow create: if isUserAuthenticated(userId)
-            && isValidPostComment(request.resource.data)
-            && request.resource.data.created_at == request.time
-            && request.resource.data.uid == userId;
+            && isValidPostComment(request())
+            && request().created_at == request.time
+            && request().uid == userId;
           allow update: if false;
           allow delete: if isUserAuthenticated(userId);
         }
@@ -115,25 +158,28 @@ service cloud.firestore {
 
       match /asks/{askId} {
         allow create: if isUserAuthenticated(userId)
-          && isValidAsk(request.resource.data)
-          && request.resource.data.created_at == request.time
-          && request.resource.data.uid == userId;
+          && isValidAsk(request())
+          && request().created_at == request.time
+          && request().uid == userId;
         allow update: if isUserAuthenticated(userId)
-          && isValidAsk(request.resource.data)
-          && request.resource.data.created_at == resource.data.created_at;
+          && isValidAsk(request())
+          && request().created_at == resource.data.created_at;
         allow delete: if isUserAuthenticated(userId);
 
         match /comments/{commentId} {
           allow create: if isUserAuthenticated(userId)
-            && isValidAskComment(request.resource.data)
-            && request.resource.data.created_at == request.time
-            && request.resource.data.uid == userId;
+            && isValidAskComment(request())
+            && request().created_at == request.time
+            && request().uid == userId;
           allow update: if false;
           allow delete: if isUserAuthenticated(userId);
         }
       }
     }
 
+    match /{Path=**}/user_id/{userId} {
+      allow read: if isAuthenticated();
+    }
     match /{Path=**}/posts/{postId} {
       allow read: if isAuthenticated();
     }   
@@ -144,6 +190,6 @@ service cloud.firestore {
 
     match /{Path=**}/asks/{askId} {
       allow read: if isAuthenticated();
-    } 
+    }
   }
 }
