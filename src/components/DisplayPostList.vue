@@ -2,6 +2,7 @@
   <div>
     <v-container>
       <slot />
+
       <v-row class="d-sm-flex flex-sm-wrap">
         <v-col cols="12" sm="6" lg="4" v-for="post in posts" :key="post.post_id">
           <v-card
@@ -9,7 +10,7 @@
             max-width="344"
             color="customAlmostWhite"
           >
-            <router-link :to="{ name: 'PostShow', params: { id:post.post_id } }">
+            <router-link :to="{ name: 'PostShow', params: { postId:post.post_id } }">
               <v-img
                 :src="post.file_path"
                 :alt="post.file_name"
@@ -36,8 +37,8 @@
                 class="link-style-none"
               >
                 <v-card-text class="py-3">
+                  <p class="user-name mb-0 ml-1">{{ post.userInfo.user_name.slice(0, 8) + (post.userInfo.user_name.length > 8 ? '...' : '') }}</p>
                   <p class="card-text mb-0">@{{ post.userInfo.user_id.slice(0, 14) + (post.userInfo.user_id.length > 14 ? '...' : '') }}</p>
-                  <p class="card-text mb-0 ml-1">{{ post.userInfo.user_name.slice(0, 8) + (post.userInfo.user_name.length > 8 ? '...' : '') }}</p>
                 </v-card-text>
               </router-link>
 
@@ -49,7 +50,7 @@
             <v-divider class="mx-4"></v-divider>
 
             <router-link
-              :to="{ name: 'PostShow', params: { id:post.post_id } }"
+              :to="{ name: 'PostShow', params: { postId:post.post_id } }"
               class="link-style-none"
             >
               <v-card-title class="card-title py-1">
@@ -63,7 +64,7 @@
 
             <v-card-actions>
               <router-link
-                :to="{ name: 'PostShow', params: { id:post.post_id }, hash: '#comment' }"
+                :to="{ name: 'PostShow', params: { postId:post.post_id }, hash: '#comment' }"
                 class="link-style-none"
               >
                 <v-btn
@@ -129,6 +130,11 @@ export default {
 
   .card-title {
     font-size: 16px;
+    font-weight: bold;
+  }
+  .user-name {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
     font-weight: bold;
   }
   .card-text {
