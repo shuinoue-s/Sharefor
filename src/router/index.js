@@ -52,7 +52,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "MyPage" */ '../views/MyPage.vue'),
   },
   {
-    path: '/user_info',
+    path: '/user_info/:userId',
     name: 'UserInfo',
     component: () => import(/* webpackChunkName: "UserInfo" */ '../views/UserInfo.vue'),
   },

@@ -180,6 +180,11 @@ service cloud.firestore {
     match /{Path=**}/user_id/{userId} {
       allow read: if isAuthenticated();
     }
+
+    match /{Path=**}/unique/{user_id} {
+      allow read: if isAuthenticated();
+    }
+    
     match /{Path=**}/posts/{postId} {
       allow read: if isAuthenticated();
     }   
