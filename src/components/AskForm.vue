@@ -23,13 +23,14 @@
           <v-toolbar-title class="font mx-auto" style="color: #B0EACD;">ASK</v-toolbar-title>
           <v-toolbar-items>
             <v-btn
+              class="font"
               dark
               text
               @click="emitSend"
               type="submit"
               :disabled="invalid"
             >
-              <v-icon>{{ mdiSend }}</v-icon>
+              <v-icon>{{ mdiSend }}</v-icon>送信
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>

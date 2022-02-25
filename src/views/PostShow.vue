@@ -1,26 +1,36 @@
 <template>
   <div>
     <v-container class="container-width">
-      <GreenLineVCard>
+      <GreenLineVCard v-if="post.userInfo">
         <v-card-title class="pt-2 pb-0">
           <h1 class="card-title">{{ post.title }}</h1>
         </v-card-title>
         
         <v-card-actions class="py-1">
+          <router-link
+            :to="{ name: 'UserInfo', params: { userId:post.userInfo.user_id } }"
+            class="link-style-none"
+          >
             <v-avatar
               class="my-0 ml-2 mr-2"
               size="45"
-              v-if="post.userInfo"
             >
               <img
                 :src="post.userInfo.icon_path"
                 :alt="post.userInfo.icon_name"
               >
             </v-avatar>
+          </router-link>
+
+          <router-link
+            :to="{ name: 'UserInfo', params: { userId:post.userInfo.user_id } }"
+            class="link-style-none"
+          >
             <div>
-              <p v-if="post.userInfo" class="user-name mb-0">{{ post.userInfo.user_name}}</p>
-              <p v-if="post.userInfo" class="card-text mb-0">@{{ post.userInfo.user_id }}</p>
+              <p class="user-name mb-0">{{ post.userInfo.user_name}}</p>
+              <p class="card-text mb-0">@{{ post.userInfo.user_id }}</p>
             </div>
+          </router-link>
             <v-spacer></v-spacer>
             <p class="card-text mb-0 mr-3">{{ post.created_at }}</p>
         </v-card-actions>
@@ -162,6 +172,10 @@ export default {
   .body-style {
     color: #000;
     white-space: pre-wrap;
+  }
+  .link-style-none {
+    color: #000;
+    text-decoration: none;
   }
   #map {
     width: 390px;

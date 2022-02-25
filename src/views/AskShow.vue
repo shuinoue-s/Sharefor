@@ -10,6 +10,10 @@
         <v-divider class="mx-4"></v-divider>
         
         <v-card-actions class="py-1">
+          <router-link
+            :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
+            class="link-style-none"
+          >
             <v-avatar
               class="my-0 ml-2 mr-2"
               size="45"
@@ -20,12 +24,19 @@
                 :alt="ask.userInfo.icon_name"
               >
             </v-avatar>
+          </router-link>
 
+          <router-link
+            :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
+            class="link-style-none"
+          >
             <div>
               <p v-if="ask.userInfo" class="user-name mb-0 mr-4">{{ ask.userInfo.user_name}}</p>
               <p v-if="ask.userInfo" class="card-text mb-0 mr-4">@{{ ask.userInfo.user_id }}</p>
             </div>
-            <p class="card-text mb-0 ml-auto mr-4">{{ ask.created_at }}</p>
+          </router-link>
+          
+          <p class="card-text mb-0 ml-auto mr-4">{{ ask.created_at }}</p>
         </v-card-actions>
 
         <v-divider class="mx-4 mb-2"></v-divider>
