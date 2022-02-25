@@ -5,11 +5,13 @@
       color="customLightGreen"
       class="mx-auto"
       elevation="3"
+      :max-width="maxWidth"
     >
       <v-card
         outlined
         color="customAlmostWhite"
         class="rounded-0"
+        :max-width="maxWidth"
       >
         <slot />
       </v-card>
@@ -19,7 +21,17 @@
 
 <script>
 export default {
-  name: 'GreenLineVCard'
+  name: 'GreenLineVCard',
+  props: {
+    setMaxWidth: {
+      type: String
+    }
+  },
+  data() {
+    return {
+      maxWidth: this.setMaxWidth
+    }
+  }
 }
 </script>
 
