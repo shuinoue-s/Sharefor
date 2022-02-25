@@ -25,11 +25,11 @@
       <v-spacer></v-spacer>
 
       <v-tab-item value="post-list">
-        <post-list />
+        <PostList />
       </v-tab-item>
 
       <v-tab-item value="ask-list">
-        <ask-list />
+        <AskList />
       </v-tab-item>
     </v-tabs>
 
@@ -46,12 +46,6 @@
 
   export default {
     name: 'Home',
-    props: {
-      setTab: {
-        type: String,
-        default: null
-      }
-    },
     components: {
       PostList,
       AskList,
@@ -62,7 +56,7 @@
     },
     data() {
       return {
-        tab: this.setTab
+        tab: this.$route.params.setTab
       }
     },
     created() {

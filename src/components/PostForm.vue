@@ -23,13 +23,14 @@
           <v-toolbar-title class="font mx-auto" style="color: #B0EACD;">POST</v-toolbar-title>
           <v-toolbar-items>
             <v-btn
+              class="font"
               dark
               text
               type="submit"
               :disabled="invalid"
               @click="emitSend"
             >
-              <v-icon>{{ mdiSend }}</v-icon>
+              <v-icon>{{ mdiSend }}</v-icon>送信
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
@@ -151,12 +152,26 @@
         </validation-provider>
 
         <v-spacer></v-spacer>
-        <v-btn 
-        @click="clear"
-        class="font ma-4"
-        >
-          clear
-        </v-btn>
+        <v-card-actions>
+          <v-btn 
+          @click="clear"
+          class="font ma-4"
+          >
+            clear
+          </v-btn>
+          <!-- <v-spacer></v-spacer>
+          <v-btn
+          class="font ma-4"
+            style="color: #fff"
+            color="customGreen"
+            type="submit"
+            @click="emitSend"
+            :disabled="invalid"
+            right
+          >
+            <v-icon>{{ mdiSend }}</v-icon>送信
+          </v-btn> -->
+        </v-card-actions>
       </v-form>
     </validation-observer>
   </div>

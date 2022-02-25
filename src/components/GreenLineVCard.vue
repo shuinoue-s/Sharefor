@@ -24,7 +24,8 @@ export default {
   name: 'GreenLineVCard',
   props: {
     setMaxWidth: {
-      type: String
+      type: String,
+      default: null
     }
   },
   data() {
