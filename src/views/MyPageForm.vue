@@ -282,8 +282,6 @@ extend('maxlength', {
 })
 extend('unique', {
   validate: async (userId, {originUserId, userIdList}) => {
-    console.log(originUserId)
-    console.log(userIdList)
     if(originUserId === userId) {
       return true
     } else {

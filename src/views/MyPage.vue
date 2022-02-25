@@ -8,7 +8,7 @@
         <v-card-actions class="py-1 px-0 mx-4">
           <v-card-actions class="py-1 px-0">
               <v-avatar
-                v-if="userInfo.icon_path"
+                v-if="userInfo"
                 class="my-0 mr-2"
                 size="50"
               >
@@ -18,7 +18,7 @@
                 >
               </v-avatar>
               <v-avatar
-                v-if="!userInfo.icon_path"
+                v-if="!userInfo"
                 class="my-0 mr-2"
                 size="50"
               >
@@ -26,13 +26,14 @@
                   size="70"
                 >{{ mdiAccountCircle }}</v-icon>
               </v-avatar>
-              <div>
+              <div v-if="userInfo">
                 <p class="card-title mb-0">{{ userInfo.user_name}}</p>
                 <p class="card-text mb-0">@{{ userInfo.user_id }}</p>
               </div>
           </v-card-actions>
           <v-spacer></v-spacer>
             <v-btn
+              v-if="userInfo"
               color="customGreen"
               style="color: #fff;"
               @click="clickEdit"
@@ -123,7 +124,7 @@ export default {
       mdiAccountEdit,
       mdiAccountCircle,
       tab: 'profile',
-      userInfo: {},
+      userInfo: null,
     }
   },
   created() {
