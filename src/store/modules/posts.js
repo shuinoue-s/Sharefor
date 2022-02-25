@@ -5,7 +5,7 @@ import { getFirestore, getDocs, query, orderBy, collectionGroup, limit, startAft
 const db = getFirestore(app)
 
 const state = {
-  posts: [],
+  posts: null,
   postTags: []
 }
 const getters = {
