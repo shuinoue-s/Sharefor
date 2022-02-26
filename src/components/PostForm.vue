@@ -182,34 +182,10 @@ import { mdiSend } from '@mdi/js'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import { getStorage, getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import app from '../firebase/firebase'
-import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
-import { required, max, image, size } from 'vee-validate/dist/rules'
+import { ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import { mapGetters, mapActions } from 'vuex'
 
-setInteractionMode('eager')
-extend('image', {
-  ...image,
-  message: '画像を選択してください'
-})
-extend('max', {
-  ...max,
-  message: '{length}文字以内で入力してください'
-})
-extend('required', {
-  ...required,
-  message: '入力必須です',
-})
-extend('size', {
-  ...size,
-  message: '{size}KB以内である必要があります'
-})
-extend('maxlength', {
-  validate: (select, {max}) => {
-    return select.length <= max
-  },
-  params: ['max'],
-  message: '最大{max}個まで入力可能です'
-})
+setInteractionMode('aggressive')
 
 export default {
   name: 'PostForm',
@@ -230,7 +206,6 @@ export default {
       image: null,
       fileName: null,
       filePath: null,
-      // tags: [], mapGettersで取得
       selected: [],
     }
   },
