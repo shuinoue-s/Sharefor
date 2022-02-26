@@ -113,31 +113,12 @@
 <script>
 import { mdiSend } from '@mdi/js'
 import jLeagueStadiumList from '@/jLeagueStadiumList'
-import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
-import { required, max } from 'vee-validate/dist/rules'
+import { ValidationObserver, ValidationProvider, setInteractionMode,  } from 'vee-validate'
 import { getFirestore, serverTimestamp, collection, setDoc, doc } from "firebase/firestore"
 import app from '../firebase/firebase'
 import { mapGetters, mapActions } from 'vuex'
 
-setInteractionMode('eager')
-
-extend('max', {
-  ...max,
-  message: '{length}文字以内で入力してください',
-})
-
-extend('required', {
-  ...required,
-  message: '入力必須です',
-})
-
-extend('maxlength', {
-  validate: (select, {max}) => {
-    return select.length <= max
-  },
-  params: ['max'],
-  message: '最大{max}個まで入力可能です'
-})
+setInteractionMode('aggressive')
 
 export default {
   name: 'AskForm',

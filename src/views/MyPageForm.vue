@@ -112,7 +112,6 @@
                   v-slot="{ errors }"
                   name="user-name"
                   rules="required|max:50"
-                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="userName"
@@ -130,7 +129,6 @@
                   v-slot="{ errors }"
                   name="user-id"
                   rules="required|max:15|unique:@origin-user-id,@user-id-list"
-                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="userId"
@@ -158,7 +156,6 @@
                   v-slot="{ errors }"
                   name="description"
                   rules="max:300"
-                  mode="aggressive"
                 >
                   <v-textarea
                     v-model="description"
@@ -175,7 +172,6 @@
                   v-slot="{ errors }"
                   name="favorite-place"
                   rules="max:50"
-                  mode="aggressive"
                 >
                   <v-text-field
                     v-model="favoritePlace"
@@ -191,7 +187,6 @@
                   v-slot="{ errors }"
                   name="favorite-team"
                   rules="max:50|maxlength:3"
-                  mode="aggressive"
                 >
                   <v-select
                     v-model="selectedTeam"
@@ -216,7 +211,6 @@
                   v-slot="{ errors }"
                   name="favorite-player"
                   rules="max:30|maxlength:3"
-                  mode="aggressive"
                 >
                   <v-combobox
                     :error-messages="errors"
@@ -249,49 +243,13 @@
 import { mdiContentSaveOutline, mdiAccountCircle } from '@mdi/js'
 import jLeagueTeamList from '@/jLeagueTeamList'
 import MessageAlert from '@/components/MessageAlert'
-import { required, max, image, size } from 'vee-validate/dist/rules'
-import { extend, ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+import { ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import app from '../firebase/firebase'
 import { getFirestore, doc, serverTimestamp, updateDoc, runTransaction, collectionGroup, query, getDocs } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from 'firebase/storage'
 import { mapActions, mapGetters } from 'vuex'
 
-setInteractionMode('eager')
-extend('required', {
-  ...required,
-  message: '入力必須です',
-})
-extend('max', {
-  ...max,
-  message: '{length}文字以内で入力してください',
-})
-extend('image', {
-  ...image,
-  message: '画像を選択してください'
-})
-extend('size', {
-  ...size,
-  message: '{size}KB以内である必要があります'
-})
-extend('maxlength', {
-  validate: (select, {max}) => {
-    return select.length <= max
-  },
-  params: ['max'],
-  message: '最大{max}個まで入力可能です'
-})
-extend('unique', {
-  validate: async (userId, {originUserId, userIdList}) => {
-    if(originUserId === userId) {
-      return true
-    } else {
-      const result = userIdList.includes(userId)
-      return !result
-    }
-  },
-  params: ['originUserId', 'userIdList'],
-  message: 'すでに使用されているユーザーIDです'
-})
+setInteractionMode('aggressive')
 
 export default {
   name: 'MyPageForm',

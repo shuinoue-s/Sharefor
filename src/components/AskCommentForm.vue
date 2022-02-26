@@ -29,7 +29,6 @@
               v-slot="{ errors }"
               rules="required|max:300"
               name="comment"
-              mode="aggressive"
             >
               <v-card-actions
                 class="align-end pt-0"
@@ -71,23 +70,12 @@
 <script>
 import MessageAlert from '@/components/MessageAlert'
 import { mdiSend } from '@mdi/js'
-import { ValidationObserver, ValidationProvider, setInteractionMode, extend } from 'vee-validate'
-import { required, max } from 'vee-validate/dist/rules'
+import { ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
 import { getFirestore, serverTimestamp, collection, doc, setDoc } from "firebase/firestore"
 import app from '../firebase/firebase'
 import { mapActions, mapGetters } from 'vuex'
 
-setInteractionMode('eager')
-
-extend('max', {
-  ...max,
-  message: '{length}文字以内で入力してください',
-})
-
-extend('required', {
-  ...required,
-  message: '入力必須です',
-})
+setInteractionMode('aggressive')
 
 export default {
   name: 'AskCommentForm',

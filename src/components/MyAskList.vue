@@ -37,7 +37,7 @@
 
       <v-row class="d-sm-flex flex-sm-wrap">
         <v-col cols="12" sm="6" lg="4" v-for="ask in asks" :key="ask.ask_id">
-          <GreenLineVCard setMaxWidth="344">
+          <GreenLineVCard setMaxWidth="344" setMinHeight="295">
             <v-card-actions>
               <router-link
                 :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
@@ -121,6 +121,7 @@
 
                   <v-card
                     v-if="!ask.is_asking"
+                    class="card-margin"
                     color="customGray"
                     outlined
                     rounded
@@ -286,5 +287,8 @@ export default {
     color: #21BF73;
     font-size: 20px;
     font-weight: bold;
+  }
+  .card-margin {
+    margin-top: 38.2px;
   }
 </style>
