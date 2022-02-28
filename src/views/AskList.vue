@@ -47,10 +47,10 @@ export default {
       if(!this.lastVisiblePost) {
         this.$refs.infiniteLoading.stateChanger.complete()
       }
-    },
+    }
   },
   computed: {
-    ...mapGetters('asks', ['asks'])
+    ...mapGetters('asks', ['asks']),
   }
 }
 </script>

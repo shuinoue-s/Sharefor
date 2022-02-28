@@ -143,6 +143,8 @@ export default {
           user_name: profile.name,
           icon_name: iconPath ? pathInfo(iconPath).basename : iconPath,
           icon_path: iconPath,
+          favo_post_count: 0,
+          favo_ask_count: 0,
           created_at: serverTimestamp()
         }
         await setDoc(userDocumentRef, postData).catch(() => {
@@ -157,8 +159,7 @@ export default {
         batch.set(indexRef, {
           user: uid,
         })
-        await batch.commit().catch((e) => {
-          console.log(e)
+        await batch.commit().catch(() => {
           this.setSignInErrorMessage('ログインに失敗しました')
         })     
       }

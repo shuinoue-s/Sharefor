@@ -173,6 +173,7 @@ export default {
         text: this.text,
         tags: this.selected,
         is_asking: true,
+        favo_count: 0,
         created_at: serverTimestamp()
       }
       await setDoc(asksDocumentRef, askData).catch(() => {

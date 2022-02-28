@@ -52,7 +52,7 @@
 
             <v-card-actions class="mt-2">
                 <router-link
-                  :to="{ name: 'AskShow', params: { askId:ask.ask_id  } }"
+                  :to="{ name: 'AskShow', params: { askId:ask.ask_id } }"
                   class="link-style-none"
                 >      
                   <v-btn
@@ -64,6 +64,20 @@
                     >{{ mdiCommentOutline }}</v-icon>
                   </v-btn>
                 </router-link>
+
+                <!-- <div class="text-center">
+                  <v-icon
+                    v-if="true"
+                    @click="favoriteBtnClicked(ask)"
+                    color="yellow"
+                  >{{ mdiStar }}</v-icon>
+                  <v-icon
+                    v-else
+                    @click="favoriteBtnClicked(ask)"
+                    color="yellow"
+                  >{{ mdiStarOutline }}</v-icon>
+                  <p class="mb-0 favo-text">いいね {{ ask.favo_count }}</p>
+                </div> -->
 
                 <v-spacer></v-spacer>
 
@@ -112,13 +126,16 @@
 </template>
 
 <script>
-import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline } from '@mdi/js'
+import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline, mdiStar, mdiStarOutline } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
+// import app from '../firebase/firebase'
+// import { getFirestore, doc, writeBatch, serverTimestamp, getDoc, onSnapshot } from 'firebase/firestore'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'DisplayAskList',
   components: {
-    GreenLineVCard
+    GreenLineVCard,
   },
   props: {
     setAsks: {
@@ -131,8 +148,49 @@ export default {
       mdiCommentSearchOutline,
       mdiCommentRemoveOutline,
       mdiCommentOutline,
+      mdiStar,
+      mdiStarOutline,
       asks: this.setAsks
     }
+  },
+  methods: {
+    // async favoriteBtnClicked(ask) {
+    //   if(ask && this.user) {
+    //     const db = getFirestore(app)
+    //     const batch = writeBatch(db)
+    //     const likedAskDocRef = doc(db, 'users', ask.uid, 'asks', ask.ask_id, 'likedUsers', this.user.uid)
+    //     const likedUserDocRef = doc(db, 'users', this.user.uid, 'likedAsks', ask.ask_id)
+    //     const likedDocSnap = await getDoc(likedAskDocRef)
+    //     const likedUserDocSnap = await getDoc(likedUserDocRef)
+    //     this.isFavorite = likedUserDocSnap.exists()
+    //     if(!likedDocSnap.exists() && !likedUserDocSnap.exists()) {
+    //       batch.set(likedAskDocRef, {
+    //         uid: this.user.uid,
+    //         ask_id: ask.ask_id,
+    //         created_at: serverTimestamp()
+    //       })
+    //       batch.set(likedUserDocRef, {
+    //         uid: this.user.uid,
+    //         ask_id: ask.ask_id,
+    //         created_at: serverTimestamp()
+    //       })
+    //       await batch.commit()
+    //       onSnapshot(doc(db, 'users', ask.uid, 'asks', ask.ask_id), (doc) => {
+    //         ask.favo_count = doc.data().favo_count
+    //       })
+    //     } else {
+    //       batch.delete(likedAskDocRef)
+    //       batch.delete(likedUserDocRef)
+    //       await batch.commit()
+    //       onSnapshot(doc(db, 'users', ask.uid, 'asks', ask.ask_id), (doc) => {
+    //         ask.favo_count = doc.data().favo_count
+    //       })
+    //     }
+    //   }
+    // }
+  },
+  computed: {
+    ...mapGetters('auth', ['user'])
   }
 }
 </script>
@@ -153,6 +211,10 @@ export default {
     font-size: 13px;
   }
   .small-text {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+  }
+  .favo-text {
     color: rgba(0, 0, 0, 0.6);
     font-size: 12px;
   }
