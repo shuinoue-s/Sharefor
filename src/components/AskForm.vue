@@ -180,7 +180,7 @@ export default {
         this.setAskErrorMessage('投稿に失敗しました')
       })
       this.clear()
-      !(this.$route.name === 'Home') ? this.$router.push({name: 'Home', params: {setTab: 'ask-list'}}) : this.firstGetAsks()
+      this.$route.name !== 'Home' ? this.$router.push({name: 'Home', params: {setTab: 'ask-list'}}) : this.firstGetAsks()
     }
   },
   computed: {

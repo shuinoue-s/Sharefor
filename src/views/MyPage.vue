@@ -142,7 +142,7 @@ export default {
         const docRef = doc(db, 'users', this.user.uid)
         const docSnap = await getDoc(docRef)
         const userInfo = docSnap.data()
-        userInfo.user_id = userId
+        this.$set(userInfo, 'user_id', userId)
         this.userInfo = userInfo
       }
     },

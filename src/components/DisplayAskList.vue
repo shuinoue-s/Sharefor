@@ -191,6 +191,11 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['user'])
+  },
+  watch: {
+    setAsks() {
+      this.asks = this.setAsks
+    }
   }
 }
 </script>
