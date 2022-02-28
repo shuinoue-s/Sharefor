@@ -1,11 +1,12 @@
+import Vue from 'vue'
 import { format } from 'date-fns'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
 import app from '@/firebase/firebase'
 
 function arrayDateFormat(list) {
   for(let i = 0; i < list.length; i++) {
-    list[i].created_at = list[i].created_at.toDate()
-    list[i].created_at = format(list[i].created_at, 'yyyy/MM/dd HH:mm:ss')
+    const dateFormat = list[i].created_at.toDate()
+    Vue.set(list[i], 'created_at', format(dateFormat, 'yyyy/MM/dd HH:mm:ss'))
   }
   return list
 }
@@ -27,15 +28,15 @@ async function arrayAddUserInfo(list) {
     const docRef = doc(db, 'users', list[i].uid)
     const docSnap = await getDoc(docRef)
     const userInfo = docSnap.data()
-    userInfo.user_id = userId
-    list[i].userInfo = userInfo
+    Vue.set(userInfo, 'user_id', userId)
+    Vue.set(list[i], 'userInfo', userInfo)
   }
   return list
 }
 
 function dateFormat(data) {
-  data.created_at = data.created_at.toDate()
-  data.created_at = format(data.created_at, 'yyyy/MM/dd HH:mm:ss')
+  const dateFormat = data.created_at.toDate()
+  Vue.set(data, 'created_at', format(dateFormat, 'yyyy/MM/dd HH:mm:ss'))
   return data
 }
 
@@ -53,8 +54,8 @@ async function addUserInfo(data) {
   const docRef = doc(db, 'users', data.uid)
   const docSnap = await getDoc(docRef)
   const userInfo = docSnap.data()
-  userInfo.user_id = userId
-  data.userInfo = userInfo
+  Vue.set(userInfo, 'user_id', userId)
+  Vue.set(data, 'userInfo', userInfo)
   return data
 }
 

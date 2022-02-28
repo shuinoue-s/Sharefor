@@ -3,6 +3,7 @@
     <DisplayPostList
       v-if="posts"
       :setPosts="posts"
+      @delete-after="firstGetPosts"
     />
 
     <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">
