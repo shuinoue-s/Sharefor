@@ -322,6 +322,7 @@ export default {
         file_path: filePath,
         tags: this.selected,
         is_show: false,
+        favo_count: 0,
         created_at: serverTimestamp()
       }
       await setDoc(postsDocumentRef, postData).catch(() => {
