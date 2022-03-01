@@ -185,19 +185,19 @@ export default {
   },
   async created() {
     this.onAuth()
-    this.lastVisiblePost = await this.firstGetTaggedAsks()
+    this.lastVisiblePost = await this.firstGetAsks()
     this.posted = true
   },
   methods: {
     ...mapActions('auth', ['onAuth']),
     async infiniteLoad() {
-      this.lastVisiblePost = await this.nextTaggedAsks(this.lastVisiblePost)
+      this.lastVisiblePost = await this.nextAsks(this.lastVisiblePost)
       this.$refs.infiniteLoading.stateChanger.loaded()
       if(!this.lastVisiblePost) {
         this.$refs.infiniteLoading.stateChanger.complete()
       }
     },
-    async firstGetTaggedAsks() {
+    async firstGetAsks() {
       const db = getFirestore()
       const asksCollection = collection(db, 'users', this.user.uid, 'asks')
       const q = query(asksCollection, orderBy('created_at', 'desc'), limit(10))
@@ -213,7 +213,7 @@ export default {
         return false
       }
     },
-    async nextTaggedAsks(prelastVisiblePost) {
+    async nextAsks(prelastVisiblePost) {
       const db = getFirestore()
       const asksCollection = collection(db, 'users', this.user.uid, 'asks')
       const nextAsks = query(asksCollection, orderBy('created_at', 'desc'), startAfter(prelastVisiblePost),  limit(10))
@@ -240,7 +240,7 @@ export default {
         is_asking: false
       }
       updateDoc(askDocRef, askData).then(() => {
-        this.lastVisiblePost = this.firstGetTaggedAsks()
+        this.lastVisiblePost = this.firstGetAsks()
         this.dialog = false
       })
     }
@@ -250,7 +250,7 @@ export default {
   },
   watch: {
     async user() {
-      this.lastVisiblePost = await this.firstGetTaggedAsks()
+      this.lastVisiblePost = await this.firstGetAsks()
     }
   }
 }
