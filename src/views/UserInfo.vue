@@ -70,8 +70,8 @@ export default {
       const docRef = doc(db, 'users', user.uid)
       const docSnap = await getDoc(docRef)
       const userInfo = docSnap.data()
-      this.$set(userInfo, 'user_id', userId)
       next(vm => {
+        vm.$set(userInfo, 'user_id', userId)
         vm.userInfo = userInfo
       })
     } else {
