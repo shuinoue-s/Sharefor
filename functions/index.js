@@ -12,9 +12,13 @@ admin.initializeApp();
 
 exports.onWritePost = functions.firestore
     .document("users/{userId}/posts/{postId}")
-    .onWrite((change, context) => {
-      const {postId} = context.params;
+    .onWrite(async (change, context) => {
+      const {userId, postId} = context.params;
       const post = change.after.data();
+      const db = admin.firestore();
+      const userRef = db.collection("users").doc(userId);
+      const user = await userRef.get();
+      functions.logger.log("Hello from info. Here's an object:", user);
       postsIndex.saveObject({
         objectID: postId,
         post_id: post.post_id,

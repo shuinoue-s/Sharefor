@@ -27,7 +27,7 @@
                     </v-tab>
 
                     <v-spacer></v-spacer>
-                    <v-tab to="/post_form" class="caption text-sm-subtitle-1">
+                    <v-tab to="/search" class="caption text-sm-subtitle-1">
                         <p class="mb-0 font">探す</p>
                     </v-tab>
                     
