@@ -1,7 +1,38 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const algoliasearch = require("algoliasearch");
+
+const ALGOLIA_ID = functions.config().algolia.id;
+const ALGOLIA_KEY = functions.config().algolia.key;
+
+const client = algoliasearch(ALGOLIA_ID, ALGOLIA_KEY);
+const postsIndex = client.initIndex("posts");
+
 admin.initializeApp();
 
+exports.onWritePost = functions.firestore
+    .document("users/{userId}/posts/{postId}")
+    .onWrite((change, context) => {
+      const {postId} = context.params;
+      const post = change.after.data();
+      postsIndex.saveObject({
+        objectID: postId,
+        post_id: post.post_id,
+        uid: post.uid,
+        user_name: post.user_name,
+        title: post.title,
+        body: post.body,
+        file_name: post.file_name,
+        file_path: post.file_path,
+        geopoint: post.geopoint,
+        tags: post.tags,
+        favo_count: post.favo_count,
+        is_show: post.is_show,
+        created_at: post.created_at,
+      });
+    });
+
+// いいね機能
 exports.postLiked = functions.firestore
     .document("users/{userId}/posts/{postId}/likedUsers/{likeduserId}")
     .onCreate((snapshot, context) => {
