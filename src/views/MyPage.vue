@@ -4,6 +4,7 @@
       <v-card
         outlined
         color="white"
+        v-if="isAuthenticated"
       >
         <v-card-actions class="py-1 px-0 mx-4">
           <v-card-actions class="py-1 px-0">
@@ -32,14 +33,43 @@
               </div>
           </v-card-actions>
           <v-spacer></v-spacer>
-            <v-btn
-              v-if="userInfo"
-              color="customGreen"
-              style="color: #fff;"
-              @click="clickEdit"
+          <v-btn
+            v-if="userInfo"
+            class="mr-8"
+            color="customGreen"
+            style="color: #fff;"
+            @click="clickEdit"
+          >
+            <v-icon>{{ mdiAccountEdit }}</v-icon>編集
+          </v-btn>
+
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="gray"
+                class=""
+                v-bind="attrs"
+                v-on="on"
+              >{{ mdiDotsVertical }}</v-icon>
+            </template>
+            <v-list
+              class="menu-item py-0"
+              color="customLightGreen"
+              dense
             >
-              <v-icon>{{ mdiAccountEdit }}</v-icon>編集
-            </v-btn>
+              <v-list-item class="px-2">
+                <v-btn
+                  @click="signOut"
+                  class="px-0"
+                  style="color: #21BF73"
+                  small
+                  text
+                  >
+                    <v-icon>{{ mdiLogout }}</v-icon>ログアウト
+                </v-btn>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </v-card-actions>
       </v-card>
 
@@ -68,10 +98,10 @@
         </v-tab>
 
         <v-spacer></v-spacer>
-        <v-tab href="#" active-class="active" class="font">
+        <!-- <v-tab href="#" active-class="active" class="font">
           いいね
         </v-tab>
-        <v-spacer></v-spacer>
+        <v-spacer></v-spacer> -->
 
         <v-tab-item value="profile">
           <Profile
@@ -102,7 +132,7 @@
 </template>
 
 <script>
-import { mdiAccountEdit, mdiAccountCircle } from '@mdi/js'
+import { mdiAccountEdit, mdiAccountCircle, mdiDotsVertical, mdiLogout } from '@mdi/js'
 import Profile from '@/components/Profile'
 import MyPostList from '@/components/MyPostList'
 import MyAskList from '@/components/MyAskList'
@@ -110,6 +140,7 @@ import MyPageForm from '@/views/MyPageForm'
 import { mapActions, mapGetters } from 'vuex'
 import app from '../firebase/firebase'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
+import { getAuth, signOut } from 'firebase/auth'
 
 export default {
   name: 'MyPage',
@@ -123,6 +154,8 @@ export default {
     return {
       mdiAccountEdit,
       mdiAccountCircle,
+      mdiDotsVertical,
+      mdiLogout,
       tab: 'profile',
       userInfo: null,
     }
@@ -133,6 +166,8 @@ export default {
   },
   methods: {
     ...mapActions('auth', ['onAuth']),
+    ...mapActions('auth',['onAuth', 'isSignOut']),
+    ...mapActions('alertMessage',['setSignOutMessage', 'setSignOutErrorMessage']),
     async getUserInfo() {
       if(this.user) {
         const db = getFirestore(app)
@@ -167,10 +202,21 @@ export default {
         this.$refs.myPageForm.originIconName = this.userInfo.icon_name
         this.$refs.myPageForm.previewImage = this.userInfo.icon_path
       }
+    },
+    signOut() {
+      const auth = getAuth()
+      signOut(auth).then(() => {
+        this.isSignOut()
+        this.setSignOutMessage('ログアウトしました')
+        this.$router.push({name: 'Login'})
+      }).catch(() => {
+        this.setSignOutErrorMessage('ログアウトに失敗しました')
+      })
     }
   },
   computed: {
     ...mapGetters('auth', ['user']),
+    ...mapGetters('auth', ['isAuthenticated']),
   },
   watch: {
     user() {

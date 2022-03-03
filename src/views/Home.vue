@@ -32,17 +32,14 @@
         <AskList />
       </v-tab-item>
     </v-tabs>
-
-    <v-btn v-if="isAuthenticated" @click="signOut" color="customPink" style="color: #fff;">ログアウト</v-btn>
   </div>
 </template>
 
 <script>
   import PostList from '@/views/PostList'
   import AskList from '@/views/AskList'
-  import { mapGetters, mapActions } from 'vuex'
-  import { getAuth, signOut } from "firebase/auth"
   import MessageAlert from '@/components/MessageAlert'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'Home',
@@ -63,18 +60,7 @@
       this.onAuth()
     },
     methods: {
-      ...mapActions('auth',['onAuth', 'isSignOut']),
-      ...mapActions('alertMessage',['setSignOutMessage', 'setSignOutErrorMessage']),
-      signOut() {
-        const auth = getAuth()
-        signOut(auth).then(() => {
-          this.isSignOut()
-          this.setSignOutMessage('ログアウトしました')
-          this.$router.push({name: 'Login'})
-        }).catch(() => {
-          this.setSignOutErrorMessage('ログアウトに失敗しました')
-        })
-      },
+       ...mapActions('auth',['onAuth']),
     },
     computed: {
       ...mapGetters('auth', ['isAuthenticated']),

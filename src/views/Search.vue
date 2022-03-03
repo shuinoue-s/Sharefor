@@ -12,14 +12,14 @@
       label="検索したいキーワードを入力してください"
     ></v-text-field>
 
-    <div v-if="searchResultUser">
+    <!-- <div v-if="searchResultUser">
       <GreenLineVCard
         v-for="user in searchResultUser"
         :key="user.user_id"
         class="pt-1"
       >
       </GreenLineVCard>
-    </div>
+    </div> -->
 
     <div v-if="searchResultPost">
       <GreenLineVCard
