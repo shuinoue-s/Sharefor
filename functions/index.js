@@ -6,24 +6,43 @@ const ALGOLIA_ID = functions.config().algolia.id;
 const ALGOLIA_KEY = functions.config().algolia.key;
 
 const client = algoliasearch(ALGOLIA_ID, ALGOLIA_KEY);
+const usersIndex = client.initIndex("users");
 const postsIndex = client.initIndex("posts");
+const asksIndex = client.initIndex("asks");
 
 admin.initializeApp();
 
+exports.onWriteUser = functions.firestore
+    .document("users/{userId}")
+    .onWrite((change, context) => {
+      const {userId} = context.params;
+      const user = change.after.data();
+      usersIndex.saveObject({
+        objectID: userId,
+        uid: user.uid,
+        user_name: user.user_name,
+        description: user.description,
+        icon_name: user.icon_name,
+        icon_path: user.icon_path,
+        favo_post_count: user.favo_post_count,
+        favo_ask_count: user.favo_ask_count,
+        favorite_place: user.favorite_place,
+        favorite_team: user.favorite_team,
+        favorite_player: user.favorite_player,
+        favo_count: user.favo_count,
+        is_show: user.is_show,
+        created_at: user.created_at,
+      });
+    });
 exports.onWritePost = functions.firestore
     .document("users/{userId}/posts/{postId}")
-    .onWrite(async (change, context) => {
-      const {userId, postId} = context.params;
+    .onWrite((change, context) => {
+      const {postId} = context.params;
       const post = change.after.data();
-      const db = admin.firestore();
-      const userRef = db.collection("users").doc(userId);
-      const user = await userRef.get();
-      functions.logger.log("Hello from info. Here's an object:", user);
       postsIndex.saveObject({
         objectID: postId,
         post_id: post.post_id,
         uid: post.uid,
-        user_name: post.user_name,
         title: post.title,
         body: post.body,
         file_name: post.file_name,
@@ -33,6 +52,24 @@ exports.onWritePost = functions.firestore
         favo_count: post.favo_count,
         is_show: post.is_show,
         created_at: post.created_at,
+      });
+    });
+
+exports.onWriteAsk = functions.firestore
+    .document("users/{userId}/asks/{askId}")
+    .onWrite((change, context) => {
+      const {askId} = context.params;
+      const ask = change.after.data();
+      asksIndex.saveObject({
+        objectID: askId,
+        ask_id: ask.ask_id,
+        uid: ask.uid,
+        stadium: ask.stadium,
+        text: ask.text,
+        tags: ask.tags,
+        is_asking: ask.is_asking,
+        favo_count: ask.favo_count,
+        created_at: ask.created_at,
       });
     });
 

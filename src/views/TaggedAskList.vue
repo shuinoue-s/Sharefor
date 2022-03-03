@@ -3,6 +3,7 @@
     <DisplayAskList
       v-if="asks"
       :setAsks="asks"
+      @delete-after="firstGetAsks"
     >
       <v-divider></v-divider>
       <div class="d-flex justify-center text-center">
@@ -48,7 +49,7 @@ export default {
   },
   async created() {
     this.onAuth()
-    this.lastVisiblePost = await this.firstGetTaggedAsks()
+    this.lastVisiblePost = await this.firstGetAsks()
     this.posted = true
   },
   methods: {
@@ -60,7 +61,7 @@ export default {
         this.$refs.infiniteLoading.stateChanger.complete()
       }
     },
-    async firstGetTaggedAsks() {
+    async firstGetAsks() {
       const db = getFirestore()
       const asksCollectionGroup = collectionGroup(db, 'asks')
       const q = query(asksCollectionGroup, where("tags", "array-contains", this.$route.params.tag), orderBy('created_at', 'desc'), limit(10))

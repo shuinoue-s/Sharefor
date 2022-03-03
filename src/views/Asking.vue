@@ -3,6 +3,7 @@
     <DisplayAskList
       v-if="asks"
       :setAsks="asks"
+      @delete-after="firstGetAsking"
     />
 
     <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">

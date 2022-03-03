@@ -50,44 +50,44 @@
             <v-divider class="mx-4"></v-divider>
 
             <v-card-actions>
-            <router-link
-              :to="{ name: 'PostShow', params: { postId:post.post_id } }"
-              class="link-style-none"
-            >
-              <v-card-title class="card-title py-1">
-                {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
-              </v-card-title>
-
-              <v-card-subtitle class="my-0 pb-0">
-                {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
-              </v-card-subtitle>
-            </router-link>
-
-            <v-spacer></v-spacer>
-
-            <v-menu
-              v-if="user.uid === post.uid"
-              offset-y
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-icon
-                  color="gray"
-                  class="mb-8"
-                  v-bind="attrs"
-                  v-on="on"
-                >{{ mdiDotsVertical }}</v-icon>
-              </template>
-              <v-list
-                class="menu-item py-0"
-                dense
+              <router-link
+                :to="{ name: 'PostShow', params: { postId:post.post_id } }"
+                class="link-style-none"
               >
-                <v-list-item
-                  @click="deletePost(post)"
+                <v-card-title class="card-title py-1">
+                  {{ post.title.slice(0, 14) + (post.title.length > 14 ? '...' : '') }}
+                </v-card-title>
+
+                <v-card-subtitle class="my-0 pb-0">
+                  {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
+                </v-card-subtitle>
+              </router-link>
+
+              <v-spacer></v-spacer>
+
+              <v-menu
+                v-if="user.uid === post.uid"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    color="gray"
+                    class="mb-8"
+                    v-bind="attrs"
+                    v-on="on"
+                  >{{ mdiDotsVertical }}</v-icon>
+                </template>
+                <v-list
+                  class="menu-item py-0"
+                  dense
                 >
-                  削除
-                </v-list-item>
-              </v-list>
-            </v-menu>
+                  <v-list-item
+                    @click="deletePost(post)"
+                  >
+                    削除
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </v-card-actions>
 
             <v-card-actions>
