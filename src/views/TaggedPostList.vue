@@ -3,6 +3,7 @@
     <DisplayPostList
       v-if="posts"
       :setPosts="posts"
+      @delete-after="firstGetTaaggedPosts"
     >
       <v-divider></v-divider>
       <div class="d-flex justify-center text-center">

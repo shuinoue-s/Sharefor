@@ -36,19 +36,47 @@
             
             <v-divider class="mx-4"></v-divider>
             
-            <router-link
-              :to="{ name: 'AskShow', params: { askId:ask.ask_id  } }"
-              class="link-style-none"
-            >
-              <v-card-title class="card-title pt-3 pb-0 mb-0">
-                {{ ask.stadium }}
-              </v-card-title>
-              <p class="small-text mx-4">周辺のおすすめスポット</p>
+            <v-card-actions>
+              <router-link
+                :to="{ name: 'AskShow', params: { askId:ask.ask_id  } }"
+                class="link-style-none"
+              >
+                <v-card-title class="card-title pt-1 pb-0 mb-0">
+                  {{ ask.stadium }}
+                </v-card-title>
+                <p class="small-text mx-4">周辺のおすすめスポット</p>
 
-              <v-card-subtitle class="py-0">
-                {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
-              </v-card-subtitle>
-            </router-link>
+                <v-card-subtitle class="py-0">
+                  {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
+                </v-card-subtitle>
+              </router-link>
+
+              <v-spacer></v-spacer>
+
+              <v-menu
+                v-if="user.uid === ask.uid"
+                offset-y
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon
+                    color="gray"
+                    class="mb-12"
+                    v-bind="attrs"
+                    v-on="on"
+                  >{{ mdiDotsVertical }}</v-icon>
+                </template>
+                <v-list
+                  class="menu-item py-0"
+                  dense
+                >
+                  <v-list-item
+                    @click="deleteAsk(ask)"
+                  >
+                    削除
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-card-actions>
 
             <v-card-actions class="mt-2">
                 <router-link
@@ -126,9 +154,10 @@
 </template>
 
 <script>
-import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline, mdiStar, mdiStarOutline } from '@mdi/js'
+import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline, mdiStar, mdiStarOutline, mdiDotsVertical } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
-// import app from '../firebase/firebase'
+import app from '../firebase/firebase'
+import { getFirestore, deleteDoc, doc } from 'firebase/firestore'
 // import { getFirestore, doc, writeBatch, serverTimestamp, getDoc, onSnapshot } from 'firebase/firestore'
 import { mapGetters } from 'vuex'
 
@@ -150,10 +179,16 @@ export default {
       mdiCommentOutline,
       mdiStar,
       mdiStarOutline,
+      mdiDotsVertical,
       asks: this.setAsks
     }
   },
   methods: {
+    async deleteAsk(ask) {
+      const db = getFirestore(app)
+      await deleteDoc(doc(db, 'users', ask.uid, 'asks', ask.ask_id))
+      this.$emit('delete-after')
+    },
     // async favoriteBtnClicked(ask) {
     //   if(ask && this.user) {
     //     const db = getFirestore(app)

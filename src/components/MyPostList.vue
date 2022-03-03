@@ -3,6 +3,7 @@
     <DisplayPostList
       v-if="posts"
       :setPosts="posts"
+      @delete-after="firstGetPosts"
     />
 
     <InfiniteLoading v-if="posted" ref="infiniteLoading" spinner="spiral" @infinite="infiniteLoad">
@@ -38,7 +39,7 @@ export default {
   },
   async created() {
     this.onAuth()
-    this.lastVisiblePost = await this.firstGetTaggedPosts()
+    this.lastVisiblePost = await this.firstGetPosts()
     this.posted = true
   },
   methods: {
@@ -50,7 +51,7 @@ export default {
         this.$refs.infiniteLoading.stateChanger.complete()
       }
     },
-    async firstGetTaggedPosts() {
+    async firstGetPosts() {
       if(this.user.uid) {
         const db = getFirestore()
         const postsCollection = collection(db, 'users', this.user.uid, 'posts')
@@ -92,7 +93,7 @@ export default {
   },
   watch: {
     async user() {
-      this.lastVisiblePost = await this.firstGetTaggedPosts()
+      this.lastVisiblePost = await this.firstGetPosts()
     }
   }
 }
