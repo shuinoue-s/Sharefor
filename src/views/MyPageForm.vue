@@ -97,8 +97,9 @@
                   </v-avatar>
                   <v-avatar
                     v-if="!previewImage"
-                    class="my-0 mr-2"
+                    class="avatar-style my-0 mr-2"
                     size="50"
+                    @click="handleClickAvatar"
                   >
                     <v-icon
                       size="70"

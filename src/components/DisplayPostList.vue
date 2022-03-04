@@ -24,11 +24,22 @@
                 :to="{ name: 'UserInfo', params: { userId:post.userInfo.user_id } }"
                 class="link-style-none"
               >
-                <v-avatar class="my-auto">
+                <v-avatar
+                  class="my-auto"
+                  v-if="post.userInfo.icon_path"
+                >
                   <img
                     :src="post.userInfo.icon_path"
                     :alt="post.userInfo.icon_name"
                   >
+                </v-avatar>
+                <v-avatar
+                  v-if="!post.userInfo.icon_path"
+                  class="my-auto"
+                >
+                  <v-icon
+                    size="70"
+                  >{{ mdiAccountCircle }}</v-icon>
                 </v-avatar>
               </router-link>
 
@@ -130,7 +141,7 @@
 </template>
 
 <script>
-import { mdiCommentOutline, mdiDotsVertical } from '@mdi/js'
+import { mdiCommentOutline, mdiDotsVertical, mdiAccountCircle } from '@mdi/js'
 import GoogleMapAPI from '@/components/GoogleMapAPI'
 import app from '@/firebase/firebase'
 import { getFirestore, deleteDoc, doc } from 'firebase/firestore'
@@ -152,6 +163,7 @@ export default {
     return {
       mdiCommentOutline,
       mdiDotsVertical,
+      mdiAccountCircle,
       posts: this.setPosts
     }
   },

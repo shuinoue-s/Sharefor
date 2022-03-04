@@ -26,6 +26,16 @@
               Twitterでログイン
             </v-btn>
 
+            <v-btn
+            @click="signInAnonymous"
+            block
+            class="text-transform py-4 my-4"
+            style="color: #fff"
+            color="customGreen"
+            >
+              ゲストログイン
+            </v-btn>
+
             <!-- <v-btn
             @click="signInGoogle"
             block
@@ -46,14 +56,14 @@
               メールアドレスでログイン
             </v-btn> -->
             
-            <v-btn
+            <!-- <v-btn
             block
             text
             class="text-transform py-4 my-2"
             color="customGreen"
             >
               新規登録はこちら
-            </v-btn>
+            </v-btn> -->
           </v-col>
         </v-card-actions>
       </v-card>
@@ -63,9 +73,10 @@
 
 <script>
 import pathInfo from '@/modules/pathInfo'
+import randomString from '@/modules/randomString'
 import MessageAlert from '../components/MessageAlert'
 import app from '../firebase/firebase'
-import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult, getAdditionalUserInfo } from 'firebase/auth'
+import { TwitterAuthProvider, getAuth, signInWithRedirect, getRedirectResult, getAdditionalUserInfo, signInAnonymously } from 'firebase/auth'
 import { doc, getFirestore, getDoc, setDoc,  serverTimestamp, writeBatch } from 'firebase/firestore'
 import { mapActions, mapGetters } from 'vuex'
 
@@ -87,9 +98,35 @@ export default {
     this.getSignInResult()
   },
   methods: {
-    ...mapActions('auth', ['setResult', 'onAuth']),
+    ...mapActions('auth', ['setResult','onAuth']),
     ...mapActions('loading', ['loading', 'stopLoading']),
     ...mapActions('alertMessage', ['setSignInMessage', 'setSignInErrorMessage']),
+    signInAnonymous() {
+      const auth = getAuth()
+      signInAnonymously(auth)
+      .then(async () => {
+          this.loading()
+          await this.onAuth()
+          if(this.user) {
+            
+            const userInfo = {
+              name: 'Guest',
+              screen_name: randomString(),
+              profile_image_url_https: ''
+            }
+            await this.sendUser(this.user.uid, userInfo)
+            this.stopLoading()
+            this.$router.push({name: 'Home'})
+          } else {
+            this.stopLoading()
+          }
+      })
+      .catch((error) => {
+        if(error) {
+          this.setErrorMessage()
+        }
+      })
+    },
     signInTwitter() {
         this.loading()
         const auth = getAuth()
@@ -138,7 +175,7 @@ export default {
       const userDocumentRef = doc(db, 'users', uid)
       const docSnap = await getDoc(userDocumentRef)
       if(!docSnap.exists()) {
-        const postData = {
+        const userData = {
           uid: uid,
           user_name: profile.name,
           icon_name: iconPath ? pathInfo(iconPath).basename : iconPath,
@@ -147,27 +184,28 @@ export default {
           favo_ask_count: 0,
           created_at: serverTimestamp()
         }
-        await setDoc(userDocumentRef, postData).catch(() => {
+        await setDoc(userDocumentRef, userData).catch(() => {
           this.setSignInErrorMessage('ログインに失敗しました')
         })
+        console.log(uid)
         const uniqueDocumentRef = doc(db, 'users', uid, 'unique', 'user_id')
         batch.set(uniqueDocumentRef, {
           uid: uid,
           user_id: profile.screen_name
         })
-        const indexRef = doc(db, "index", "users", "user_id", profile.screen_name)
+        const indexRef = doc(db, 'index', 'users', 'user_id', profile.screen_name)
         batch.set(indexRef, {
           user: uid,
         })
         await batch.commit().catch(() => {
           this.setSignInErrorMessage('ログインに失敗しました')
-        })     
+        })
       }
     }
   },
   computed: {
     ...mapGetters('loading', ['isLoading']),
-    ...mapGetters('auth', ['isAuthenticated']),
+    ...mapGetters('auth', ['isAuthenticated', 'user']),
     ...mapGetters('alertMessage', ['signInErrorMessage', 'signOutMessage'])
   }
 }

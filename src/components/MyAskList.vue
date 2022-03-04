@@ -43,11 +43,22 @@
                 :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
                 class="link-style-none"
               >
-                <v-avatar class="my-auto">
+                <v-avatar
+                  class="my-auto"
+                  v-if="ask.userInfo.icon_path"
+                >
                   <img
                     :src="ask.userInfo.icon_path"
                     :alt="ask.userInfo.icon_name"
                   >
+                </v-avatar>
+                <v-avatar
+                  v-if="!ask.userInfo.icon_path"
+                  class="my-auto"
+                >
+                  <v-icon
+                    size="70"
+                  >{{ mdiAccountCircle }}</v-icon>
                 </v-avatar>
               </router-link>
 
@@ -181,7 +192,7 @@
 </template>
 
 <script>
-import { mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiDotsVertical } from '@mdi/js'
+import { mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiDotsVertical, mdiAccountCircle } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
 import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
 import { getFirestore, query, getDocs, collection, limit, startAfter, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore'
@@ -206,6 +217,7 @@ export default {
       mdiCommentSearchOutline,
       mdiCommentRemoveOutline,
       mdiDotsVertical,
+      mdiAccountCircle,
       posted: '',
       asks: null,
       dialog: false,
