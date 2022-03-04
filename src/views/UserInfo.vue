@@ -7,25 +7,27 @@
           color="white"
         >
           <v-card-actions class="py-1 px-0">
-            <v-avatar
-              v-if="userInfo"
-              class="my-0 mr-2"
-              size="50"
-            >
-              <img
-                :src="userInfo.icon_path"
-                :alt="userInfo.icon_name"
+            <div v-if="userInfo">
+              <v-avatar
+                v-if="userInfo.icon_path"
+                class="my-0 mr-2"
+                size="50"
               >
-            </v-avatar>
-            <v-avatar
-              v-if="!userInfo"
-              class="my-0 mr-2"
-              size="50"
-            >
-              <v-icon
-                size="70"
-              >{{ mdiAccountCircle }}</v-icon>
-            </v-avatar>
+                <img
+                  :src="userInfo.icon_path"
+                  :alt="userInfo.icon_name"
+                >
+              </v-avatar>
+              <v-avatar
+                v-if="!userInfo.icon_path"
+                class="my-0 mr-2"
+                size="50"
+              >
+                <v-icon
+                  size="70"
+                >{{ mdiAccountCircle }}</v-icon>
+              </v-avatar>
+            </div>
             <div v-if="userInfo">
               <p class="card-title mb-0">{{ userInfo.user_name}}</p>
               <p class="card-text mb-0">@{{ userInfo.user_id }}</p>

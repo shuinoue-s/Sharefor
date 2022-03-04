@@ -12,6 +12,7 @@
             class="link-style-none"
           >
             <v-avatar
+              v-if="post.userInfo.icon_path"
               class="my-0 ml-2 mr-2"
               size="45"
             >
@@ -19,6 +20,15 @@
                 :src="post.userInfo.icon_path"
                 :alt="post.userInfo.icon_name"
               >
+            </v-avatar>
+            <v-avatar
+              v-if="!post.userInfo.icon_path"
+              class="my-0 ml-2 mr-2"
+              size="45"
+            >
+              <v-icon
+                size="70"
+              >{{ mdiAccountCircle }}</v-icon>
             </v-avatar>
           </router-link>
 
@@ -91,7 +101,7 @@
 </template>
 
 <script>
-import { mdiCommentOutline } from '@mdi/js'
+import { mdiCommentOutline, mdiAccountCircle } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
 import GoogleMapAPI from '@/components/GoogleMapAPI'
 import PostComment from '@/components/PostComment'
@@ -110,6 +120,7 @@ export default {
   data() {
     return {
       mdiCommentOutline,
+      mdiAccountCircle,
       post: [],
       tags: [],
       showComment: false,

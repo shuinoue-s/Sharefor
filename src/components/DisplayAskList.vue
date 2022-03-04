@@ -11,11 +11,22 @@
                 :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
                 class="link-style-none"
               >
-                <v-avatar class="my-auto">
+                <v-avatar
+                  v-if="ask.userInfo.icon_path"
+                  class="my-auto"
+                >
                   <img
                     :src="ask.userInfo.icon_path"
                     :alt="ask.userInfo.icon_name"
                   >
+                </v-avatar>
+                <v-avatar
+                  v-if="!ask.userInfo.icon_path"
+                  class="my-auto"
+                >
+                  <v-icon
+                    size="70"
+                  >{{ mdiAccountCircle }}</v-icon>
                 </v-avatar>
               </router-link>
 
@@ -154,7 +165,7 @@
 </template>
 
 <script>
-import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline, mdiStar, mdiStarOutline, mdiDotsVertical } from '@mdi/js'
+import { mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiCommentOutline, mdiStar, mdiStarOutline, mdiDotsVertical, mdiAccountCircle } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
 import app from '../firebase/firebase'
 import { getFirestore, deleteDoc, doc } from 'firebase/firestore'
@@ -180,6 +191,7 @@ export default {
       mdiStar,
       mdiStarOutline,
       mdiDotsVertical,
+      mdiAccountCircle,
       asks: this.setAsks
     }
   },

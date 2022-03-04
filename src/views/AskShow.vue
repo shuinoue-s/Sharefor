@@ -11,18 +11,28 @@
         
         <v-card-actions class="py-1">
           <router-link
+            v-if="ask.userInfo"
             :to="{ name: 'UserInfo', params: { userId:ask.userInfo.user_id } }"
             class="link-style-none"
           >
             <v-avatar
+              v-if="ask.userInfo.icon_path"
               class="my-0 ml-2 mr-2"
               size="45"
-              v-if="ask.userInfo"
             >
               <img
                 :src="ask.userInfo.icon_path"
                 :alt="ask.userInfo.icon_name"
               >
+            </v-avatar>
+            <v-avatar
+              v-if="!ask.userInfo.icon_path"
+              class="my-0 ml-2 mr-2"
+              size="45"
+            >
+              <v-icon
+                size="70"
+              >{{ mdiAccountCircle }}</v-icon>
             </v-avatar>
           </router-link>
 
@@ -122,7 +132,7 @@
 </template>
 
 <script>
-import { mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline } from '@mdi/js'
+import { mdiCommentOutline, mdiCommentSearchOutline, mdiCommentRemoveOutline, mdiAccountCircle } from '@mdi/js'
 import GreenLineVCard from '@/components/GreenLineVCard'
 import AskComment from '@/components/AskComment'
 import { dateFormat, splitTags, addUserInfo } from '@/modules/storeModifications'
@@ -141,6 +151,7 @@ export default {
       mdiCommentOutline,
       mdiCommentSearchOutline,
       mdiCommentRemoveOutline,
+      mdiAccountCircle,
       ask: null,
       tags: [],
       showComment: false,
