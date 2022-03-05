@@ -85,6 +85,9 @@ export default {
   components: {
     MessageAlert
   },
+  head: {
+    title: { inner: 'ログイン', separator: '-', complement: 'Sharefor' }
+  },
   data() {
     return {
       
@@ -187,7 +190,6 @@ export default {
         await setDoc(userDocumentRef, userData).catch(() => {
           this.setSignInErrorMessage('ログインに失敗しました')
         })
-        console.log(uid)
         const uniqueDocumentRef = doc(db, 'users', uid, 'unique', 'user_id')
         batch.set(uniqueDocumentRef, {
           uid: uid,

@@ -162,6 +162,9 @@ export default {
   components: {
     GreenLineVCard
   },
+  head: {
+    title: { inner: '検索', separator: '-', complement: 'Sharefor' }
+  },
   data() {
     return {
       mdiCommentSearchOutline,

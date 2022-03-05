@@ -16,7 +16,7 @@
           >
           <template v-slot:activator="{ on, attrs }">
           <v-btn
-            class="mr-2 mb-2"
+            class="mb-16"
             color="customGreen"
             fab
             dark
