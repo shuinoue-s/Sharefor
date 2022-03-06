@@ -5,10 +5,9 @@
             app
             color="customGreen"
             dark
-            hide-on-scroll
             dense
             >
-                <div class="d-flex text-h5 text-md-h4">
+                <div class="d-flex app-title">
                     <router-link to="/" tag="span" style="cursor: pointer" class="font">sharefor</router-link>
                 </div>
 
@@ -17,22 +16,22 @@
                     <v-tabs-slider color="customLightGreen"></v-tabs-slider>
 
                     <v-spacer></v-spacer>
-                    <v-tab to="/" class="caption text-sm-subtitle-1">
+                    <v-tab to="/" class="caption">
                         <p class="mb-0 font">ホーム</p>
                     </v-tab>
 
                     <v-spacer></v-spacer>
-                    <v-tab to="/asking" class="caption text-sm-subtitle-1">
+                    <v-tab to="/asking" class="caption">
                         <p class="mb-0 font">募集中</p>
                     </v-tab>
 
                     <v-spacer></v-spacer>
-                    <v-tab to="/search" class="caption text-sm-subtitle-1">
+                    <v-tab to="/search" class="caption">
                         <p class="mb-0 font">探す</p>
                     </v-tab>
                     
                     <v-spacer></v-spacer>
-                    <v-tab to="/mypage" class="caption text-sm-subtitle-1">
+                    <v-tab to="/mypage" class="caption">
                         <p class="mb-0 font">マイページ</p>
                     </v-tab>
                     <v-spacer></v-spacer>
@@ -50,5 +49,9 @@ export default {
 </script>
 
 <style scoped>
-@import '../css/style.css';
+    @import '../css/style.css';
+
+    .app-title {
+        font-size: 24px;
+    }
 </style>

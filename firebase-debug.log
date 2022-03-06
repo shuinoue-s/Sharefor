@@ -1,0 +1,33 @@
+[debug] [2022-03-06T01:57:03.462Z] ----------------------------------------------------------------------
+[debug] [2022-03-06T01:57:03.464Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2022-03-06T01:57:03.465Z] CLI Version:   10.1.2
+[debug] [2022-03-06T01:57:03.465Z] Platform:      linux
+[debug] [2022-03-06T01:57:03.465Z] Node Version:  v15.11.0
+[debug] [2022-03-06T01:57:03.467Z] Time:          Sun Mar 06 2022 01:57:03 GMT+0000 (Coordinated Universal Time)
+[debug] [2022-03-06T01:57:03.467Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-03-06T01:57:03.540Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-03-06T01:57:03.540Z] > authorizing via signed-in user (rarusian72@gmail.com)
+[debug] [2022-03-06T01:57:03.541Z] [iam] checking project share-for-f3094 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2022-03-06T01:57:03.542Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2022-03-06T01:57:03.543Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2022-03-06T01:57:04.833Z] <<< HTTP RESPONSE 200 {"date":"Sun, 06 Mar 2022 01:57:04 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-03-06T01:57:04.845Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/share-for-f3094:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}
+[debug] [2022-03-06T01:57:05.666Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 06 Mar 2022 01:57:05 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=601","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-03-06T01:57:05.669Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/share-for-f3094/serviceAccounts/share-for-f3094@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2022-03-06T01:57:06.738Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sun, 06 Mar 2022 01:57:06 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-03-06T01:57:06.743Z] > refreshing access token with scopes: []
+[debug] [2022-03-06T01:57:06.744Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2022-03-06T01:57:07.186Z] <<< HTTP RESPONSE 200 {"date":"Sun, 06 Mar 2022 01:57:07 GMT","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2022-03-06T01:57:07.200Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/share-for-f3094 [none]
+[debug] [2022-03-06T01:57:07.725Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/share-for-f3094 200
+[debug] [2022-03-06T01:57:07.726Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/share-for-f3094 {"projectId":"share-for-f3094","projectNumber":"696921916327","displayName":"share-for","name":"projects/share-for-f3094","resources":{"hostingSite":"share-for-f3094","storageBucket":"share-for-f3094.appspot.com","locationId":"asia-northeast1"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'share-for-f3094'...
+[info] 
+[info] i  deploying storage, firestore, functions, hosting 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint

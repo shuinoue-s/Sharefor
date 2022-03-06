@@ -152,6 +152,9 @@ export default {
     MyAskList,
     MyPageForm
   },
+  head: {
+    title: { inner: 'マイページ', separator: '-', complement: 'Sharefor' }
+  },
   data() {
     return {
       mdiAccountEdit,

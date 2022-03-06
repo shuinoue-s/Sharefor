@@ -37,6 +37,7 @@
       >
         <v-card-actions class="py-1">
             <v-avatar
+              v-if="comment.userInfo.icon_path"
               class="my-0 ml-2 mr-2"
               size="30"
             >
@@ -44,6 +45,15 @@
                 :src="comment.userInfo.icon_path"
                 :alt="comment.userInfo.icon_name"
               >
+            </v-avatar>
+            <v-avatar
+              v-if="!comment.userInfo.icon_path"
+              class="my-0 ml-2 mr-2"
+              size="30"
+            >
+              <v-icon
+                size="40"
+              >{{ mdiAccountCircle }}</v-icon>
             </v-avatar>
 
             <p class="card-text mb-0 mr-4">@{{ comment.userInfo.user_id }}</p>
@@ -61,6 +71,7 @@
 </template>
 
 <script>
+import { mdiAccountCircle } from '@mdi/js'
 import AskCommentForm from './AskCommentForm'
 import { arrayDateFormat, arrayAddUserInfo } from '@/modules/storeModifications'
 import app from '@/firebase/firebase'
@@ -74,6 +85,7 @@ export default {
   props: ['askId'],
   data() {
     return {
+      mdiAccountCircle,
       comments: '',
       isShow: false
     }
