@@ -1,7 +1,7 @@
 # はじめに
 
 「Jリーグチームのスタジアム周辺のおすすめスポットを共有したい、もしくは初めて行くためおすすめの場所を知りたい」といった課題を解決するために
-このアプリケーションを作成しました。Vue.jsを使用してシングルページアプリケーションを作成しています。またコストを抑えるためDBサーバーを設置せずに
+このアプリケーションを作成しました。Vue.jsを使用してシングルページアプリケーションを作成しています。またコストを抑えるためサーバーを設置せずに
 、Firebaseを使用しています。
 
 <br>
@@ -71,7 +71,7 @@ Jリーグチームのスタジアム周辺のおすすめスポットの共有�
 <br>
 <br>
 
-マイページページ
+マイページ
 <img width="1440" alt="sharefor_mypage" src="https://user-images.githubusercontent.com/80799067/156977523-d9f0bc29-1348-4e66-818d-7e918dfd8935.png">
 
 <br>
@@ -85,20 +85,21 @@ Jリーグチームのスタジアム周辺のおすすめスポットの共有�
 <br>
 
 # 使用技術
-    - HTML
-    - CSS
-    - Javascript
-    - Vue.js
+- HTML
+- CSS
+- Javascript
+- Vue.js
+
 <br>
-    - Firebase
-    - Docker
-    - Docker Compose
+
+- Firebase
+- Docker
+- Docker Compose
 
 <br>
 <br>
 
-開発環境にはDocker, Docker Composeを使用。
-コスト面を考えてDBサーバーを設置せずFirebaseを使用している。
+Vue.jsを使用してSPAを作成した。開発環境にはDocker, Docker Composeを使用。コスト面を考えてDBサーバーを設置せずFirebaseを使用している。
 
 <br>
 <br>
@@ -109,8 +110,8 @@ Jリーグチームのスタジアム周辺のおすすめスポットの共有�
 <br>
 
 ## テーブル構成
-| ルートコレクション | サブコレクション |
-| --- | --- |
+| ルートコレクション | サブコレクション | サブコレクション |
+| --- | --- | --- |
 | Users | Posts | Comments |
 || Asks | Comments |
 
