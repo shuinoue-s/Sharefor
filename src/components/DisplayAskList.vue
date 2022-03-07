@@ -58,7 +58,7 @@
                 <p class="small-text mx-4">周辺のおすすめスポット</p>
 
                 <v-card-subtitle class="py-0">
-                  {{ ask.text.slice(0, 20) + (ask.text.length > 20 ? '...' : '') }}
+                  {{ ask.text.slice(0, 17) + (ask.text.length > 17 ? '...' : '') }}
                 </v-card-subtitle>
               </router-link>
 

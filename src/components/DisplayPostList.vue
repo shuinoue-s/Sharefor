@@ -70,7 +70,7 @@
                 </v-card-title>
 
                 <v-card-subtitle class="my-0 pb-0">
-                  {{ post.body.slice(0, 20) + (post.body.length > 20 ? '...' : '') }}
+                  {{ post.body.slice(0, 17) + (post.body.length > 17 ? '...' : '') }}
                 </v-card-subtitle>
               </router-link>
 
