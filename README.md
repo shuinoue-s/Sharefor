@@ -110,15 +110,25 @@ Vue.jsを使用してSPAを作成した。開発環境にはDocker, Docker Compo
 <br>
 
 ## テーブル構成
-| ルートコレクション | サブコレクション | サブコレクション |
-| --- | --- | --- |
-| Users | Posts | Comments |
-|| Asks | Comments |
+| コレクション | 説明 |
+| --- | --- |
+| users | ユーザー情報を保存 |
+| index | ユーザーIDをドキュメントIDとして保存 |
+| unique | 一意なユーザーIDを保存。usersコレクションのサブコレクション |
+| posts | 投稿情報を保存。usersコレクションのサブコレクション |
+| asks | 募集情報を保存。usersコレクションのサブコレクション |
+| comments | コメント情報を保存。posts, asksコレクションのサブコレクション |
 
 <br>
 <br>
 
 # 機能一覧
+
+## 機能設計
+<img width="847" alt="sharefor_機能設計" src="https://user-images.githubusercontent.com/80799067/157142308-01476128-3b4e-4c83-8e1e-3f150837923d.png">
+
+##ワイヤーフレーム
+<img width="897" alt="sharefor_wireframe" src="https://user-images.githubusercontent.com/80799067/157142303-c79f0993-c376-477b-8376-9d1bef9a4174.png">
 
 ## ユーザー機能
 - Twitter認証機能
